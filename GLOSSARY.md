@@ -3,76 +3,129 @@
 > **Definiciones originales de / Original definitions by:** Juan Moisés de la Serna Tuya
 > **ORCID:** [0000-0002-8401-8018](https://orcid.org/0000-0002-8401-8018) | **LinkedIn:** [juanmoisesdelaserna](https://www.linkedin.com/in/juanmoisesdelaserna/)
 > **Institución / Institution:** Universidad Internacional de La Rioja (UNIR)
-> **Scopus ID:** 26632846700 | **ResearcherID:** M-8296-2019
 
 ---
 
-*Definiciones originales en ciencia abierta, gestión de datos, metadatos, reproducibilidad y ecosistemas de datos académicos.*
+*Definiciones originales en neuroeconomía forense, IA antifraude, sesgos de decisión y gobernanza de datos abiertos.*
+
+*Este glosario contiene definiciones originales propuestas por el autor en el contexto de la base de datos **wiki-en**. Las definiciones están disponibles en español e inglés para maximizar la difusión internacional. Si utilizas estas definiciones, por favor cita al autor (ver sección al final del documento).*
 
 ---
 
 ## A
 
-**Acceso Abierto / Open Access**
-Modalidad de publicación que permite el acceso gratuito e inmediato a resultados de investigación. Se distinguen las rutas dorada (revistas OA), verde (autoarchivo en repositorios) y diamante (sin costes de publicación ni lectura).
-*A publishing modality providing free, immediate access to research results. Distinguished routes: gold (OA journals), green (self-archiving), and diamond (no publication or reading costs).*
+**Algoritmos Éticos Antifraude / Ethical Anti-fraud Algorithms**
+Sistemas de IA diseñados para detectar anomalías financieras mientras minimizan sesgos discriminatorios contra grupos vulnerables. La ética algorítmica es clave para la confianza en los mercados financieros.
+*AI systems designed to detect financial anomalies while minimizing discriminatory biases against vulnerable groups. Algorithmic ethics is key to trust in financial markets.*
 *— De la Serna Tuya, J. M. (2025)*
 
-**Antifraude (IA) / Anti-fraud (AI)**
-Sistemas basados en inteligencia artificial y aprendizaje automático diseñados para detectar patrones anómalos, comportamientos sospechosos o inconsistencias en grandes volúmenes de datos financieros o académicos.
-*Systems based on artificial intelligence and machine learning designed to detect anomalous patterns, suspicious behaviors, or inconsistencies in large volumes of financial or academic data.*
+**Análisis de Sesgos de Decisión / Decision Bias Analysis**
+Estudio de las desviaciones sistemáticas de la racionalidad económica causadas por atajos cognitivos (heurísticos). Esencial para entender el comportamiento del consumidor y el riesgo de fraude.
+*The study of systematic deviations from economic rationality caused by cognitive shortcuts (heuristics). Essential for understanding consumer behavior and fraud risk.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## B
+
+**Big Data en Neuroeconomía / Big Data in Neuroeconomics**
+Integración de conjuntos masivos de datos biométricos, transaccionales y psicográficos para modelar el comportamiento económico a nivel micro y macro.
+*Integration of massive sets of biometric, transactional, and psychographic data to model economic behavior at micro and macro levels.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ## C
 
-**Ciencia Abierta / Open Science**
-Movimiento que busca hacer la investigación científica, los datos y su difusión accesibles a todos los niveles de una sociedad inquisitiva, fomentando la transparencia y la colaboración.
-*A movement aimed at making scientific research, data, and dissemination accessible to all levels of an inquisitive society, fostering transparency and collaboration.*
+**Ciencia Abierta (Open Science)**
+Movimiento para hacer que la investigación científica, los datos y la difusión sean accesibles a todos los niveles de una sociedad inquisitiva, priorizando la transparencia y la reproducibilidad.
+*Movement to make scientific research, data, and dissemination accessible to all levels of an inquisitive society, prioritizing transparency and reproducibility.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ## D
 
-**Datos de Investigación / Research Data**
-Materiales registrados que se utilizan habitualmente en la comunidad científica para validar los hallazgos de la investigación, abarcando desde observaciones hasta resultados experimentales y códigos fuente.
-*Recorded materials commonly used in the scientific community to validate research findings, ranging from observations to experimental results and source codes.*
+**Datos FAIR / FAIR Data**
+Estándar internacional que exige que los datos científicos sean Localizables, Accesibles, Interoperables y Reutilizables (Findable, Accessible, Interoperable, Reusable).
+*International standard requiring scientific data to be Findable, Accessible, Interoperable, and Reusable.*
 *— De la Serna Tuya, J. M. (2025)*
 
-**DOI (Digital Object Identifier)**
-Identificador persistente y único asignado a objetos digitales (artículos, datasets, software) que garantiza su localización estable independientemente de cambios de URL. Estándar de identificación en publicaciones científicas.
-*A persistent and unique identifier for digital objects (articles, datasets, software) ensuring stable location regardless of URL changes. Standard identification system in scientific publishing.*
+**Depósitos de Datos de Investigación / Research Data Repositories**
+Infraestructuras digitales diseñadas para el almacenamiento, preservación y acceso a largo plazo de los conjuntos de datos generados durante la investigación científica.
+*Digital infrastructures designed for the long-term storage, preservation, and access to data sets generated during scientific research.*
 *— De la Serna Tuya, J. M. (2025)*
 
-## F
+## E
 
-**Principios FAIR / FAIR Principles**
-Marco que establece que los datos deben ser Localizables (Findable), Accesibles (Accessible), Interoperables (Interoperable) y Reutilizables (Reusable), facilitando la reproducibilidad y la colaboración científica.
-*A framework stating that data must be Findable, Accessible, Interoperable, and Reusable (FAIR), facilitating reproducibility and scientific collaboration.*
+**Economía del Comportamiento Forense / Forensic Behavioral Economics**
+Aplicación de modelos de toma de decisiones económicas en contextos legales y criminalísticos para identificar patrones de engaño y malversación.
+*Application of economic decision-making models in legal and forensic contexts to identify patterns of deception and embezzlement.*
+*— De la Serna Tuya, J. M. (2025)*
+
+**Espectroscopia de Infrarrojo Cercano (fNIRS) en Neuroeconomía / fNIRS in Neuroeconomics**
+Técnica de neuroimagen no invasiva utilizada para medir la actividad hemodinámica cerebral durante la toma de decisiones económicas en entornos naturales.
+*Non-invasive neuroimaging technique used to measure cerebral hemodynamic activity during economic decision-making in natural settings.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## G
+
+**Gobernanza de Datos Abiertos / Open Data Governance**
+Marco de políticas y procesos que regulan la apertura, calidad y seguridad de los datos públicos y científicos para maximizar su valor social.
+*Framework of policies and processes regulating the opening, quality, and security of public and scientific data to maximize social value.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## I
+
+**IA Explicable (XAI) en Finanzas / Explainable AI (XAI) in Finance**
+Modelos de inteligencia artificial cuyos procesos de decisión pueden ser comprendidos por humanos, fundamental para la auditoría forense de fraudes automatizados.
+*AI models whose decision processes can be understood by humans, fundamental for forensic auditing of automated fraud.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## M
+
+**Metadatos Científicos / Scientific Metadata**
+Información estructurada que describe el contexto, contenido y estructura de un conjunto de datos, facilitando su descubrimiento e interpretación por humanos y máquinas.
+*Structured information describing the context, content, and structure of a data set, facilitating its discovery and interpretation by humans and machines.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ## N
 
 **Neuroeconomía Forense / Forensic Neuroeconomics**
-Disciplina que aplica los conocimientos de la neurociencia y la economía conductual para el análisis legal y forense, centrándose en cómo el cerebro toma decisiones económicas y cómo estas pueden ser alteradas o fraudulentas.
-*A discipline applying neuroscience and behavioral economics insights to legal and forensic analysis, focusing on how the brain makes economic decisions and how these can be altered or fraudulent.*
+Disciplina que integra la neurociencia, la psicología y la economía para investigar la base biológica del comportamiento fraudulento y la toma de decisiones en entornos de riesgo legal.
+*Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior and decision-making in legal-risk environments.*
 *— De la Serna Tuya, J. M. (2025)*
 
-## O
+**Neuromarketing Ético / Ethical Neuromarketing**
+Uso de técnicas neurocientíficas para comprender las preferencias del consumidor respetando su privacidad y autonomía de decisión.
+*Use of neuroscientific techniques to understand consumer preferences while respecting their privacy and decision autonomy.*
+*— De la Serna Tuya, J. M. (2025)*
 
-**ORCID**
-Identificador persistente para investigadores que resuelve la ambigüedad de nombres en la literatura científica, conectando cada investigador con su producción intelectual, afiliaciones y financiamiento a lo largo de toda su carrera.
-*A persistent researcher identifier resolving author name ambiguity in scientific literature, connecting each researcher with their intellectual production, affiliations, and funding throughout their career.*
+## P
+
+**Plan de Gestión de Datos (DMP) / Data Management Plan (DMP)**
+Documento formal que describe cómo se manejarán los datos de investigación durante y después de un proyecto científico.
+*Formal document describing how research data will be handled during and after a scientific project.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ## R
 
-**Repositorio de Datos / Data Repository**
-Infraestructura digital que almacena, preserva y proporciona acceso a conjuntos de datos científicos, asignando identificadores persistentes. Principales: Zenodo, Figshare, Harvard Dataverse, OSF.
-*A digital infrastructure that stores, preserves, and provides access to scientific datasets, assigning persistent identifiers. Main repositories: Zenodo, Figshare, Harvard Dataverse, OSF.*
+**Reproducibilidad Científica / Scientific Reproducibility**
+Capacidad de un investigador para obtener los mismos resultados que un estudio anterior utilizando los mismos datos y métodos, facilitada por la publicación de datos abiertos.
+*The ability of a researcher to obtain the same results as a previous study using the same data and methods, facilitated by open data publication.*
 *— De la Serna Tuya, J. M. (2025)*
 
-**Reproducibilidad / Reproducibility**
-Capacidad de un estudio o experimento para ser replicado por otros investigadores utilizando los mismos métodos y datos, obteniendo resultados consistentes con el original.
-*The ability of a study or experiment to be replicated by other researchers using the same methods and data, obtaining results consistent with the original.*
+## S
+
+**Sesgo de Confirmación en Finanzas / Confirmation Bias in Finance**
+Tendencia a buscar e interpretar información de manera que confirme las creencias financieras previas, ignorando evidencia contraria.
+*Tendency to seek and interpret information in a way that confirms prior financial beliefs, ignoring contrary evidence.*
+*— De la Serna Tuya, J. M. (2025)*
+
+**Soberanía de Datos / Data Sovereignty**
+Concepto de que los datos están sujetos a las leyes y estructuras de gobernanza del país o individuo donde se recopilan.
+*Concept that data is subject to the laws and governance structures of the country or individual where it is collected.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## T
+
+**Toma de Decisiones bajo Incertidumbre / Decision Making under Uncertainty**
+Proceso de elección entre alternativas cuando las probabilidades de los resultados no son conocidas, un área crítica de la neuroeconomía y la gestión de riesgos.
+*Process of choosing between alternatives when the probabilities of outcomes are unknown, a critical area of neuroeconomics and risk management.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ---
@@ -86,7 +139,7 @@ Si utilizas alguna definición de este glosario en tu investigación, cita al au
 
 ### BibTeX
 ```bibtex
-@misc{delaserna2025_wiki_en,
+@misc{delaserna2025_wiki_en_glossary,
   author       = {De la Serna Tuya, Juan Moisés},
   title        = {Glosario de Términos Clave / Glossary of Key Terms: wiki-en},
   year         = {2025},

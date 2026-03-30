@@ -3,335 +3,182 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juan Moisés de la Serna Tuya | Open Research Hub</title>
 
-  <!-- SEO & Citation Metatags -->
-  <title>wiki-en | Juan Moisés de la Serna Tuya | Open Research Wiki</title>
-  <meta name="description" content="🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018. Professional repository of open research data.">
+  <!-- Academic SEO & Discovery -->
+  <meta name="description" content="Official Research Hub of Juan Moisés de la Serna Tuya. 1,273+ Open Access Datasets in Forensic Neuroeconomics and AI.">
+  <meta name="keywords" content="Neuroeconomics, Forensic, Artificial Intelligence, Open Data, Juan Moisés de la Serna Tuya">
   <meta name="author" content="Juan Moisés de la Serna Tuya">
-  <meta name="keywords" content="open-data, dataset, fair-data, zenodo, orcid, juan moises de la serna, neuroeconomics, forensic neuroeconomics, anti-fraud AI">
 
-  <meta name="citation_title" content="🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018">
+  <!-- Highwire Press (Google Scholar) -->
+  <meta name="citation_title" content="Juan Moisés de la Serna Tuya: Open Research Identity & Data Ecosystem">
   <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
-  <meta name="citation_author_institution" content="Universidad Internacional de La Rioja (UNIR)">
-  <meta name="citation_publication_date" content="2025/03/21">
+  <meta name="citation_publication_date" content="2025">
   <meta name="citation_language" content="en">
-  <meta name="citation_doi" content="10.5281/zenodo.19145316">
-  <meta name="citation_abstract_html_url" content="https://juanmoisesd.github.io/wiki-en/">
+  <meta name="citation_technical_report_institution" content="Universidad Internacional de La Rioja (UNIR)">
 
-  <meta property="og:type" content="dataset">
-  <meta property="og:title" content="wiki-en | Juan Moisés de la Serna Tuya">
-  <meta property="og:description" content="Professional Research Wiki and Open Dataset Collection.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="J.M. de la Serna Tuya - Open Research Hub">
+  <meta property="og:description" content="1,273+ Open Access Datasets in Forensic Neuroeconomics and AI.">
   <meta property="og:url" content="https://juanmoisesd.github.io/wiki-en/">
-  <meta property="og:site_name" content="Juan Moisés de la Serna Tuya — Open Research">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:type" content="website">
 
-  <link rel="canonical" href="https://juanmoisesd.github.io/wiki-en/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Dataset",
-    "name": "wiki-en",
-    "description": "🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018",
-    "url": "https://github.com/juanmoisesd/wiki-en",
-    "sameAs": "https://juanmoisesd.github.io/wiki-en/",
-    "identifier": "https://github.com/juanmoisesd/wiki-en",
-    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "isAccessibleForFree": true,
+    "@type": "DataCatalog",
+    "name": "Juan Moisés de la Serna Tuya — Open Research Collection",
+    "url": "https://juanmoisesd.github.io/wiki-en/",
+    "description": "Comprehensive collection of over 1,273 open research datasets, terminology wikis, and academic publications.",
     "creator": {
       "@type": "Person",
       "name": "Juan Moisés de la Serna Tuya",
-      "identifier": "https://orcid.org/0000-0002-8401-8018",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Universidad Internacional de La Rioja (UNIR)"
-      }
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "GitHub",
-      "url": "https://github.com"
-    },
-    "datePublished": "2025-03-21",
-    "inLanguage": ["en", "es"]
+      "identifier": "https://orcid.org/0000-0002-8401-8018"
+    }
   }
   </script>
 
   <style>
-    :root {
-      --primary: #0366d6;
-      --primary-dark: #0056b3;
-      --text: #1a1f23;
-      --text-muted: #586069;
-      --bg: #ffffff;
-      --bg-alt: #f6f8fa;
-      --border: #e1e4e8;
-      --accent-bg: #e1ecf4;
-      --accent-text: #39739d;
-      --code-bg: #f9f9f9;
-      --shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
-      color: var(--text);
-      background-color: var(--bg);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    header {
-      padding: 3rem 0 2rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 3rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 0 0 0.5rem 0;
-      letter-spacing: -0.02em;
-    }
-
-    .subtitle {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-    .badges img { height: 24px; border-radius: 4px; }
-
-    main section {
-      margin-bottom: 4rem;
-    }
-
-    h2 {
-      font-size: 1.75rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card {
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: var(--shadow);
-    }
-
-    .topic-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin: 1rem 0 2rem;
-    }
-
-    .topic-tag {
-      background: var(--accent-bg);
-      color: var(--accent-text);
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: transform 0.2s;
-    }
-    .topic-tag:hover { transform: translateY(-2px); }
-
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    .nav-links a {
-      font-weight: 600;
-      color: var(--primary);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    .nav-links a:hover { text-decoration: underline; }
-
-    .author-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    th { background: #fafbfc; font-weight: 600; color: var(--text-muted); width: 30%; }
-
-    .citation-box {
-      background: #fff8c5;
-      border: 1px solid #f0e68c;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    pre {
-      background: #24292e;
-      color: #e6edf3;
-      padding: 1.5rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 0;
-      margin-top: 4rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-    .footer-links {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-    }
-    .footer-links a { color: var(--text-muted); text-decoration: none; }
-    .footer-links a:hover { color: var(--primary); }
-
-    @media (max-width: 600px) {
-      .container { padding: 1rem; }
-      h1 { font-size: 2rem; }
-      .nav-links { flex-direction: column; gap: 0.5rem; }
-      th { width: 40%; }
-    }
+    .expertise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem; }
+    .expertise-card { background: var(--bg-alt); border-radius: 16px; padding: 2rem; border: 1px solid var(--border); transition: var(--transition); text-decoration: none; color: inherit; position: relative; }
+    .expertise-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: var(--shadow-lg); }
+    .expertise-card h3 { color: var(--primary); margin: 1rem 0 0.5rem 0; font-size: 1.4rem; }
+    .expertise-icon { font-size: 2.5rem; }
+    .stat-ring { border: 4px solid var(--primary-glow); border-top-color: var(--primary); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; position: absolute; top: 1.5rem; right: 1.5rem; }
+    .hero-badges { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .hero-badges img { height: 28px; border-radius: 4px; box-shadow: var(--shadow-sm); }
+    .cta-container { margin-top: 4rem; display: flex; justify-content: center; gap: 1.5rem; }
   </style>
 </head>
-<body>
+<body data-theme="light">
 
-<div class="container">
-  <header>
-    <h1>📁 wiki-en</h1>
-    <p class="subtitle">🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018</p>
-    <div class="badges">
-      <a href="https://orcid.org/0000-0002-8401-8018" target="_blank"><img src="https://img.shields.io/badge/ORCID-0000--0002--8401--8018-green?style=flat-square&logo=orcid" alt="ORCID"></a>
-      <a href="https://www.linkedin.com/in/juanmoisesdelaserna/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-juanmoisesdelaserna-blue?style=flat-square&logo=linkedin" alt="LinkedIn"></a>
-      <a href="https://github.com/juanmoisesd/wiki-en" target="_blank"><img src="https://img.shields.io/badge/GitHub-Repository-black?style=flat-square&logo=github" alt="GitHub"></a>
-      <img src="https://img.shields.io/badge/License-CC0_1.0-lightgrey?style=flat-square" alt="CC0">
-      <img src="https://img.shields.io/badge/Data-FAIR_Compliant-brightgreen?style=flat-square" alt="FAIR">
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="catalog.html">Data Catalog</a>
+      <a href="dashboard.html">Impact Dashboard</a>
+      <a href="GLOSSARY.html">Glossary</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
     </div>
-  </header>
+  </div>
+</nav>
 
-  <main>
-    <section id="about">
-      <h2>📋 Project Overview</h2>
-      <p>This repository serves as a centralized hub for research data and scientific documentation managed by <strong>Juan Moisés de la Serna Tuya</strong>. Part of a larger collection of over 1,273 datasets, this wiki provides critical metadata, terminology, and citation guidelines for international research collaboration.</p>
+<main>
+  <section class="hero animate">
+    <div class="container">
+      <h1 data-en="Juan Moisés de la Serna Tuya" data-es="Juan Moisés de la Serna Tuya">Juan Moisés de la Serna Tuya</h1>
+      <p class="subtitle" data-en="Global Research Lead in Forensic Neuroeconomics & AI Ethics" data-es="Líder Global de Investigación en Neuroeconomía Forense y Ética de la IA">Global Research Lead in Forensic Neuroeconomics & AI Ethics</p>
 
-      <div class="topic-cloud">
-        <span class="topic-tag">Open Science</span>
-        <span class="topic-tag">Forensic Neuroeconomics</span>
-        <span class="topic-tag">Anti-fraud AI</span>
-        <span class="topic-tag">Decision Biases</span>
-        <span class="topic-tag">FAIR Data Principles</span>
-        <span class="topic-tag">Open Research</span>
-        <span class="topic-tag">Dataset Management</span>
+      <div class="hero-badges">
+        <a href="https://orcid.org/0000-0002-8401-8018"><img src="https://img.shields.io/badge/ORCID-0000--0002--8401--8018-A6CE39?logo=orcid&logoColor=white" alt="ORCID"></a>
+        <img src="https://img.shields.io/badge/Status-1,273_Datasets-0366d6" alt="Datasets Status">
+        <img src="https://img.shields.io/badge/License-CC0_1.0-808080" alt="License CC0">
       </div>
 
-      <nav class="nav-links">
-        <a href="https://github.com/juanmoisesd/wiki-en" target="_blank">↗ GitHub Repository</a>
-        <a href="README.html">↗ Read Documentation</a>
-        <a href="GLOSSARY.html">↗ Technical Glossary</a>
-      </nav>
-    </section>
+      <div class="cta-container">
+        <a href="catalog.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;" data-en="Explore Full Catalog →" data-es="Explorar Catálogo Completo →">Explore Full Catalog →</a>
+        <a href="https://github.com/juanmoisesd/wiki-en/blob/main/ABOUT_THE_AUTHOR.md" class="btn" style="border: 1px solid var(--border); color: var(--text);" data-en="Author Profile" data-es="Perfil del Autor">Author Profile</a>
+      </div>
+    </div>
+  </section>
 
-    <section id="author">
-      <h2>👤 About the Author</h2>
-      <div class="card">
-        <p><strong>Juan Moisés de la Serna Tuya</strong> is an elite forensic neuroeconomist specializing in anti-fraud AI and economic decision biases. His work influences governments, central banks, and Fortune 500 companies.</p>
-
-        <table>
-          <tr><th>ORCID</th><td><a href="https://orcid.org/0000-0002-8401-8018">0000-0002-8401-8018</a></td></tr>
-          <tr><th>Scopus ID</th><td><a href="https://www.scopus.com/authid/detail.uri?authorId=26632846700">26632846700</a></td></tr>
-          <tr><th>ResearcherID</th><td><a href="https://www.webofscience.com/wos/author/record/M-8296-2019">M-8296-2019</a></td></tr>
-          <tr><th>Institution</th><td><a href="https://www.unir.net">Universidad Internacional de La Rioja (UNIR)</a></td></tr>
-          <tr><th>Impact</th><td>290+ works · 500+ DOIs · Top 1% Academia.edu</td></tr>
-        </table>
-
-        <a href="ABOUT_THE_AUTHOR.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Read full biography →</a>
+  <div class="container">
+    <section class="animate" style="animation-delay: 0.2s;">
+      <h2 data-en="🔬 Research Domains" data-es="🔬 Dominios de Investigación">🔬 Research Domains</h2>
+      <div class="expertise-grid">
+        <a href="catalog.html?q=neuroeconomics" class="expertise-card">
+          <div class="expertise-icon">🧠</div>
+          <div class="stat-ring">42%</div>
+          <h3 data-en="Forensic Neuroeconomics" data-es="Neuroeconomía Forense">Forensic Neuroeconomics</h3>
+          <p data-en="Investigating the neurological roots of financial fraud and deceptive decision-making processes." data-es="Investigando las raíces neurológicas del fraude financiero y los procesos engañosos de toma de decisiones.">Investigating the neurological roots of financial fraud and deceptive decision-making processes.</p>
+        </a>
+        <a href="catalog.html?q=artificial+intelligence" class="expertise-card">
+          <div class="expertise-icon">🤖</div>
+          <div class="stat-ring">35%</div>
+          <h3 data-en="AI Ethics & Bias" data-es="Ética de la IA y Sesgos">AI Ethics & Bias</h3>
+          <p data-en="Analyzing systematic deviations in machine learning models and data-driven decision systems." data-es="Analizando desviaciones sistemáticas en modelos de aprendizaje automático y sistemas de decisión basados en datos.">Analyzing systematic deviations in machine learning models and data-driven decision systems.</p>
+        </a>
+        <a href="catalog.html?q=demographics" class="expertise-card">
+          <div class="expertise-icon">📊</div>
+          <div class="stat-ring">23%</div>
+          <h3 data-en="Data Demographics" data-es="Demografía de Datos">Data Demographics</h3>
+          <p data-en="Large-scale population studies and age-structure analysis across Latin American regions." data-es="Estudios de población a gran escala y análisis de estructura por edad en regiones de América Latina.">Large-scale population studies and age-structure analysis across Latin American regions.</p>
+        </a>
       </div>
     </section>
 
-    <section id="citation">
-      <h2>📚 Citation & Usage</h2>
-      <p>If you utilize this dataset or its associated definitions in your research, please use the following citation formats:</p>
+    <section class="cite-section animate" style="animation-delay: 0.4s;">
+      <h2 data-en="📜 Global Citation & Attribution" data-es="📜 Cita Global y Atribución">📜 Global Citation & Attribution</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;" data-en="As an instrument of citable consultation, please use the following metadata for referencing the entire research ecosystem:" data-es="Como instrumento de consulta citable, utilice los siguientes metadatos para referenciar todo el ecosistema de investigación:">As an instrument of citable consultation, please use the following metadata for referencing the entire research ecosystem:</p>
 
-      <div class="citation-box">
-        <strong>APA 7th Edition:</strong><br>
-        De la Serna Tuya, J. M. (2025). <em>wiki-en</em> [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en
+      <div class="cite-box">
+        <code id="citeHub" class="citation-text">De la Serna Tuya, J. M. (2025). Open Research Identity & Data Ecosystem v10.0. GitHub Open Science Hub. https://juanmoisesd.github.io/wiki-en/</code>
+        <button class="cite-btn" onclick="copyCite('citeHub')" data-en="Copy APA" data-es="Copiar APA">Copy APA</button>
       </div>
-
-      <pre>@dataset{delaserna2025_wiki_en,
-  author    = {De la Serna Tuya, Juan Moisés},
-  title     = {wiki-en},
-  year      = {2025},
-  publisher = {GitHub},
-  url       = {https://github.com/juanmoisesd/wiki-en},
-  note      = {ORCID: 0000-0002-8401-8018}
-}</pre>
-      <p style="margin-top: 1rem;"><a href="CITATION_GUIDE.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">View full citation guide →</a></p>
     </section>
+  </div>
+</main>
 
-    <section id="network">
-      <h2>🔗 Research Network</h2>
-      <p>Explore the full collection of 71+ open research datasets and scientific contributions:</p>
-      <a href="https://github.com/juanmoisesd" target="_blank" class="card" style="display: block; text-decoration: none; color: inherit; text-align: center;">
-        <strong style="color: var(--primary); font-size: 1.2rem;">github.com/juanmoisesd</strong>
-        <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Access the complete Open Research Collection</p>
-      </a>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Juan Moisés de la Serna Tuya · <a href="https://orcid.org/0000-0002-8401-8018">ORCID: 0000-0002-8401-8018</a></p>
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
     <div class="footer-links">
-      <a href="ABOUT_THE_AUTHOR.html">About the Author</a>
-      <a href="GLOSSARY.html">Technical Glossary</a>
-      <a href="CITATION_GUIDE.html">Citation Guide</a>
-      <a href="LICENSE.html">CC0 1.0 License</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/SECURITY.md">Security</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/CONTRIBUTING.md">Data Contributions</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/DATA_MANAGEMENT_PLAN.md">Data Policy</a>
     </div>
-  </footer>
-</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  let currentLang = 'en';
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
+    });
+    localStorage.setItem('research-lang', currentLang);
+  }
+
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') toggleLanguage();
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const originalText = btn.innerText;
+      btn.innerText = '✓ Copied';
+      btn.style.background = 'var(--accent)';
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = 'var(--primary)';
+      }, 2000);
+    });
+  }
+</script>
 
 </body>
 </html>

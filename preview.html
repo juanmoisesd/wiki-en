@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Data Previewer | Juan Moisés de la Serna Tuya</title>
+
+  <!-- Academic SEO -->
+  <meta name="description" content="Direct-from-source inspection of raw scientific datasets in forensic and demographic research.">
+  <meta name="citation_title" content="Live Data Previewer: Source Inspection Tool for Open Datasets">
+  <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Live Data Previewer",
+    "applicationCategory": "ScientificTool"
+  }
+  </script>
+
+  <style>
+    .preview-card { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 24px; padding: 3rem; margin-top: 3rem; box-shadow: var(--shadow-lg); transition: var(--transition); }
+    .data-table-wrapper { overflow-x: auto; margin-top: 2rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+    th, td { padding: 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-alt); color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); }
+    tr:hover { background: var(--primary-glow); }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: white; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body data-theme="light">
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="catalog.html">Catalog</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="GLOSSARY.html">Glossary</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 1100px;">
+  <header class="animate">
+    <h1 data-en="🔬 Live Data Previewer" data-es="🔬 Previsualizador de Datos">🔬 Live Data Previewer</h1>
+    <p class="subtitle" data-en="Direct-from-source inspection of raw scientific datasets." data-es="Inspección directa de la fuente de conjuntos de datos científicos crudos.">Direct-from-source inspection of raw scientific datasets.</p>
+  </header>
+
+  <div class="preview-card animate" style="animation-delay: 0.1s;">
+    <div class="status-badge">● LIVE GITHUB FETCH</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+      <div>
+        <h3 id="currentFile" style="margin:0; font-size: 1.5rem;" data-en="Connecting to GitHub API..." data-es="Conectando a la API de GitHub...">Connecting to GitHub API...</h3>
+        <p style="color:var(--text-muted); margin: 0.5rem 0 0 0;" data-en="Showing first 10 rows of raw CSV sample." data-es="Mostrando las primeras 10 filas de la muestra CSV cruda.">Showing first 10 rows of raw CSV sample.</p>
+      </div>
+      <button class="btn btn-primary" onclick="fetchSampleData()" data-en="Fetch New Sample" data-es="Obtener Nueva Muestra">Fetch New Sample</button>
+    </div>
+
+    <div class="data-table-wrapper">
+      <table id="dataTable">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <section class="cite-section animate" style="animation-delay: 0.3s;">
+    <h2 data-en="📜 Cite this Data Tool" data-es="📜 Citar esta Herramienta">📜 Cite this Data Tool</h2>
+    <div class="cite-box">
+      <code id="citePreview" class="citation-text">De la Serna Tuya, J. M. (2025). Live Data Previewer: Source Inspection Tool for Open Datasets. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/preview.html</code>
+      <button class="cite-btn" onclick="copyCite('citePreview')">Copy APA</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  let currentLang = 'en';
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
+    });
+    localStorage.setItem('research-lang', currentLang);
+  }
+
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') toggleLanguage();
+
+  async function fetchSampleData() {
+    const head = document.getElementById('tableHead');
+    const body = document.getElementById('tableBody');
+    const title = document.getElementById('currentFile');
+    try {
+      const res = await fetch('https://raw.githubusercontent.com/juanmoisesd/latin-america-population-age-structure-dataset/main/data/population_age_structure.csv');
+      const text = await res.text();
+      const rows = text.trim().split('\n').slice(0, 11).map(r => r.split(','));
+      title.innerText = "population_age_structure.csv";
+      head.innerHTML = `<tr>${rows[0].map(h => `<th>${h}</th>`).join('')}</tr>`;
+      body.innerHTML = rows.slice(1).map(r => `<tr>${r.map(d => `<td>${d}</td>`).join('')}</tr>`).join('');
+    } catch (e) {
+      title.innerText = "Sync failed.";
+    }
+  }
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.innerText = '✓ Copied';
+      setTimeout(() => btn.innerText = 'Copy APA', 2000);
+    });
+  }
+  fetchSampleData();
+</script>
+
+</body>
+</html>

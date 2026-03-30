@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Glossary | Juan Moisés de la Serna Tuya</title>
+
+  <!-- Academic SEO -->
+  <meta name="description" content="Controlled vocabulary for Forensic Neuroeconomics and Big Data Research.">
+  <meta name="citation_title" content="Scientific Glossary: Forensic Neuroeconomics & FAIR Data">
+  <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": "Scientific Glossary: Forensic Neuroeconomics",
+    "description": "Terminology wiki for Open Science & Research Data."
+  }
+  </script>
+
+  <style>
+    .search-box { position: sticky; top: 80px; z-index: 100; margin-bottom: 3rem; background: var(--bg); padding: 1.5rem; border: 2px solid var(--primary); border-radius: 16px; box-shadow: var(--shadow-lg); transition: var(--transition); }
+    #glossarySearch { width: 100%; border: none; background: transparent; font-size: 1.25rem; font-weight: 500; outline: none; color: var(--text); }
+    .glossary-list { display: grid; gap: 1.5rem; }
+    .glossary-item { background: var(--bg-alt); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border); transition: var(--transition); border-left: 8px solid var(--primary); }
+    .glossary-item:hover { transform: scale(1.01); box-shadow: var(--shadow-md); }
+    .term { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; display: block; letter-spacing: -0.01em; }
+    .definition { font-size: 1.1rem; line-height: 1.8; color: var(--text); }
+    .hidden { display: none; }
+    .search-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; display: block; }
+  </style>
+</head>
+<body data-theme="light">
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="catalog.html">Catalog</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="GLOSSARY.html">Glossary</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 900px;">
+  <header class="animate">
+    <h1 data-en="📖 Scientific Glossary" data-es="📖 Glosario Científico">📖 Scientific Glossary</h1>
+    <p class="subtitle" data-en="Controlled vocabulary for Forensic Neuroeconomics and Big Data Research." data-es="Vocabulario controlado para Neuroeconomía Forense e Investigación de Big Data.">Controlled vocabulary for Forensic Neuroeconomics and Big Data Research.</p>
+  </header>
+
+  <div class="search-box animate" style="animation-delay: 0.1s;">
+    <input type="text" id="glossarySearch" placeholder="Type to search terms..." data-en="Type to search terms..." data-es="Escriba para buscar términos...">
+    <span class="search-hint" data-en="Searching definitions across current research scope." data-es="Buscando definiciones en el alcance de investigación actual.">Searching definitions across current research scope.</span>
+  </div>
+
+  <div id="glossaryList" class="glossary-list animate" style="animation-delay: 0.2s;">
+    <div class="glossary-item">
+      <span class="term">Neuroeconomía Forense / Forensic Neuroeconomics</span>
+      <p class="definition" data-en="Interdisciplinary science applying neurological principles and brain-imaging evidence to forensic accounting and legal decision-making." data-es="Ciencia interdisciplinaria que aplica principios neurológicos y evidencia de imágenes cerebrales a la contabilidad forense y la toma de decisiones legales.">Interdisciplinary science applying neurological principles and brain-imaging evidence to forensic accounting and legal decision-making.</p>
+    </div>
+    <div class="glossary-item">
+      <span class="term">Datos FAIR / FAIR Data Standards</span>
+      <p class="definition" data-en="Findable, Accessible, Interoperable, and Reusable. The foundational principle of this repository." data-es="Encontrable, Accesible, Interoperable y Reutilizable. El principio fundamental de este repositorio.">Findable, Accessible, Interoperable, and Reusable. The foundational principle of this repository.</p>
+    </div>
+  </div>
+
+  <section class="cite-section animate" style="animation-delay: 0.3s;">
+    <h2 data-en="📜 Cite this Vocabulary" data-es="📜 Citar este Vocabulario">📜 Cite this Vocabulary</h2>
+    <div class="cite-box">
+      <code id="citeGlossary" class="citation-text">De la Serna Tuya, J. M. (2025). Scientific Glossary: Forensic Neuroeconomics & FAIR Data. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/GLOSSARY.html</code>
+      <button class="cite-btn" onclick="copyCite('citeGlossary')">Copy APA</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  let currentLang = 'en';
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
+    });
+    const search = document.getElementById('glossarySearch');
+    if(search) search.placeholder = search.getAttribute(`data-${currentLang}`);
+    localStorage.setItem('research-lang', currentLang);
+  }
+
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') toggleLanguage();
+
+  document.getElementById('glossarySearch').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.glossary-item').forEach(item => {
+      item.classList.toggle('hidden', !item.innerText.toLowerCase().includes(term));
+    });
+  });
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.innerText = '✓ Copied';
+      setTimeout(() => btn.innerText = 'Copy APA', 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

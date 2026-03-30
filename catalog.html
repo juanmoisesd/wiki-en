@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Research Catalog | Juan Moisés de la Serna Tuya</title>
+
+  <!-- Academic SEO -->
+  <meta name="description" content="Discover 1,273+ Open Access Datasets in Forensic Neuroeconomics and AI. Managed by Juan Moisés de la Serna Tuya.">
+  <meta name="citation_title" content="Open Research Catalog: Integrated Scientific Datasets">
+  <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DataCatalog",
+    "name": "Juan Moisés de la Serna Tuya — Research Catalog",
+    "url": "https://juanmoisesd.github.io/wiki-en/catalog.html",
+    "description": "Live discovery hub for 1,273+ forensic and demographic datasets."
+  }
+  </script>
+
+  <style>
+    .catalog-hero { padding: 6rem 0 4rem; background: linear-gradient(135deg, var(--bg-alt) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); text-align: center; }
+    .search-wrapper { max-width: 700px; margin: 2rem auto; position: relative; box-shadow: var(--shadow-lg); border-radius: 16px; background: var(--bg); border: 2px solid var(--primary); padding: 0.5rem; display: flex; align-items: center; }
+    #catalogSearch { width: 100%; padding: 1rem 1.5rem; border: none; font-size: 1.25rem; font-weight: 500; outline: none; background: transparent; color: var(--text); }
+    .dataset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; padding: 4rem 0; }
+    .dataset-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; transition: var(--transition); text-decoration: none; color: inherit; display: flex; flex-direction: column; box-shadow: var(--shadow-md); position: relative; }
+    .dataset-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+    .dataset-card h3 { color: var(--primary); margin: 0 0 1rem 0; font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
+    .dataset-card p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; flex-grow: 1; }
+    .dataset-card .meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; border-top: 1px solid var(--border); padding-top: 1.25rem; color: var(--text-muted); }
+    .tag { background: var(--primary-glow); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 20px; }
+  </style>
+</head>
+<body data-theme="light">
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="catalog.html">Catalog</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="GLOSSARY.html">Glossary</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="catalog-hero animate">
+  <div class="container">
+    <h1 data-en="🔬 Open Research Catalog" data-es="🔬 Catálogo de Investigación Abierta">🔬 Open Research Catalog</h1>
+    <p class="subtitle" data-en="Live discovery hub for 1,273+ forensic and demographic datasets." data-es="Centro de descubrimiento en vivo para más de 1,273 conjuntos de datos forenses y demográficos.">Live discovery hub for 1,273+ forensic and demographic datasets.</p>
+    <div class="search-wrapper">
+      <input type="text" id="catalogSearch" placeholder="Filter repositories..." data-en="Filter by domain, country, or keyword..." data-es="Filtrar por dominio, país o palabra clave...">
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div id="datasetList" class="dataset-grid animate" style="animation-delay: 0.2s;"></div>
+
+  <section class="cite-section animate" style="animation-delay: 0.4s;">
+    <h2 data-en="📜 Cite this Catalog" data-es="📜 Citar este Catálogo">📜 Cite this Catalog</h2>
+    <div class="cite-box">
+      <code id="citeCatalog" class="citation-text">De la Serna Tuya, J. M. (2025). Open Research Catalog: 1,273+ Integrated Scientific Datasets. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/catalog.html</code>
+      <button class="cite-btn" onclick="copyCite('citeCatalog')">Copy APA</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  let currentLang = 'en';
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
+    });
+    const search = document.getElementById('catalogSearch');
+    if(search) search.placeholder = search.getAttribute(`data-${currentLang}`);
+    localStorage.setItem('research-lang', currentLang);
+  }
+
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') toggleLanguage();
+
+  async function fetchRepos() {
+    const list = document.getElementById('datasetList');
+    try {
+      const response = await fetch('https://api.github.com/users/juanmoisesd/repos?sort=updated&per_page=100');
+      const repos = await response.json();
+      list.innerHTML = repos.map(repo => `
+        <a href="${repo.html_url}" class="dataset-card" target="_blank">
+          <span class="tag">${repo.language || 'Dataset'}</span>
+          <h3>${repo.name.split('-').join(' ')}</h3>
+          <p>${repo.description || 'Verified academic dataset.'}</p>
+          <div class="meta">
+            <span>★ ${repo.stargazers_count} Stars</span>
+            <span style="color: var(--primary)">View Repository →</span>
+          </div>
+        </a>
+      `).join('');
+    } catch (e) {
+      list.innerHTML = '<p class="subtitle">Sync error with GitHub API.</p>';
+    }
+  }
+
+  document.getElementById('catalogSearch').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.dataset-card').forEach(card => {
+      card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+    });
+  });
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.innerText = '✓ Copied';
+      setTimeout(() => btn.innerText = 'Copy APA', 2000);
+    });
+  }
+
+  fetchRepos();
+</script>
+
+</body>
+</html>
