@@ -1,0 +1,33 @@
+/*
+  Juan Moisés de la Serna — Research Theme (Unified Identity)
+  Color Palette:
+  --primary: #0366d6 (Academic Blue)
+  --bg-alt: #f6f8fa (Light Grey)
+  --accent: #e1ecf4 (Soft Blue)
+  Typography: Inter, JetBrains Mono
+*/
+
+:root {
+  --primary: #0366d6;
+  --primary-dark: #0056b3;
+  --text: #1a1f23;
+  --text-muted: #586069;
+  --bg: #ffffff;
+  --bg-alt: #f6f8fa;
+  --border: #e1e4e8;
+  --accent-bg: #e1ecf4;
+  --accent-text: #39739d;
+  --code-bg: #24292e;
+  --code-text: #e6edf3;
+  --shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); margin: 0; padding: 0; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+header { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
+h1 { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin: 0; }
+h2 { font-size: 1.75rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: var(--text); }
+.card { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); }
+.topic-tag { background: var(--accent-bg); color: var(--accent-text); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; }
+pre { background: var(--code-bg); color: var(--code-text); padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+footer { border-top: 1px solid var(--border); padding: 3rem 0; margin-top: 4rem; text-align: center; font-size: 0.9rem; color: var(--text-muted); }
