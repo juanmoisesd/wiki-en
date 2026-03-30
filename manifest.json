@@ -1,0 +1,17 @@
+{
+  "name": "Juan Moisés de la Serna Tuya — Research Hub",
+  "short_name": "ResearchHub",
+  "description": "Professional Research Wiki and Open Dataset Collection managed by Juan Moisés de la Serna Tuya.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0366d6",
+  "icons": [
+    {
+      "src": "assets/images/research-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
