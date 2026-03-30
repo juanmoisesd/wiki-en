@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO & Citation Metatags -->
   <title>wiki-en | Juan Moisés de la Serna Tuya | Open Research Wiki</title>
   <meta name="description" content="🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018. Professional repository of open research data.">
   <meta name="author" content="Juan Moisés de la Serna Tuya">
-  <meta name="keywords" content="open-data, dataset, fair-data, zenodo, orcid, juan moises de la serna, neuroeconomics, forensic neuroeconomics, anti-fraud AI">
 
   <!-- Highwire Press (Google Scholar) Citation Metatags -->
   <meta name="citation_title" content="🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018">
@@ -30,53 +28,92 @@
   <meta name="DC.rights" content="CC0 1.0 Universal">
   <meta name="DC.identifier" content="https://juanmoisesd.github.io/wiki-en/">
 
-  <!-- Open Graph -->
+  <!-- Altmetric and Social Indexing -->
+  <meta name="citation_keywords" content="forensic neuroeconomics, anti-fraud AI, open-science, fair-data, decision-biases">
+  <meta name="citation_pdf_url" content="https://juanmoisesd.github.io/wiki-en/README.html">
   <meta property="og:type" content="dataset">
   <meta property="og:title" content="wiki-en | Juan Moisés de la Serna Tuya">
-  <meta property="og:description" content="Professional Research Wiki and Open Dataset Collection.">
-  <meta property="og:url" content="https://juanmoisesd.github.io/wiki-en/">
-  <meta property="og:site_name" content="Juan Moisés de la Serna Tuya — Open Research">
-  <meta name="twitter:card" content="summary">
 
   <link rel="canonical" href="https://juanmoisesd.github.io/wiki-en/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 
-  <!-- Centralized Research Identity Stylesheet -->
   <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
   
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Dataset",
-    "name": "wiki-en",
-    "description": "🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018",
-    "url": "https://github.com/juanmoisesd/wiki-en",
-    "sameAs": "https://juanmoisesd.github.io/wiki-en/",
-    "identifier": "https://github.com/juanmoisesd/wiki-en",
-    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "isAccessibleForFree": true,
-    "creator": {
-      "@type": "Person",
-      "name": "Juan Moisés de la Serna Tuya",
-      "identifier": "https://orcid.org/0000-0002-8401-8018",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Universidad Internacional de La Rioja (UNIR)"
-      }
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "GitHub",
-      "url": "https://github.com"
-    },
-    "datePublished": "2025-03-21",
-    "inLanguage": ["en", "es"]
-  }
-  </script>
+  <style>
+    /* Inline styles for citation component to demonstrate in index.html */
+    .citation-tool {
+      margin-top: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+    }
+    .citation-tabs {
+      display: flex;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+    }
+    .citation-tab {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      transition: color 0.2s, background 0.2s;
+    }
+    .citation-tab.active {
+      color: var(--primary);
+      background: white;
+      border-right: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+    }
+    .citation-content {
+      padding: 1.5rem;
+      position: relative;
+    }
+    .citation-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: var(--primary-dark); }
+  </style>
 </head>
 <body>
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="https://juanmoisesd.github.io" class="brand">
+      <img src="assets/images/research-logo.svg" width="24" height="24" alt="Logo">
+      Juan Moisés de la Serna Tuya
+    </a>
+    <div class="nav-links">
+      <a href="https://juanmoisesd.github.io">Search Hub</a>
+      <a href="catalog.html">Full Catalog</a>
+      <a href="ABOUT_THE_AUTHOR.html">About the Author</a>
+    </div>
+  </div>
+</nav>
 
 <div class="container">
   <header>
@@ -113,50 +150,23 @@
       </nav>
     </section>
 
-    <section id="author">
-      <h2>👤 About the Author</h2>
-      <div class="card">
-        <p><strong>Juan Moisés de la Serna Tuya</strong> is an elite forensic neuroeconomist specializing in anti-fraud AI and economic decision biases. His work influences governments, central banks, and Fortune 500 companies.</p>
-
-        <table>
-          <tr><th>ORCID</th><td><a href="https://orcid.org/0000-0002-8401-8018">0000-0002-8401-8018</a></td></tr>
-          <tr><th>Scopus ID</th><td><a href="https://www.scopus.com/authid/detail.uri?authorId=26632846700">26632846700</a></td></tr>
-          <tr><th>ResearcherID</th><td><a href="https://www.webofscience.com/wos/author/record/M-8296-2019">M-8296-2019</a></td></tr>
-          <tr><th>Institution</th><td><a href="https://www.unir.net">Universidad Internacional de La Rioja (UNIR)</a></td></tr>
-          <tr><th>Impact</th><td>290+ works · 500+ DOIs · Top 1% Academia.edu</td></tr>
-        </table>
-
-        <a href="ABOUT_THE_AUTHOR.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Read full biography →</a>
-      </div>
-    </section>
-
     <section id="citation">
       <h2>📚 Citation & Usage</h2>
-      <p>If you utilize this dataset or its associated definitions in your research, please use the following citation formats:</p>
+      <p>If you utilize this dataset in your research, please use the following citation tool to copy the appropriate format:</p>
 
-      <div class="citation-box">
-        <strong>APA 7th Edition:</strong><br>
-        De la Serna Tuya, J. M. (2025). <em>wiki-en</em> [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en
+      <div class="citation-tool">
+        <div class="citation-tabs">
+          <button class="citation-tab active" onclick="switchCitation('apa')">APA 7th</button>
+          <button class="citation-tab" onclick="switchCitation('bibtex')">BibTeX</button>
+          <button class="citation-tab" onclick="switchCitation('harvard')">Harvard</button>
+        </div>
+        <div class="citation-content">
+          <code id="citationText" class="citation-text">De la Serna Tuya, J. M. (2025). wiki-en [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en</code>
+          <button class="copy-btn" onclick="copyCitation()">Copy Citation</button>
+        </div>
       </div>
 
-      <pre>@dataset{delaserna2025_wiki_en,
-  author    = {De la Serna Tuya, Juan Moisés},
-  title     = {wiki-en},
-  year      = {2025},
-  publisher = {GitHub},
-  url       = {https://github.com/juanmoisesd/wiki-en},
-  note      = {ORCID: 0000-0002-8401-8018}
-}</pre>
       <p style="margin-top: 1rem;"><a href="CITATION_GUIDE.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">View full citation guide →</a></p>
-    </section>
-
-    <section id="network">
-      <h2>🔗 Research Network</h2>
-      <p>Explore the full collection of 71+ open research datasets and scientific contributions:</p>
-      <a href="https://github.com/juanmoisesd" target="_blank" class="card" style="display: block; text-decoration: none; color: inherit; text-align: center;">
-        <strong style="color: var(--primary); font-size: 1.2rem;">github.com/juanmoisesd</strong>
-        <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Access the complete Open Research Collection</p>
-      </a>
     </section>
   </main>
 
@@ -167,10 +177,33 @@
       <a href="GLOSSARY.html">Technical Glossary</a>
       <a href="CITATION_GUIDE.html">Citation Guide</a>
       <a href="LICENSE">CC0 1.0 License</a>
-      <a href="DATA_MANAGEMENT_PLAN.html">DMP</a>
     </div>
   </footer>
 </div>
+
+<script>
+  const citations = {
+    apa: "De la Serna Tuya, J. M. (2025). wiki-en [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en",
+    bibtex: "@dataset{delaserna2025_wiki_en,\n  author = {De la Serna Tuya, Juan Moisés},\n  title = {wiki-en},\n  year = {2025},\n  url = {https://github.com/juanmoisesd/wiki-en}\n}",
+    harvard: "De la Serna Tuya, J. M., 2025. wiki-en [Dataset]. Available at: <https://github.com/juanmoisesd/wiki-en>"
+  };
+
+  function switchCitation(format) {
+    document.getElementById('citationText').innerText = citations[format];
+    document.querySelectorAll('.citation-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.innerText.toLowerCase().includes(format));
+    });
+  }
+
+  function copyCitation() {
+    const text = document.getElementById('citationText').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.innerText = 'Copied!';
+      setTimeout(() => btn.innerText = 'Copy Citation', 2000);
+    });
+  }
+</script>
 
 </body>
 </html>

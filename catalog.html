@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Research Catalog | Juan Moisés de la Serna Tuya</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <style>
+    .catalog-header { padding: 4rem 2rem; text-align: center; background: var(--bg-alt); border-bottom: 1px solid var(--border); }
+    .search-bar { max-width: 600px; margin: 2rem auto; position: relative; }
+    #catalogSearch { width: 100%; padding: 1rem 1.5rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1.1rem; outline: none; }
+    #catalogSearch:focus { border-color: var(--primary); }
+
+    .dataset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 4rem 0; }
+    .dataset-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; }
+    .dataset-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
+    .dataset-card h3 { color: var(--primary); margin: 0 0 0.5rem 0; font-size: 1.25rem; }
+    .dataset-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; height: 3rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .dataset-card .meta { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; border-top: 1px solid var(--border); padding-top: 0.75rem; }
+  </style>
+</head>
+<body>
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="https://juanmoisesd.github.io" class="brand">
+      <img src="assets/images/research-logo.svg" width="24" height="24" alt="Logo">
+      Juan Moisés de la Serna Tuya
+    </a>
+    <div class="nav-links">
+      <a href="https://juanmoisesd.github.io">Search Hub</a>
+      <a href="catalog.html">Full Catalog</a>
+      <a href="https://github.com/juanmoisesd?tab=repositories">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="catalog-header">
+  <div class="container">
+    <h1>🔬 Open Research Catalog</h1>
+    <p class="subtitle">Explore over 1,273 datasets and research papers in forensic neuroeconomics and AI.</p>
+    <div class="search-bar">
+      <input type="text" id="catalogSearch" placeholder="Filter by keyword (e.g. 'population', 'bias', 'dataset')...">
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div id="datasetList" class="dataset-grid">
+    <!-- Datasets will be rendered here -->
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Juan Moisés de la Serna Tuya · <a href="https://orcid.org/0000-0002-8401-8018" style="color: inherit;">ORCID: 0000-0002-8401-8018</a></p>
+</footer>
+
+<script>
+  // This could be fetched from dataset_index.jsonld
+  const datasets = [
+    { name: "wiki-en", desc: "Research Wiki — Technical definitions and metadata hub.", tags: "Wiki", url: "https://juanmoisesd.github.io/wiki-en/" },
+    { name: "latin-america-population", desc: "Population age structure in Latin America (11 countries, 2000-2023).", tags: "Dataset", url: "https://juanmoisesd.github.io/latin-america-population-age-structure-dataset/" },
+    { name: "neuroeconomics-biases", desc: "Experimental data on cognitive biases in economic decision making.", tags: "Research", url: "#" },
+    { name: "anti-fraud-ai-metadata", desc: "Metadata for anti-fraud AI models in financial systems.", tags: "AI", url: "#" }
+  ];
+
+  function renderDatasets(filter = '') {
+    const list = document.getElementById('datasetList');
+    list.innerHTML = '';
+    datasets.filter(d => d.name.toLowerCase().includes(filter.toLowerCase()) || d.desc.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(d => {
+              list.innerHTML += `
+                <a href="${d.url}" class="dataset-card">
+                  <h3>${d.name}</h3>
+                  <p>${d.desc}</p>
+                  <div class="meta">
+                    <span>${d.tags}</span>
+                    <span style="color: var(--primary)">Explore →</span>
+                  </div>
+                </a>
+              `;
+            });
+  }
+
+  document.getElementById('catalogSearch').addEventListener('input', (e) => renderDatasets(e.target.value));
+  renderDatasets();
+</script>
+
+</body>
+</html>
