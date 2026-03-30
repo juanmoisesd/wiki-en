@@ -1,9 +1,28 @@
-User-agent: *
-Allow: /
-
+# robots.txt for GitHub Pages Jekyll Build
 Sitemap: https://juanmoisesd.github.io/wiki-en/sitemap.xml
 
-# Research dataset by Juan Moisés de la Serna Tuya
-# ORCID: 0000-0002-8401-8018
-# https://www.linkedin.com/in/juanmoisesdelaserna/
-# Universidad Internacional de La Rioja (UNIR)
+User-agent: *
+Allow: /
+Disallow: /assets/css/
+Disallow: /assets/js/
+Disallow: /vendor/
+Disallow: /_config.yml
+Disallow: /Gemfile
+Disallow: /Gemfile.lock
+
+# Specific crawl delay for academic indexing
+User-agent: Googlebot
+Crawl-delay: 1
+Allow: /index.html
+Allow: /README.html
+Allow: /GLOSSARY.html
+Allow: /CITATION_GUIDE.html
+Allow: /ABOUT_THE_AUTHOR.html
+Allow: /CONTRIBUTING.html
+Allow: /DATA_MANAGEMENT_PLAN.html
+Allow: /LICENSE
+Allow: /SECURITY.md
+
+# Block non-essential directories
+Disallow: /node_modules/
+Disallow: /.github/

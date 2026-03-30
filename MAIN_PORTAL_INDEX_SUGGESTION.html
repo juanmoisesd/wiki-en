@@ -1,31 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Juan Moisés de la Serna | Catálogo Académico & Biblioteca Científica</title>
-  <meta name="description" content="Portal oficial de Juan Moisés de la Serna, neurocientífico y doctor en Psicología. Acceso a 76 libros y 508 capítulos en 9 idiomas.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juan Moisés de la Serna Tuya | Open Research Search Hub</title>
+  <meta name="description" content="Juan Moisés de la Serna Tuya — Forensic Neuroeconomist & Open Science Advocate. Explore over 1,273 datasets and research papers.">
+  <meta name="author" content="Juan Moisés de la Serna Tuya">
 
-  <!-- SEO & Identity -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Juan Moisés de la Serna",
-    "jobTitle": "Neurocientífico y Doctor en Psicología",
-    "identifier": "https://orcid.org/0000-0002-8401-8018",
-    "url": "https://juanmoisesd.github.io",
-    "sameAs": [
-      "https://orcid.org/0000-0002-8401-8018",
-      "https://www.linkedin.com/in/juanmoisesdelaserna/",
-      "https://www.researchgate.net/profile/Juan-Moises-De-La-Serna"
-    ]
-  }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -38,145 +22,166 @@
       --border: #e1e4e8;
       --accent-bg: #e1ecf4;
       --accent-text: #39739d;
-      --shadow: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
     }
 
     * { box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); margin: 0; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-
-    header { padding: 3rem 0; border-bottom: 1px solid var(--border); margin-bottom: 3rem; text-align: center; }
-    h1 { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin: 0 0 0.5rem; }
-    .subtitle { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-
-    .lang-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin: 3rem 0;
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
     }
 
-    .lang-card {
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: var(--shadow);
-    }
-    .lang-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 8px 24px rgba(3,102,214,0.1); }
-
-    .lang-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-    .flag { font-size: 1.5rem; }
-    .lang-name { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
-    .lang-code { background: var(--accent-bg); color: var(--accent-text); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
-
-    .hero-stats {
-      background: var(--primary);
+    .hero {
+      background: linear-gradient(135deg, #0366d6 0%, #003a8c 100%);
       color: white;
-      border-radius: 16px;
-      padding: 3rem;
+      padding: 6rem 2rem;
       text-align: center;
+    }
+    .hero h1 { font-size: 3rem; margin: 0; font-weight: 800; letter-spacing: -0.04em; }
+    .hero p { font-size: 1.25rem; opacity: 0.9; max-width: 700px; margin: 1.5rem auto 0; }
+
+    .container { max-width: 1100px; margin: -3rem auto 4rem; padding: 0 2rem; position: relative; }
+
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
       margin-bottom: 4rem;
     }
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; margin-top: 2rem; }
-    .stat-item strong { display: block; font-size: 2.5rem; margin-bottom: 0.25rem; }
-    .stat-item span { font-size: 1rem; opacity: 0.9; }
+    .stat-item { text-align: center; }
+    .stat-number { display: block; font-size: 2rem; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
-    .external-links { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
-    .external-links a { font-weight: 600; color: var(--primary); text-decoration: none; }
-    .external-links a:hover { text-decoration: underline; }
+    .search-box {
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+    .search-box input {
+      width: 100%;
+      max-width: 600px;
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--accent-bg); }
 
-    footer { border-top: 1px solid var(--border); padding: 4rem 0; text-align: center; color: var(--text-muted); font-size: 0.95rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: var(--primary); }
+    .card h3 { color: var(--primary); margin: 0 0 1rem 0; font-size: 1.4rem; }
+    .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; flex-grow: 1; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--text); border-top: 1px solid var(--border); padding-top: 1rem; }
 
-    @media (max-width: 600px) {
-      .container { padding: 1rem; }
-      h1 { font-size: 2rem; }
-      .hero-stats { padding: 2rem 1rem; }
+    .tag { background: var(--bg-alt); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; color: var(--text-muted); }
+
+    footer { background: var(--bg-alt); padding: 6rem 2rem; text-align: center; border-top: 1px solid var(--border); }
+    .footer-links { margin-top: 2rem; display: flex; justify-content: center; gap: 3rem; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+    .footer-links a:hover { color: var(--primary); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .stats-bar { flex-direction: column; gap: 2rem; }
     }
   </style>
 </head>
 <body>
 
+<header class="hero">
+  <h1>Juan Moisés de la Serna Tuya</h1>
+  <p>Forensic Neuroeconomics · Anti-fraud AI · Open Research Collection</p>
+  <div style="margin-top: 2.5rem; display: flex; justify-content: center; gap: 1rem;">
+    <a href="https://orcid.org/0000-0002-8401-8018" target="_blank" style="background: rgba(255,255,255,0.2); color: white; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; border: 1px solid white;">ORCID Profile</a>
+    <a href="https://www.linkedin.com/in/juanmoisesdelaserna/" target="_blank" style="background: white; color: var(--primary); padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600;">LinkedIn</a>
+  </div>
+</header>
+
 <div class="container">
-  <header>
-    <h1>Juan Moisés de la Serna</h1>
-    <p class="subtitle">Neurocientífico · Doctor en Psicología · Autor Académico</p>
-    <div class="external-links">
-      <a href="https://orcid.org/0000-0002-8401-8018" target="_blank">↗ ORCID</a>
-      <a href="https://www.linkedin.com/in/juanmoisesdelaserna/" target="_blank">↗ LinkedIn</a>
-      <a href="https://www.researchgate.net/profile/Juan-Moises-De-La-Serna" target="_blank">↗ ResearchGate</a>
-      <a href="https://github.com/juanmoisesd" target="_blank">↗ GitHub</a>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">1,273</span>
+      <span class="stat-label">Datasets</span>
     </div>
-  </header>
+    <div class="stat-item">
+      <span class="stat-number">290+</span>
+      <span class="stat-label">Works</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">500+</span>
+      <span class="stat-label">DOIs</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">Top 1%</span>
+      <span class="stat-label">Impact</span>
+    </div>
+  </div>
 
-  <main>
-    <section class="hero-stats">
-      <h2>Catálogo Académico Global</h2>
-      <p>Investigación multidisciplinar de alto impacto traducida a 9 idiomas.</p>
-      <div class="stat-grid">
-        <div class="stat-item"><strong>76</strong><span>Libros Publicados</span></div>
-        <div class="stat-item"><strong>508</strong><span>Capítulos Científicos</span></div>
-        <div class="stat-item"><strong>1,273+</strong><span>Datasets Abiertos</span></div>
-        <div class="stat-item"><strong>TOP 1%</strong><span>Academia.edu Impact</span></div>
+  <div class="search-box">
+    <input type="text" placeholder="Search the Open Research Hub (e.g. 'neuroeconomics', 'population', 'dataset')...">
+  </div>
+
+  <div class="grid">
+    <a href="https://juanmoisesd.github.io/wiki-en/" class="card">
+      <h3>📁 wiki-en</h3>
+      <p>Research Wiki — Technical definitions and metadata hub for international research collaboration.</p>
+      <div class="card-footer">
+        <span>View Research Hub →</span>
+        <span class="tag">Open Science</span>
       </div>
-    </section>
+    </a>
 
-    <section>
-      <h2 style="text-align: center; margin-bottom: 0.5rem;">Bibliotecas Científicas por Idioma</h2>
-      <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem;">Selecciona un idioma para acceder a la colección completa de recursos y documentación.</p>
-
-      <div class="lang-grid">
-        <a href="/biblioteca-cientifica-es/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇪🇸</span> <span class="lang-name">Español</span> <span class="lang-code">ES</span></div>
-          <p>Acceso a la biblioteca científica en lengua española.</p>
-        </a>
-        <a href="/scientific-library-en/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇬🇧</span> <span class="lang-name">English</span> <span class="lang-code">EN</span></div>
-          <p>Access the scientific library in English language.</p>
-        </a>
-        <a href="/bibliotheque-scientifique-fr/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇫🇷</span> <span class="lang-name">Français</span> <span class="lang-code">FR</span></div>
-          <p>Accès à la bibliothèque scientifique en langue française.</p>
-        </a>
-        <a href="/wissenschaftliche-bibliothek-de/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇩🇪</span> <span class="lang-name">Deutsch</span> <span class="lang-code">DE</span></div>
-          <p>Zugriff auf die wissenschaftliche Bibliothek in deutscher Sprache.</p>
-        </a>
-        <a href="/biblioteca-cientifica-pt/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇵🇹</span> <span class="lang-name">Português</span> <span class="lang-code">PT</span></div>
-          <p>Acesso à biblioteca científica em língua portuguesa.</p>
-        </a>
-        <a href="/biblioteca-ar/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇸🇦</span> <span class="lang-name">العربية</span> <span class="lang-code">AR</span></div>
-          <p>الوصول إلى المكتبة العلمية باللغة العربية.</p>
-        </a>
-        <a href="/biblioteca-scientifica-it/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇮🇹</span> <span class="lang-name">Italiano</span> <span class="lang-code">IT</span></div>
-          <p>Accesso alla biblioteca scientifica in lingua italiana.</p>
-        </a>
-        <a href="/perpustakaan-ilmiah-id/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇮🇩</span> <span class="lang-name">Indonesia</span> <span class="lang-code">ID</span></div>
-          <p>Akses perpustakaan ilmiah dalam bahasa Indonesia.</p>
-        </a>
-        <a href="/biblioteca-stiintifica-ro/" class="lang-card">
-          <div class="lang-card-header"><span class="flag">🇷🇴</span> <span class="lang-name">Română</span> <span class="lang-code">RO</span></div>
-          <p>Acces la biblioteca științifică în limba română.</p>
-        </a>
+    <a href="https://juanmoisesd.github.io/latin-america-population-age-structure-dataset/" class="card">
+      <h3>📁 latin-america-population</h3>
+      <p>Longitudinal demographic dataset (2000-2023) covering 11 countries with 907 microsite pages.</p>
+      <div class="card-footer">
+        <span>Explore Data →</span>
+        <span class="tag">Demography</span>
       </div>
-    </section>
-  </main>
+    </a>
 
-  <footer>
-    <p>© 2025 Juan Moisés de la Serna · UNIR · Open Science Movement</p>
-    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Datos actualizados desde ResearchGate, OpenAlex y ORCID.</p>
-  </footer>
+    <a href="https://github.com/juanmoisesd" class="card">
+      <h3>📁 Full Collection</h3>
+      <p>Access the complete catalog of over 1,273 datasets and scientific software on GitHub.</p>
+      <div class="card-footer">
+        <span>GitHub Repository →</span>
+        <span class="tag">Open Data</span>
+      </div>
+    </a>
+  </div>
 </div>
+
+<footer>
+  <p>© 2025 Juan Moisés de la Serna Tuya · <a href="https://orcid.org/0000-0002-8401-8018" style="color: inherit;">ORCID: 0000-0002-8401-8018</a></p>
+  <div class="footer-links">
+    <a href="https://www.unir.net">UNIR Profile</a>
+    <a href="https://www.scopus.com/authid/detail.uri?authorId=26632846700">Scopus</a>
+    <a href="https://www.webofscience.com/wos/author/record/M-8296-2019">Web of Science</a>
+    <a href="https://www.researchgate.net/profile/Juan_De_La_Serna_Tuya">ResearchGate</a>
+  </div>
+</footer>
 
 </body>
 </html>

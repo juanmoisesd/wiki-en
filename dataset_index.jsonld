@@ -1,0 +1,42 @@
+{
+  "@context": "https://schema.org",
+  "@type": "DataCatalog",
+  "name": "Juan Moisés de la Serna Tuya — Open Research Collection",
+  "url": "https://juanmoisesd.github.io",
+  "description": "Comprehensive collection of over 1,273 open research datasets, terminology wikis, and academic publications managed by Juan Moisés de la Serna Tuya.",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Moisés de la Serna Tuya",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "dataset": [
+    {
+      "@type": "Dataset",
+      "name": "wiki-en",
+      "description": "🇬🇧 Research Wiki — Technical terminology and academic metadata hub.",
+      "url": "https://juanmoisesd.github.io/wiki-en/",
+      "identifier": "https://github.com/juanmoisesd/wiki-en",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "keywords": ["open-science", "neuroeconomics", "anti-fraud AI", "decision-biases"]
+    },
+    {
+      "@type": "Dataset",
+      "name": "latin-america-population-age-structure-dataset",
+      "description": "Demographic dataset: Population age structure in Latin America (11 countries, 2000-2023).",
+      "url": "https://juanmoisesd.github.io/latin-america-population-age-structure-dataset/",
+      "identifier": "https://github.com/juanmoisesd/latin-america-population-age-structure-dataset",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "keywords": ["demography", "population", "latin-america", "age-structure"]
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "GitHub",
+    "url": "https://github.com"
+  },
+  "inLanguage": ["en", "es"]
+}

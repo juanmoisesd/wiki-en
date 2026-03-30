@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Glossary | Juan Moisés de la Serna Tuya | Open Research</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0366d6;
+      --text: #1a1f23;
+      --text-muted: #586069;
+      --bg: #ffffff;
+      --bg-alt: #f6f8fa;
+      --border: #e1e4e8;
+    }
+
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); margin: 0; padding: 2rem; }
+
+    .container { max-width: 800px; margin: 0 auto; }
+
+    header { border-bottom: 2px solid var(--border); padding-bottom: 2rem; margin-bottom: 3rem; }
+    h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+    .search-container { margin-bottom: 3rem; position: sticky; top: 0; background: white; padding: 1rem 0; border-bottom: 1px solid var(--border); z-index: 10; }
+    #glossarySearch { width: 100%; padding: 0.8rem 1.2rem; font-size: 1.1rem; border: 2px solid var(--border); border-radius: 8px; outline: none; }
+    #glossarySearch:focus { border-color: var(--primary); }
+
+    .glossary-item { border-bottom: 1px solid var(--border); padding: 2rem 0; }
+    .glossary-item:last-child { border-bottom: none; }
+    .term { font-size: 1.4rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; display: block; }
+    .definition { margin-bottom: 1rem; }
+    .definition.en { color: var(--text); }
+    .definition.es { color: var(--text-muted); font-style: italic; }
+    .citation { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+    .hidden { display: none; }
+
+    footer { margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.9rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>📖 Technical Glossary</h1>
+    <p class="subtitle">Open Science, Neuroeconomics & Anti-fraud AI — Defined by Juan Moisés de la Serna Tuya</p>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="glossarySearch" placeholder="Search terms (e.g. 'FAIR', 'neuroeconomics', 'IA')...">
+  </div>
+
+  <div id="glossaryList">
+    <!-- Terms will be added here or rendered from the markdown -->
+    <div class="glossary-item">
+      <span class="term">Neuroeconomía Forense / Forensic Neuroeconomics</span>
+      <p class="definition en">Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior and decision-making in legal-risk environments.</p>
+      <p class="definition es">Disciplina que integra la neurociencia, la psicología y la economía para investigar la base biológica del comportamiento fraudulento y la toma de decisiones en entornos de riesgo legal.</p>
+      <span class="citation">— De la Serna Tuya, J. M. (2025)</span>
+    </div>
+
+    <div class="glossary-item">
+      <span class="term">IA Explicable (XAI) / Explainable AI (XAI)</span>
+      <p class="definition en">AI models whose decision processes can be understood by humans, fundamental for forensic auditing of automated fraud.</p>
+      <p class="definition es">Modelos de inteligencia artificial cuyos procesos de decisión pueden ser comprendidos por humanos, fundamental para la auditoría forense de fraudes automatizados.</p>
+      <span class="citation">— De la Serna Tuya, J. M. (2025)</span>
+    </div>
+
+    <div class="glossary-item">
+      <span class="term">Datos FAIR / FAIR Data</span>
+      <p class="definition en">International standard requiring scientific data to be Findable, Accessible, Interoperable, and Reusable.</p>
+      <p class="definition es">Estándar internacional que exige que los datos científicos sean Localizables, Accesibles, Interoperables y Reutilizables.</p>
+      <span class="citation">— De la Serna Tuya, J. M. (2025)</span>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Juan Moisés de la Serna Tuya · <a href="https://orcid.org/0000-0002-8401-8018" style="color: inherit;">ORCID: 0000-0002-8401-8018</a></p>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('glossarySearch').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    const items = document.querySelectorAll('.glossary-item');
+
+    items.forEach(item => {
+      const text = item.innerText.toLowerCase();
+      if (text.includes(term)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
