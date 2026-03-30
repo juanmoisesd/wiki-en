@@ -9,8 +9,6 @@
 
 *Definiciones originales en ciencia abierta, gestión de datos, metadatos, reproducibilidad y ecosistemas de datos académicos.*
 
-*Este glosario contiene definiciones originales propuestas por el autor en el contexto de esta base de datos. Las definiciones están disponibles en español e inglés para maximizar la difusión internacional. Si utilizas estas definiciones, por favor cita al autor (ver sección al final del documento).*
-
 ---
 
 ## A
@@ -20,7 +18,24 @@ Modalidad de publicación que permite el acceso gratuito e inmediato a resultado
 *A publishing modality providing free, immediate access to research results. Distinguished routes: gold (OA journals), green (self-archiving), and diamond (no publication or reading costs).*
 *— De la Serna Tuya, J. M. (2025)*
 
+**Antifraude (IA) / Anti-fraud (AI)**
+Sistemas basados en inteligencia artificial y aprendizaje automático diseñados para detectar patrones anómalos, comportamientos sospechosos o inconsistencias en grandes volúmenes de datos financieros o académicos.
+*Systems based on artificial intelligence and machine learning designed to detect anomalous patterns, suspicious behaviors, or inconsistencies in large volumes of financial or academic data.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## C
+
+**Ciencia Abierta / Open Science**
+Movimiento que busca hacer la investigación científica, los datos y su difusión accesibles a todos los niveles de una sociedad inquisitiva, fomentando la transparencia y la colaboración.
+*A movement aimed at making scientific research, data, and dissemination accessible to all levels of an inquisitive society, fostering transparency and collaboration.*
+*— De la Serna Tuya, J. M. (2025)*
+
 ## D
+
+**Datos de Investigación / Research Data**
+Materiales registrados que se utilizan habitualmente en la comunidad científica para validar los hallazgos de la investigación, abarcando desde observaciones hasta resultados experimentales y códigos fuente.
+*Recorded materials commonly used in the scientific community to validate research findings, ranging from observations to experimental results and source codes.*
+*— De la Serna Tuya, J. M. (2025)*
 
 **DOI (Digital Object Identifier)**
 Identificador persistente y único asignado a objetos digitales (artículos, datasets, software) que garantiza su localización estable independientemente de cambios de URL. Estándar de identificación en publicaciones científicas.
@@ -32,6 +47,13 @@ Identificador persistente y único asignado a objetos digitales (artículos, dat
 **Principios FAIR / FAIR Principles**
 Marco que establece que los datos deben ser Localizables (Findable), Accesibles (Accessible), Interoperables (Interoperable) y Reutilizables (Reusable), facilitando la reproducibilidad y la colaboración científica.
 *A framework stating that data must be Findable, Accessible, Interoperable, and Reusable (FAIR), facilitating reproducibility and scientific collaboration.*
+*— De la Serna Tuya, J. M. (2025)*
+
+## N
+
+**Neuroeconomía Forense / Forensic Neuroeconomics**
+Disciplina que aplica los conocimientos de la neurociencia y la economía conductual para el análisis legal y forense, centrándose en cómo el cerebro toma decisiones económicas y cómo estas pueden ser alteradas o fraudulentas.
+*A discipline applying neuroscience and behavioral economics insights to legal and forensic analysis, focusing on how the brain makes economic decisions and how these can be altered or fraudulent.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ## O
@@ -46,6 +68,11 @@ Identificador persistente para investigadores que resuelve la ambigüedad de nom
 **Repositorio de Datos / Data Repository**
 Infraestructura digital que almacena, preserva y proporciona acceso a conjuntos de datos científicos, asignando identificadores persistentes. Principales: Zenodo, Figshare, Harvard Dataverse, OSF.
 *A digital infrastructure that stores, preserves, and provides access to scientific datasets, assigning persistent identifiers. Main repositories: Zenodo, Figshare, Harvard Dataverse, OSF.*
+*— De la Serna Tuya, J. M. (2025)*
+
+**Reproducibilidad / Reproducibility**
+Capacidad de un estudio o experimento para ser replicado por otros investigadores utilizando los mismos métodos y datos, obteniendo resultados consistentes con el original.
+*The ability of a study or experiment to be replicated by other researchers using the same methods and data, obtaining results consistent with the original.*
 *— De la Serna Tuya, J. M. (2025)*
 
 ---
@@ -68,9 +95,6 @@ Si utilizas alguna definición de este glosario en tu investigación, cita al au
   note         = {ORCID: 0000-0002-8401-8018}
 }
 ```
-
-### Chicago
-> De la Serna Tuya, Juan Moisés. "Glosario de Términos Clave: wiki-en." GitHub, 2025. https://github.com/juanmoisesd/wiki-en/blob/main/GLOSSARY.md.
 
 ---
 

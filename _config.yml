@@ -13,7 +13,7 @@ author:
   email: "juanmoises.delaserna@unir.net"
 
 # SEO
-tagline: "Open Research Dataset"
+tagline: "Open Research Dataset & Research Wiki"
 lang: "en"
 
 # Social
@@ -34,6 +34,8 @@ include:
   - GLOSSARY.md
   - ABOUT_THE_AUTHOR.md
   - CITATION_GUIDE.md
+  - CONTRIBUTING.md
+  - LICENSE
 
 # Exclude
 exclude:
@@ -41,3 +43,4 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - .github
