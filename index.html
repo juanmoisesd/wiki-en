@@ -3,206 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juan Moisés de la Serna Tuya | Open Research Hub</title>
 
-  <title>wiki-en | Juan Moisés de la Serna Tuya | Open Research Wiki</title>
-  <meta name="description" content="🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018. Professional repository of open research data.">
+  <!-- Academic SEO & Discovery -->
+  <meta name="description" content="Official Research Hub of Juan Moisés de la Serna Tuya. 1,273+ Open Access Datasets in Forensic Neuroeconomics and AI.">
+  <meta name="keywords" content="Neuroeconomics, Forensic, Artificial Intelligence, Open Data, Juan Moisés de la Serna Tuya">
   <meta name="author" content="Juan Moisés de la Serna Tuya">
 
-  <link rel="canonical" href="https://juanmoisesd.github.io/wiki-en/">
+  <!-- Highwire Press (Google Scholar) -->
+  <meta name="citation_title" content="Juan Moisés de la Serna Tuya: Open Research Identity & Data Ecosystem">
+  <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
+  <meta name="citation_publication_date" content="2025">
+  <meta name="citation_language" content="en">
+  <meta name="citation_technical_report_institution" content="Universidad Internacional de La Rioja (UNIR)">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="J.M. de la Serna Tuya - Open Research Hub">
+  <meta property="og:description" content="1,273+ Open Access Datasets in Forensic Neuroeconomics and AI.">
+  <meta property="og:url" content="https://juanmoisesd.github.io/wiki-en/">
+  <meta property="og:type" content="website">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/research-identity.css">
   <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
-  <link rel="manifest" href="manifest.json">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DataCatalog",
+    "name": "Juan Moisés de la Serna Tuya — Open Research Collection",
+    "url": "https://juanmoisesd.github.io/wiki-en/",
+    "description": "Comprehensive collection of over 1,273 open research datasets, terminology wikis, and academic publications.",
+    "creator": {
+      "@type": "Person",
+      "name": "Juan Moisés de la Serna Tuya",
+      "identifier": "https://orcid.org/0000-0002-8401-8018"
+    }
+  }
+  </script>
 
   <style>
-    /* Inline styles for components to demonstrate in index.html */
-    .citation-tool { margin-top: 2rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; }
-    .citation-tabs { display: flex; background: var(--bg-alt); border-bottom: 1px solid var(--border); }
-    .citation-tab { padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--text-muted); transition: color 0.2s, background 0.2s; }
-    .citation-tab.active { color: var(--primary); background: white; border-right: 1px solid var(--border); border-left: 1px solid var(--border); }
-    .citation-content { padding: 1.5rem; position: relative; }
-    .citation-text { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text); display: block; margin-bottom: 0.5rem; }
-    .copy-btn { position: absolute; top: 1rem; right: 1rem; background: var(--primary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
-
-    /* Multilingual Switcher */
-    .lang-switcher { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; }
-    .lang-btn { cursor: pointer; color: #cbd5e0; text-decoration: none; }
-    .lang-btn.active { color: white; border-bottom: 2px solid var(--primary); }
-
-    /* Stats Chart Container */
-    .impact-viz { margin-top: 3rem; background: var(--bg-alt); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-    canvas { max-width: 100%; height: auto !important; }
-
-    /* Feed Section */
-    .feed-container { display: flex; flex-direction: column; gap: 1rem; }
-    .feed-item { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; transition: transform 0.2s; text-decoration: none; color: inherit; display: block; }
-    .feed-item:hover { transform: translateX(5px); border-color: var(--primary); }
-    .feed-item .date { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 0.25rem; }
-    .feed-item h4 { margin: 0; color: var(--primary); font-size: 1.1rem; }
+    .expertise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem; }
+    .expertise-card { background: var(--bg-alt); border-radius: 16px; padding: 2rem; border: 1px solid var(--border); transition: var(--transition); text-decoration: none; color: inherit; position: relative; }
+    .expertise-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: var(--shadow-lg); }
+    .expertise-card h3 { color: var(--primary); margin: 1rem 0 0.5rem 0; font-size: 1.4rem; }
+    .expertise-icon { font-size: 2.5rem; }
+    .stat-ring { border: 4px solid var(--primary-glow); border-top-color: var(--primary); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; position: absolute; top: 1.5rem; right: 1.5rem; }
+    .hero-badges { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .hero-badges img { height: 28px; border-radius: 4px; box-shadow: var(--shadow-sm); }
+    .cta-container { margin-top: 4rem; display: flex; justify-content: center; gap: 1.5rem; }
   </style>
 </head>
-<body>
+<body data-theme="light">
 
 <nav class="global-nav">
   <div class="container">
-    <a href="https://juanmoisesd.github.io" class="brand">
-      <img src="assets/images/research-logo.svg" width="24" height="24" alt="Logo">
-      Juan Moisés de la Serna Tuya
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
     </a>
     <div class="nav-links">
-      <a href="https://juanmoisesd.github.io" data-en="Search Hub" data-es="Centro de Búsqueda">Search Hub</a>
-      <a href="catalog.html" data-en="Catalog" data-es="Catálogo">Catalog</a>
-      <div class="lang-switcher">
-        <span class="lang-btn active" id="btn-en" onclick="setLanguage('en')">EN</span>
-        <span style="color: #4a5568">|</span>
-        <span class="lang-btn" id="btn-es" onclick="setLanguage('es')">ES</span>
-      </div>
+      <a href="catalog.html">Data Catalog</a>
+      <a href="dashboard.html">Impact Dashboard</a>
+      <a href="GLOSSARY.html">Glossary</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
     </div>
   </div>
 </nav>
 
-<div class="container">
-  <header>
-    <h1 id="main-title">📁 wiki-en</h1>
-    <p class="subtitle" id="main-subtitle" data-en="🇬🇧 Research Wiki — Juan Moisés de la Serna Tuya · ORCID 0000-0002-8401-8018" data-es="🇬🇧 Wiki de Investigación — Juan Moisés de la Serna Tuya · ORCID 0000-0002-8401-8018">🇬🇧 Research Wiki — Juan Moisés de la Serna Tuya · ORCID 0000-0002-8401-8018</p>
-    <div class="badges">
-      <a href="https://orcid.org/0000-0002-8401-8018" target="_blank"><img src="https://img.shields.io/badge/ORCID-0000--0002--8401--8018-green?style=flat-square&logo=orcid" alt="ORCID"></a>
-      <a href="https://www.linkedin.com/in/juanmoisesdelaserna/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-juanmoisesdelaserna-blue?style=flat-square&logo=linkedin" alt="LinkedIn"></a>
-      <img src="https://img.shields.io/badge/License-CC0_1.0-lightgrey?style=flat-square" alt="CC0">
-      <img src="https://img.shields.io/badge/Data-FAIR_Compliant-brightgreen?style=flat-square" alt="FAIR">
+<main>
+  <section class="hero animate">
+    <div class="container">
+      <h1 data-en="Juan Moisés de la Serna Tuya" data-es="Juan Moisés de la Serna Tuya">Juan Moisés de la Serna Tuya</h1>
+      <p class="subtitle" data-en="Global Research Lead in Forensic Neuroeconomics & AI Ethics" data-es="Líder Global de Investigación en Neuroeconomía Forense y Ética de la IA">Global Research Lead in Forensic Neuroeconomics & AI Ethics</p>
+
+      <div class="hero-badges">
+        <a href="https://orcid.org/0000-0002-8401-8018"><img src="https://img.shields.io/badge/ORCID-0000--0002--8401--8018-A6CE39?logo=orcid&logoColor=white" alt="ORCID"></a>
+        <img src="https://img.shields.io/badge/Status-1,273_Datasets-0366d6" alt="Datasets Status">
+        <img src="https://img.shields.io/badge/License-CC0_1.0-808080" alt="License CC0">
+      </div>
+
+      <div class="cta-container">
+        <a href="catalog.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;" data-en="Explore Full Catalog →" data-es="Explorar Catálogo Completo →">Explore Full Catalog →</a>
+        <a href="https://github.com/juanmoisesd/wiki-en/blob/main/ABOUT_THE_AUTHOR.md" class="btn" style="border: 1px solid var(--border); color: var(--text);" data-en="Author Profile" data-es="Perfil del Autor">Author Profile</a>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <section id="about">
-      <h2 data-en="📋 Project Overview" data-es="📋 Resumen del Proyecto">📋 Project Overview</h2>
-      <p data-en="This repository serves as a centralized hub for research data and scientific documentation managed by <strong>Juan Moisés de la Serna Tuya</strong>. Part of a larger collection of over 1,273 datasets, this wiki provides critical metadata, terminology, and citation guidelines for international research collaboration." data-es="Este repositorio sirve como centro de datos de investigación y documentación científica gestionado por <strong>Juan Moisés de la Serna Tuya</strong>. Forma parte de una colección de más de 1.273 conjuntos de datos y proporciona metadatos, terminología y guías de citación para la colaboración científica internacional.">
-        This repository serves as a centralized hub for research data and scientific documentation managed by <strong>Juan Moisés de la Serna Tuya</strong>. Part of a larger collection of over 1,273 datasets, this wiki provides critical metadata, terminology, and citation guidelines for international research collaboration.
-      </p>
-
-      <div class="topic-cloud">
-        <span class="topic-tag" data-en="Open Science" data-es="Ciencia Abierta">Open Science</span>
-        <span class="topic-tag" data-en="Neuroeconomics" data-es="Neuroeconomía">Neuroeconomics</span>
-        <span class="topic-tag" data-en="Anti-fraud AI" data-es="IA Antifraude">Anti-fraud AI</span>
-        <span class="topic-tag" data-en="Decision Biases" data-es="Sesgos de Decisión">Decision Biases</span>
-        <span class="topic-tag" data-en="FAIR Principles" data-es="Principios FAIR">FAIR Principles</span>
-      </div>
-
-      <nav class="nav-links">
-        <a href="https://github.com/juanmoisesd/wiki-en" target="_blank" data-en="↗ GitHub Repo" data-es="↗ Repo GitHub">↗ GitHub Repo</a>
-        <a href="GLOSSARY.html" data-en="↗ Technical Glossary" data-es="↗ Glosario Técnico">↗ Technical Glossary</a>
-      </nav>
-    </section>
-
-    <section id="impact">
-      <h2 data-en="📈 Research Impact Visualization" data-es="📈 Visualización de Impacto">📈 Research Impact Visualization</h2>
-      <div class="impact-viz">
-        <p class="subtitle" data-en="Distribution of Expertise Across Open Research Collection" data-es="Distribución de Especialidades en la Colección de Investigación Abierta">Distribution of Expertise Across Open Research Collection</p>
-        <canvas id="impactChart"></canvas>
-      </div>
-    </section>
-
-    <section id="feed">
-      <h2 data-en="🗞️ Latest Publications & Updates" data-es="🗞️ Últimas Publicaciones y Novedades">🗞️ Latest Publications & Updates</h2>
-      <div class="feed-container">
-        <a href="https://orcid.org/0000-0002-8401-8018" target="_blank" class="feed-item">
-          <span class="date">2025.03.21</span>
-          <h4 data-en="Unified Research Identity 3.0 Release" data-es="Lanzamiento de Identidad de Investigación Unificada 3.0">Unified Research Identity 3.0 Release</h4>
-          <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);" data-en="Overhaul of technical metadata and citation tools across the collection." data-es="Renovación de metadatos técnicos y herramientas de citación en toda la colección.">Overhaul of technical metadata and citation tools across the collection.</p>
+  <div class="container">
+    <section class="animate" style="animation-delay: 0.2s;">
+      <h2 data-en="🔬 Research Domains" data-es="🔬 Dominios de Investigación">🔬 Research Domains</h2>
+      <div class="expertise-grid">
+        <a href="catalog.html?q=neuroeconomics" class="expertise-card">
+          <div class="expertise-icon">🧠</div>
+          <div class="stat-ring">42%</div>
+          <h3 data-en="Forensic Neuroeconomics" data-es="Neuroeconomía Forense">Forensic Neuroeconomics</h3>
+          <p data-en="Investigating the neurological roots of financial fraud and deceptive decision-making processes." data-es="Investigando las raíces neurológicas del fraude financiero y los procesos engañosos de toma de decisiones.">Investigating the neurological roots of financial fraud and deceptive decision-making processes.</p>
         </a>
-        <a href="https://doi.org/10.17632/ygkmshr5fv.1" target="_blank" class="feed-item">
-          <span class="date">2025.02.15</span>
-          <h4 data-en="Latin America Population Dataset Updated" data-es="Actualización de Datos de Población en América Latina">Latin America Population Dataset Updated</h4>
-          <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);" data-en="Longitudinal update covering 11 countries (2000-2023)." data-es="Actualización longitudinal que cubre 11 países (2000-2023).">Longitudinal update covering 11 countries (2000-2023).</p>
+        <a href="catalog.html?q=artificial+intelligence" class="expertise-card">
+          <div class="expertise-icon">🤖</div>
+          <div class="stat-ring">35%</div>
+          <h3 data-en="AI Ethics & Bias" data-es="Ética de la IA y Sesgos">AI Ethics & Bias</h3>
+          <p data-en="Analyzing systematic deviations in machine learning models and data-driven decision systems." data-es="Analizando desviaciones sistemáticas en modelos de aprendizaje automático y sistemas de decisión basados en datos.">Analyzing systematic deviations in machine learning models and data-driven decision systems.</p>
+        </a>
+        <a href="catalog.html?q=demographics" class="expertise-card">
+          <div class="expertise-icon">📊</div>
+          <div class="stat-ring">23%</div>
+          <h3 data-en="Data Demographics" data-es="Demografía de Datos">Data Demographics</h3>
+          <p data-en="Large-scale population studies and age-structure analysis across Latin American regions." data-es="Estudios de población a gran escala y análisis de estructura por edad en regiones de América Latina.">Large-scale population studies and age-structure analysis across Latin American regions.</p>
         </a>
       </div>
     </section>
 
-    <section id="citation">
-      <h2 data-en="📚 Citation & Impact" data-es="📚 Citación e Impacto">📚 Citation & Impact</h2>
-      <p data-en="If you utilize this dataset, please use the citation tool below:" data-es="Si utiliza este conjunto de datos, por favor use la herramienta de citación:">If you utilize this dataset, please use the citation tool below:</p>
+    <section class="cite-section animate" style="animation-delay: 0.4s;">
+      <h2 data-en="📜 Global Citation & Attribution" data-es="📜 Cita Global y Atribución">📜 Global Citation & Attribution</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;" data-en="As an instrument of citable consultation, please use the following metadata for referencing the entire research ecosystem:" data-es="Como instrumento de consulta citable, utilice los siguientes metadatos para referenciar todo el ecosistema de investigación:">As an instrument of citable consultation, please use the following metadata for referencing the entire research ecosystem:</p>
 
-      <div class="citation-tool">
-        <div class="citation-tabs">
-          <button class="citation-tab active" onclick="switchCitation('apa')">APA 7th</button>
-          <button class="citation-tab" onclick="switchCitation('bibtex')">BibTeX</button>
-        </div>
-        <div class="citation-content">
-          <code id="citationText" class="citation-text">De la Serna Tuya, J. M. (2025). wiki-en [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en</code>
-          <button class="copy-btn" onclick="copyCitation()" data-en="Copy" data-es="Copiar">Copy</button>
-        </div>
-      </div>
-
-      <div style="margin-top: 2rem; text-align: center;">
-        <p class="subtitle" data-en="Live Impact Tracking (Altmetric)" data-es="Seguimiento de Impacto en Vivo (Altmetric)">Live Impact Tracking (Altmetric)</p>
-        <div class='altmetric-embed' data-badge-type='donut' data-doi="10.5281/zenodo.19145316"></div>
+      <div class="cite-box">
+        <code id="citeHub" class="citation-text">De la Serna Tuya, J. M. (2025). Open Research Identity & Data Ecosystem v10.0. GitHub Open Science Hub. https://juanmoisesd.github.io/wiki-en/</code>
+        <button class="cite-btn" onclick="copyCite('citeHub')" data-en="Copy APA" data-es="Copiar APA">Copy APA</button>
       </div>
     </section>
-  </main>
+  </div>
+</main>
 
-  <footer>
-    <p>© 2025 Juan Moisés de la Serna Tuya · <a href="https://orcid.org/0000-0002-8401-8018">ORCID: 0000-0002-8401-8018</a></p>
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
     <div class="footer-links">
-      <a href="ABOUT_THE_AUTHOR.html" data-en="About the Author" data-es="Sobre el Autor">About the Author</a>
-      <a href="CITATION_GUIDE.html" data-en="Citation Guide" data-es="Guía de Citación">Citation Guide</a>
-      <a href="LICENSE" data-en="License" data-es="Licencia">License</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/SECURITY.md">Security</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/CONTRIBUTING.md">Data Contributions</a>
+      <a href="https://github.com/juanmoisesd/wiki-en/blob/main/DATA_MANAGEMENT_PLAN.md">Data Policy</a>
     </div>
-  </footer>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
+  </div>
+</footer>
 
 <script>
-  // Language Switching
-  function setLanguage(lang) {
-    document.querySelectorAll('[data-' + lang + ']').forEach(el => {
-      el.innerHTML = el.getAttribute('data-' + lang);
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  let currentLang = 'en';
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
     });
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('btn-' + lang).classList.add('active');
-    document.documentElement.lang = lang;
+    localStorage.setItem('research-lang', currentLang);
   }
 
-  // Chart Visualization
-  const ctx = document.getElementById('impactChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Forensic Neuroeconomics', 'Anti-fraud AI', 'Demography', 'Open Science Tools'],
-      datasets: [{
-        data: [45, 30, 15, 10],
-        backgroundColor: ['#0366d6', '#28a745', '#ffd33d', '#6f42c1'],
-        borderWidth: 2,
-        borderColor: '#ffffff'
-      }]
-    },
-    options: {
-      plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12, weight: 600 } } } },
-      responsive: true,
-      maintainAspectRatio: false
-    }
-  });
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') toggleLanguage();
 
-  // Citation logic
-  const citations = {
-    apa: "De la Serna Tuya, J. M. (2025). wiki-en [Dataset]. GitHub. https://github.com/juanmoisesd/wiki-en",
-    bibtex: "@dataset{delaserna2025_wiki_en,\n  author = {De la Serna Tuya, Juan Moisés},\n  title = {wiki-en},\n  year = {2025},\n  url = {https://github.com/juanmoisesd/wiki-en}\n}"
-  };
-  function switchCitation(format) {
-    document.getElementById('citationText').innerText = citations[format];
-    document.querySelectorAll('.citation-tab').forEach(tab => tab.classList.toggle('active', tab.innerText.toLowerCase().includes(format)));
-  }
-  function copyCitation() {
-    const text = document.getElementById('citationText').innerText;
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.copy-btn');
+      const btn = event.target;
       const originalText = btn.innerText;
-      btn.innerText = '✓';
-      setTimeout(() => btn.innerText = originalText, 2000);
+      btn.innerText = '✓ Copied';
+      btn.style.background = 'var(--accent)';
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = 'var(--primary)';
+      }, 2000);
     });
   }
 </script>

@@ -1,0 +1,36 @@
+name: Research Site Integrity & SEO Check
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON-LD Structured Data
+        run: |
+          python3 -c "import json; [json.load(open(f)) for f in ['dataset_index.jsonld', 'seo.json']]"
+          echo "JSON-LD syntax is valid."
+
+      - name: Check for Mojibake (Broken Encoding)
+        run: |
+          if grep -r "ð" *.html; then
+            echo "ERROR: Possible mojibake found in HTML files."
+            exit 1
+          fi
+          echo "No mojibake detected."
+
+      - name: Verify Documentation Links
+        run: |
+          for file in ABOUT_THE_AUTHOR.md CITATION_GUIDE.md CONTRIBUTING.md GLOSSARY.md LICENSE SECURITY.md DATA_MANAGEMENT_PLAN.md; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Missing essential documentation: $file"
+              exit 1
+            fi
+          done
+          echo "All essential documentation files are present."
