@@ -6,10 +6,17 @@ def extract_metadata(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    url = re.search(r'URL: (.*)', content).group(1).strip()
-    h1 = re.search(r'H1: (.*)', content).group(1).strip()
-    meta_desc = re.search(r'Meta descripción: (.*)', content).group(1).strip()
-    keywords = re.search(r'Palabras clave: (.*)', content).group(1).strip()
+    url_match = re.search(r'URL: (.*)', content)
+    url = url_match.group(1).strip() if url_match else ""
+
+    h1_match = re.search(r'H1: (.*)', content)
+    h1 = h1_match.group(1).strip() if h1_match else ""
+
+    meta_desc_match = re.search(r'Meta descripción: (.*)', content)
+    meta_desc = meta_desc_match.group(1).strip() if meta_desc_match else ""
+
+    keywords_match = re.search(r'Palabras clave: (.*)', content)
+    keywords = keywords_match.group(1).strip() if keywords_match else ""
 
     # Determine search intention based on filename/title
     search_text = (filepath + " " + h1).lower()
@@ -24,6 +31,8 @@ def extract_metadata(filepath):
 
 def main():
     directory = 'editorial_neurociencia'
+    if not os.path.exists(directory):
+        return
     with open('metadata_pilot.csv', 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['URL', 'H1', 'Meta descripción', 'Keywords', 'Intención de búsqueda'])
