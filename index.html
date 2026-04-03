@@ -17,12 +17,6 @@
   <meta name="citation_language" content="en">
   <meta name="citation_technical_report_institution" content="Universidad Internacional de La Rioja (UNIR)">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="J.M. de la Serna Tuya - Open Research Hub">
-  <meta property="og:description" content="1,273+ Open Access Datasets in Forensic Neuroeconomics and AI.">
-  <meta property="og:url" content="https://juanmoisesd.github.io/wiki-en/">
-  <meta property="og:type" content="website">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -67,8 +61,9 @@
     </a>
     <div class="nav-links">
       <a href="catalog.html">Data Catalog</a>
-      <a href="dashboard.html">Impact Dashboard</a>
+      <a href="dashboard.html">Dashboard</a>
       <a href="GLOSSARY.html">Glossary</a>
+      <a href="preview.html" data-en="Previewer" data-es="Visualizador">Previewer</a>
       <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
     </div>
@@ -151,7 +146,7 @@
     localStorage.setItem('research-theme', newTheme);
   }
 
-  let currentLang = 'en';
+  let currentLang = localStorage.getItem('research-lang') || 'en';
   function toggleLanguage() {
     currentLang = currentLang === 'en' ? 'es' : 'en';
     document.querySelectorAll('[data-en]').forEach(el => {
@@ -161,21 +156,17 @@
   }
 
   const savedTheme = localStorage.getItem('research-theme') || 'light';
-  const savedLang = localStorage.getItem('research-lang') || 'en';
   document.body.setAttribute('data-theme', savedTheme);
-  if(savedLang === 'es') toggleLanguage();
+  if(currentLang === 'es') {
+     document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-es`));
+  }
 
   function copyCite(id) {
     const text = document.getElementById(id).innerText;
     navigator.clipboard.writeText(text).then(() => {
       const btn = event.target;
-      const originalText = btn.innerText;
       btn.innerText = '✓ Copied';
-      btn.style.background = 'var(--accent)';
-      setTimeout(() => {
-        btn.innerText = originalText;
-        btn.style.background = 'var(--primary)';
-      }, 2000);
+      setTimeout(() => btn.innerText = 'Copy APA', 2000);
     });
   }
 </script>

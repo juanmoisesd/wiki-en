@@ -1,0 +1,38 @@
+[
+  {
+    "term_es": "Algoritmos Éticos Antifraude",
+    "term_en": "Ethical Anti-fraud Algorithms",
+    "def_es": "Sistemas de IA diseñados para detectar anomalías financieras mientras minimizan sesgos discriminatorios contra grupos vulnerables.",
+    "def_en": "AI systems designed to detect financial anomalies while minimizing discriminatory biases against vulnerable groups. Algorithmic ethics is key to trust in financial markets."
+  },
+  {
+    "term_es": "Análisis de Sesgos de Decisión",
+    "term_en": "Decision Bias Analysis",
+    "def_es": "Estudio de las desviaciones sistemáticas de la racionalidad económica causadas por atajos cognitivos (heurísticos).",
+    "def_en": "The study of systematic deviations from economic rationality caused by cognitive shortcuts (heuristics). Essential for understanding consumer behavior and fraud risk."
+  },
+  {
+    "term_es": "Big Data en Neuroeconomía",
+    "term_en": "Big Data in Neuroeconomics",
+    "def_es": "Integración de conjuntos masivos de datos biométricos, transaccionales y psicográficos para modelar el comportamiento económico a nivel micro y macro.",
+    "def_en": "Integration of massive sets of biometric, transactional, and psychographic data to model economic behavior at micro and macro levels."
+  },
+  {
+    "term_es": "Ciencia Abierta",
+    "term_en": "Open Science",
+    "def_es": "Movimiento para hacer que la investigación científica, los datos y la difusión sean accesibles a todos los niveles de una sociedad inquisitiva.",
+    "def_en": "Movement to make scientific research, data, and dissemination accessible to all levels of an inquisitive society, prioritizing transparency and reproducibility."
+  },
+  {
+    "term_es": "Datos FAIR",
+    "term_en": "FAIR Data",
+    "def_es": "Estándar internacional que exige que los datos científicos sean Localizables, Accesibles, Interoperables y Reutilizables.",
+    "def_en": "International standard requiring scientific data to be Findable, Accessible, Interoperable, and Reusable."
+  },
+  {
+    "term_es": "Neuroeconomía Forense",
+    "term_en": "Forensic Neuroeconomics",
+    "def_es": "Disciplina que integra la neurociencia, la psicología y la economía para investigar la base biológica del comportamiento fraudulento.",
+    "def_en": "Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior and decision-making in legal-risk environments."
+  }
+]

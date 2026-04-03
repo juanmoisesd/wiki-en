@@ -17,23 +17,19 @@
   <link rel="stylesheet" href="assets/css/research-identity.css">
   <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Live Data Previewer",
-    "applicationCategory": "ScientificTool"
-  }
-  </script>
-
   <style>
     .preview-card { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 24px; padding: 3rem; margin-top: 3rem; box-shadow: var(--shadow-lg); transition: var(--transition); }
-    .data-table-wrapper { overflow-x: auto; margin-top: 2rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+    .input-group { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    #csvUrl { flex-grow: 1; padding: 1rem 1.5rem; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; background: var(--bg); color: var(--text); }
+    .data-table-wrapper { overflow-x: auto; margin-top: 2rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); min-height: 200px; }
     table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
     th, td { padding: 1rem; border: 1px solid var(--border); text-align: left; }
     th { background: var(--bg-alt); color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); }
     tr:hover { background: var(--primary-glow); }
     .status-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: white; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem; margin-bottom: 1rem; }
+    .preset-list { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .preset-btn { background: var(--bg-alt); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
+    .preset-btn:hover { border-color: var(--primary); color: var(--primary); }
   </style>
 </head>
 <body data-theme="light">
@@ -45,9 +41,8 @@
       J.M. DE LA SERNA TUYA
     </a>
     <div class="nav-links">
+      <a href="index.html" data-en="Back to Hub" data-es="Volver al Inicio">Back to Hub</a>
       <a href="catalog.html">Catalog</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="GLOSSARY.html">Glossary</a>
       <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
       <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
     </div>
@@ -61,13 +56,23 @@
   </header>
 
   <div class="preview-card animate" style="animation-delay: 0.1s;">
-    <div class="status-badge">● LIVE GITHUB FETCH</div>
+    <div class="status-badge" id="statusBadge">● READY</div>
+
+    <div class="preset-list">
+      <button class="preset-btn" onclick="setPreset('latin-america-population-age-structure-dataset', 'population_age_structure.csv')">Population Age Structure (LATAM)</button>
+      <button class="preset-btn" onclick="setPreset('dataset-samples', 'forensic_neuroeconomics_sample.csv')">Forensic Neuroeconomics Sample</button>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="csvUrl" placeholder="Enter Raw CSV URL from GitHub...">
+      <button class="btn btn-primary" onclick="fetchData()">Fetch Data</button>
+    </div>
+
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
       <div>
-        <h3 id="currentFile" style="margin:0; font-size: 1.5rem;" data-en="Connecting to GitHub API..." data-es="Conectando a la API de GitHub...">Connecting to GitHub API...</h3>
-        <p style="color:var(--text-muted); margin: 0.5rem 0 0 0;" data-en="Showing first 10 rows of raw CSV sample." data-es="Mostrando las primeras 10 filas de la muestra CSV cruda.">Showing first 10 rows of raw CSV sample.</p>
+        <h3 id="currentFile" style="margin:0; font-size: 1.5rem;">Select a dataset to begin.</h3>
+        <p id="rowCount" style="color:var(--text-muted); margin: 0.5rem 0 0 0;">Showing up to 10 rows.</p>
       </div>
-      <button class="btn btn-primary" onclick="fetchSampleData()" data-en="Fetch New Sample" data-es="Obtener Nueva Muestra">Fetch New Sample</button>
     </div>
 
     <div class="data-table-wrapper">
@@ -96,40 +101,59 @@
 <script>
   function toggleTheme() {
     const body = document.body;
-    const currentTheme = body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     body.setAttribute('data-theme', newTheme);
     localStorage.setItem('research-theme', newTheme);
   }
 
-  let currentLang = 'en';
   function toggleLanguage() {
+    let currentLang = localStorage.getItem('research-lang') || 'en';
     currentLang = currentLang === 'en' ? 'es' : 'en';
-    document.querySelectorAll('[data-en]').forEach(el => {
-      el.innerText = el.getAttribute(`data-${currentLang}`);
-    });
     localStorage.setItem('research-lang', currentLang);
+    document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-${currentLang}`));
+  }
+
+  function setPreset(repo, file) {
+    const url = `https://raw.githubusercontent.com/juanmoisesd/${repo}/main/data/${file}`;
+    document.getElementById('csvUrl').value = url;
+    fetchData();
+  }
+
+  async function fetchData() {
+    const url = document.getElementById('csvUrl').value;
+    const head = document.getElementById('tableHead');
+    const body = document.getElementById('tableBody');
+    const title = document.getElementById('currentFile');
+    const status = document.getElementById('statusBadge');
+
+    if(!url) return;
+
+    status.innerText = "● FETCHING...";
+    status.style.background = "#ffd33d";
+
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      const rows = text.trim().split('\n').map(r => r.split(','));
+
+      title.innerText = url.split('/').pop();
+      head.innerHTML = `<tr>${rows[0].map(h => `<th>${h}</th>`).join('')}</tr>`;
+      body.innerHTML = rows.slice(1, 11).map(r => `<tr>${r.map(d => `<td>${d}</td>`).join('')}</tr>`).join('');
+
+      status.innerText = "● LIVE GITHUB FETCH SUCCESS";
+      status.style.background = "var(--accent)";
+    } catch (e) {
+      title.innerText = "Sync failed.";
+      status.innerText = "● ERROR";
+      status.style.background = "#ff4d4d";
+    }
   }
 
   const savedTheme = localStorage.getItem('research-theme') || 'light';
   const savedLang = localStorage.getItem('research-lang') || 'en';
   document.body.setAttribute('data-theme', savedTheme);
-  if(savedLang === 'es') toggleLanguage();
-
-  async function fetchSampleData() {
-    const head = document.getElementById('tableHead');
-    const body = document.getElementById('tableBody');
-    const title = document.getElementById('currentFile');
-    try {
-      const res = await fetch('https://raw.githubusercontent.com/juanmoisesd/latin-america-population-age-structure-dataset/main/data/population_age_structure.csv');
-      const text = await res.text();
-      const rows = text.trim().split('\n').slice(0, 11).map(r => r.split(','));
-      title.innerText = "population_age_structure.csv";
-      head.innerHTML = `<tr>${rows[0].map(h => `<th>${h}</th>`).join('')}</tr>`;
-      body.innerHTML = rows.slice(1).map(r => `<tr>${r.map(d => `<td>${d}</td>`).join('')}</tr>`).join('');
-    } catch (e) {
-      title.innerText = "Sync failed.";
-    }
+  if(savedLang === 'es') {
+     document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-es`));
   }
 
   function copyCite(id) {
@@ -140,7 +164,6 @@
       setTimeout(() => btn.innerText = 'Copy APA', 2000);
     });
   }
-  fetchSampleData();
 </script>
 
 </body>
