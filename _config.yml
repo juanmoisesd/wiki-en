@@ -1,46 +1,58 @@
 # Jekyll configuration for GitHub Pages
-title: "wiki-en"
-description: "🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018"
+title: "Juan Moisés de la Serna Tuya | Open Research Identity"
+description: "Official Research Hub and Data Ecosystem v10.0. 1,273+ Open Access Datasets in Forensic Neuroeconomics and AI."
 url: "https://juanmoisesd.github.io"
 baseurl: "/wiki-en"
 
+# Research Identity 10.0 Identity
 author:
   name: "Juan Moisés de la Serna Tuya"
   orcid: "0000-0002-8401-8018"
+  doi: "10.5281/zenodo.19415092"
   linkedin: "https://www.linkedin.com/in/juanmoisesdelaserna/"
   scopus: "26632846700"
   institution: "Universidad Internacional de La Rioja (UNIR)"
   email: "juanmoises.delaserna@unir.net"
 
-# SEO
-tagline: "Open Research Dataset & Research Wiki"
+# SEO & Discovery
+tagline: "Global Research Lead in Forensic Neuroeconomics & AI Ethics"
 lang: "en"
-
-# Social
-twitter:
-  username: juanmoisesd
-  card: summary
+logo: "/assets/images/research-logo.svg"
 
 # Plugins
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-feed
+  - jekyll-include-cache
 
-# Build
-theme: minima
+# Content Rules
 include:
   - README.md
   - GLOSSARY.md
   - ABOUT_THE_AUTHOR.md
   - CITATION_GUIDE.md
   - CONTRIBUTING.md
+  - DATA_MANAGEMENT_PLAN.md
+  - SECURITY.md
   - LICENSE
+  - assets/data/glossary.json
+  - dataset_index.jsonld
+  - seo.json
 
-# Exclude
+# Build Exclusions
 exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
   - vendor
   - .github
+  - automation/
+  - MAIN_PORTAL_INDEX_SUGGESTION.html
+  - research_portal_v10.zip
+
+# Markdown
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
