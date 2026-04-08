@@ -36,7 +36,7 @@ include:
   - DATA_MANAGEMENT_PLAN.md
   - SECURITY.md
   - LICENSE
-  - assets/data/glossary.json
+  - assets/
   - dataset_index.jsonld
   - seo.json
 

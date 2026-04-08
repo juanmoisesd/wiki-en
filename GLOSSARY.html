@@ -25,10 +25,14 @@
     .term { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; display: block; letter-spacing: -0.01em; }
     .definition { font-size: 1.1rem; line-height: 1.8; color: var(--text); }
     .search-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; display: block; }
+    .pagination-controls { margin-top: 3rem; display: flex; justify-content: center; align-items: center; gap: 1rem; }
     .hidden { display: none; }
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; font-weight: 700; }
   </style>
 </head>
 <body data-theme="light">
+
+<div id="loading" class="loading-overlay" data-en="Loading thousands of scientific definitions..." data-es="Cargando miles de definiciones científicas...">Loading thousands of scientific definitions...</div>
 
 <nav class="global-nav">
   <div class="container">
@@ -39,7 +43,6 @@
     <div class="nav-links">
       <a href="index.html" data-en="Back to Hub" data-es="Volver al Inicio">Back to Hub</a>
       <a href="catalog.html">Catalog</a>
-      <a href="dashboard.html">Dashboard</a>
       <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
       <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
     </div>
@@ -54,14 +57,18 @@
 
   <div class="search-box animate" style="animation-delay: 0.1s;">
     <input type="text" id="glossarySearch" placeholder="Type to search terms...">
-    <span class="search-hint" id="searchHint">Loading definitions...</span>
+    <span class="search-hint" id="searchHint">Loading...</span>
   </div>
 
-  <div id="glossaryList" class="glossary-list animate" style="animation-delay: 0.2s;">
-    <!-- Populated by JavaScript -->
+  <div id="glossaryList" class="glossary-list animate" style="animation-delay: 0.2s;"></div>
+
+  <div class="pagination-controls animate" style="animation-delay: 0.3s;">
+    <button class="btn" id="prevBtn" onclick="changePage(-1)" data-en="Previous" data-es="Anterior">Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button class="btn" id="nextBtn" onclick="changePage(1)" data-en="Next" data-es="Siguiente">Next</button>
   </div>
 
-  <section class="cite-section animate" style="animation-delay: 0.3s;">
+  <section class="cite-section animate" style="animation-delay: 0.4s;">
     <h2 data-en="📜 Cite this Vocabulary" data-es="📜 Citar este Vocabulario">📜 Cite this Vocabulary</h2>
     <div class="cite-box">
       <code id="citeGlossary" class="citation-text">De la Serna Tuya, J. M. (2025). Scientific Glossary: Forensic Neuroeconomics & FAIR Data. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/GLOSSARY.html</code>
@@ -79,43 +86,74 @@
 <script>
   let currentLang = localStorage.getItem('research-lang') || 'en';
   let glossaryData = [];
+  let filteredData = [];
+  let currentPage = 1;
+  const itemsPerPage = 25;
 
   async function loadGlossary() {
     try {
       const res = await fetch('assets/data/glossary.json');
       glossaryData = await res.json();
+      filteredData = [...glossaryData];
+      document.getElementById('loading').style.display = 'none';
       renderGlossary();
     } catch (e) {
       document.getElementById('searchHint').innerText = "Sync error.";
     }
   }
 
-  function renderGlossary(filter = "") {
+  function renderGlossary() {
     const list = document.getElementById('glossaryList');
-    const filtered = glossaryData.filter(item =>
-      item.term_en.toLowerCase().includes(filter.toLowerCase()) ||
-      item.term_es.toLowerCase().includes(filter.toLowerCase()) ||
-      item.def_en.toLowerCase().includes(filter.toLowerCase()) ||
-      item.def_es.toLowerCase().includes(filter.toLowerCase())
-    );
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const toDisplay = filteredData.slice(startIndex, endIndex);
 
-    list.innerHTML = filtered.map(item => `
+    list.innerHTML = toDisplay.map(item => `
       <div class="glossary-item">
         <span class="term">${currentLang === 'en' ? item.term_en : item.term_es}</span>
         <p class="definition">${currentLang === 'en' ? item.def_en : item.def_es}</p>
       </div>
     `).join('');
 
+    updatePageInfo();
     document.getElementById('searchHint').innerText = currentLang === 'en'
-      ? `Found ${filtered.length} terms.`
-      : `Encontrados ${filtered.length} términos.`;
+      ? `Displaying ${itemsPerPage} of ${filteredData.length} terms.`
+      : `Mostrando ${itemsPerPage} de ${filteredData.length} términos.`;
+  }
+
+  function updatePageInfo() {
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    document.getElementById('pageInfo').innerText = currentLang === 'en'
+      ? `Page ${currentPage} of ${totalPages}`
+      : `Página ${currentPage} de ${totalPages}`;
+
+    document.getElementById('prevBtn').disabled = (currentPage === 1);
+    document.getElementById('nextBtn').disabled = (currentPage === totalPages || totalPages === 0);
+  }
+
+  function changePage(delta) {
+    currentPage += delta;
+    renderGlossary();
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  }
+
+  function handleSearch(e) {
+    const term = e.target.value.toLowerCase();
+    filteredData = glossaryData.filter(item =>
+      item.term_en.toLowerCase().includes(term) ||
+      item.term_es.toLowerCase().includes(term) ||
+      item.def_en.toLowerCase().includes(term) ||
+      item.def_es.toLowerCase().includes(term)
+    );
+    currentPage = 1;
+    renderGlossary();
   }
 
   function toggleLanguage() {
     currentLang = currentLang === 'en' ? 'es' : 'en';
     localStorage.setItem('research-lang', currentLang);
     document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-${currentLang}`));
-    renderGlossary(document.getElementById('glossarySearch').value);
+    renderGlossary();
   }
 
   function toggleTheme() {
@@ -125,7 +163,7 @@
     localStorage.setItem('research-theme', newTheme);
   }
 
-  document.getElementById('glossarySearch').addEventListener('input', (e) => renderGlossary(e.target.value));
+  document.getElementById('glossarySearch').addEventListener('input', handleSearch);
 
   const savedTheme = localStorage.getItem('research-theme') || 'light';
   document.body.setAttribute('data-theme', savedTheme);
