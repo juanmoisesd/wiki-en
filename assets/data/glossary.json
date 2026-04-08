@@ -3,25 +3,25 @@
     "term_es": "Algoritmos Éticos Antifraude",
     "term_en": "Ethical Anti-fraud Algorithms",
     "def_es": "Sistemas de IA diseñados para detectar anomalías financieras mientras minimizan sesgos discriminatorios contra grupos vulnerables.",
-    "def_en": "AI systems designed to detect financial anomalies while minimizing discriminatory biases against vulnerable groups. Algorithmic ethics is key to trust in financial markets."
+    "def_en": "AI systems designed to detect financial anomalies while minimizing discriminatory biases against vulnerable groups."
   },
   {
     "term_es": "Análisis de Sesgos de Decisión",
     "term_en": "Decision Bias Analysis",
     "def_es": "Estudio de las desviaciones sistemáticas de la racionalidad económica causadas por atajos cognitivos (heurísticos).",
-    "def_en": "The study of systematic deviations from economic rationality caused by cognitive shortcuts (heuristics). Essential for understanding consumer behavior and fraud risk."
+    "def_en": "The study of systematic deviations from economic rationality caused by cognitive shortcuts (heuristics)."
   },
   {
     "term_es": "Big Data en Neuroeconomía",
     "term_en": "Big Data in Neuroeconomics",
-    "def_es": "Integración de conjuntos masivos de datos biométricos, transaccionales y psicográficos para modelar el comportamiento económico a nivel micro y macro.",
-    "def_en": "Integration of massive sets of biometric, transactional, and psychographic data to model economic behavior at micro and macro levels."
+    "def_es": "Integración de conjuntos masivos de datos biométricos, transaccionales y psicográficos para modelar el comportamiento económico.",
+    "def_en": "Integration of massive sets of biometric, transactional, and psychographic data to model economic behavior."
   },
   {
     "term_es": "Ciencia Abierta",
     "term_en": "Open Science",
-    "def_es": "Movimiento para hacer que la investigación científica, los datos y la difusión sean accesibles a todos los niveles de una sociedad inquisitiva.",
-    "def_en": "Movement to make scientific research, data, and dissemination accessible to all levels of an inquisitive society, prioritizing transparency and reproducibility."
+    "def_es": "Movimiento para hacer que la investigación científica, los datos y la difusión sean accesibles a todos los niveles de la sociedad.",
+    "def_en": "Movement to make scientific research, data, and dissemination accessible to all levels of society."
   },
   {
     "term_es": "Datos FAIR",
@@ -30,9 +30,105 @@
     "def_en": "International standard requiring scientific data to be Findable, Accessible, Interoperable, and Reusable."
   },
   {
+    "term_es": "Depósitos de Datos de Investigación",
+    "term_en": "Research Data Repositories",
+    "def_es": "Infraestructuras digitales diseñadas para el almacenamiento y preservación a largo plazo de conjuntos de datos científicos.",
+    "def_en": "Digital infrastructures designed for the long-term storage and preservation of scientific data sets."
+  },
+  {
+    "term_es": "Economía del Comportamiento Forense",
+    "term_en": "Forensic Behavioral Economics",
+    "def_es": "Aplicación de modelos de toma de decisiones económicas en contextos legales para identificar patrones de engaño.",
+    "def_en": "Application of economic decision-making models in legal contexts to identify patterns of deception."
+  },
+  {
+    "term_es": "Espectroscopia de Infrarrojo Cercano (fNIRS)",
+    "term_en": "fNIRS in Neuroeconomics",
+    "def_es": "Técnica de neuroimagen no invasiva utilizada para medir la actividad cerebral durante la toma de decisiones.",
+    "def_en": "Non-invasive neuroimaging technique used to measure brain activity during decision-making."
+  },
+  {
+    "term_es": "Gobernanza de Datos Abiertos",
+    "term_en": "Open Data Governance",
+    "def_es": "Marco de políticas que regulan la apertura, calidad y seguridad de los datos públicos y científicos.",
+    "def_en": "Framework of policies regulating the opening, quality, and security of public and scientific data."
+  },
+  {
+    "term_es": "IA Explicable (XAI) en Finanzas",
+    "term_en": "Explainable AI (XAI) in Finance",
+    "def_es": "Modelos de IA cuyos procesos de decisión pueden ser comprendidos por humanos, fundamental para la auditoría forense.",
+    "def_en": "AI models whose decision processes can be understood by humans, fundamental for forensic auditing."
+  },
+  {
+    "term_es": "Metadatos Científicos",
+    "term_en": "Scientific Metadata",
+    "def_es": "Información estructurada que describe el contexto y contenido de un conjunto de datos, facilitando su descubrimiento.",
+    "def_en": "Structured information describing the context and content of a data set, facilitating its discovery."
+  },
+  {
     "term_es": "Neuroeconomía Forense",
     "term_en": "Forensic Neuroeconomics",
-    "def_es": "Disciplina que integra la neurociencia, la psicología y la economía para investigar la base biológica del comportamiento fraudulento.",
-    "def_en": "Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior and decision-making in legal-risk environments."
+    "def_es": "Disciplina que integra neurociencia, psicología y economía para investigar la base biológica del comportamiento fraudulento.",
+    "def_en": "Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior."
+  },
+  {
+    "term_es": "Neuromarketing Ético",
+    "term_en": "Ethical Neuromarketing",
+    "def_es": "Uso de técnicas neurocientíficas para comprender al consumidor respetando su privacidad y autonomía.",
+    "def_en": "Use of neuroscientific techniques to understand the consumer while respecting their privacy and autonomy."
+  },
+  {
+    "term_es": "Plan de Gestión de Datos (DMP)",
+    "term_en": "Data Management Plan (DMP)",
+    "def_es": "Documento formal que describe cómo se manejarán los datos de investigación durante y después de un proyecto.",
+    "def_en": "Formal document describing how research data will be handled during and after a project."
+  },
+  {
+    "term_es": "Reproducibilidad Científica",
+    "term_en": "Scientific Reproducibility",
+    "def_es": "Capacidad de obtener los mismos resultados que un estudio anterior utilizando los mismos datos y métodos.",
+    "def_en": "Ability to obtain the same results as a previous study using the same data and methods."
+  },
+  {
+    "term_es": "Sesgo de Confirmación en Finanzas",
+    "term_en": "Confirmation Bias in Finance",
+    "def_es": "Tendencia a buscar información que confirme creencias financieras previas, ignorando evidencia contraria.",
+    "def_en": "Tendency to seek information that confirms prior financial beliefs, ignoring contrary evidence."
+  },
+  {
+    "term_es": "Soberanía de Datos",
+    "term_en": "Data Sovereignty",
+    "def_es": "Concepto de que los datos están sujetos a las leyes del país donde se recopilan.",
+    "def_en": "Concept that data is subject to the laws of the country where it is collected."
+  },
+  {
+    "term_es": "Toma de Decisiones bajo Incertidumbre",
+    "term_en": "Decision Making under Uncertainty",
+    "def_es": "Proceso de elección entre alternativas cuando las probabilidades de los resultados no son conocidas.",
+    "def_en": "Process of choosing between alternatives when the probabilities of outcomes are unknown."
+  },
+  {
+    "term_es": "Aprendizaje Federado",
+    "term_en": "Federated Learning",
+    "def_es": "Técnica de aprendizaje automático que entrena algoritmos en múltiples dispositivos locales sin intercambiar datos.",
+    "def_en": "Machine learning technique that trains algorithms across multiple local devices without exchanging data."
+  },
+  {
+    "term_es": "Blockchain para Ciencia Abierta",
+    "term_en": "Blockchain for Open Science",
+    "def_es": "Uso de registros distribuidos para asegurar la inmutabilidad y trazabilidad de los datos de investigación.",
+    "def_en": "Use of distributed ledgers to ensure the immutability and traceability of research data."
+  },
+  {
+    "term_es": "Criptoforense",
+    "term_en": "Crypto-forensics",
+    "def_es": "Investigación técnica de transacciones en criptoactivos para identificar actividades ilícitas y lavado de dinero.",
+    "def_en": "Technical investigation of cryptoasset transactions to identify illicit activities and money laundering."
+  },
+  {
+    "term_es": "Diferencial de Privacidad",
+    "term_en": "Differential Privacy",
+    "def_es": "Sistema para compartir información sobre un conjunto de datos describiendo patrones de grupo sin revelar información individual.",
+    "def_en": "System for sharing information about a dataset by describing group patterns without revealing individual information."
   }
 ]
