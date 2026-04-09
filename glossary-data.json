@@ -1,0 +1,130 @@
+{
+    "glossary": [
+          {
+                  "id": "algoritmos-eticos-antifraude",
+                  "term_es": "Algoritmos Éticos Antifraude",
+                  "term_en": "Ethical Anti-fraud Algorithms",
+                  "definition_es": "Sistemas de IA diseñados para detectar anomalías financieras mientras minimizan sesgos discriminatorios contra grupos vulnerables. La ética algorítmica es clave para la confianza en los mercados financieros.",
+                  "definition_en": "AI systems designed to detect financial anomalies while minimizing discriminatory biases against vulnerable groups. Algorithmic ethics is key to trust in financial markets."
+          },
+          {
+                  "id": "analisis-sesgos-decision",
+                  "term_es": "Análisis de Sesgos de Decisión",
+                  "term_en": "Decision Bias Analysis",
+                  "definition_es": "Estudio de las desviaciones sistemáticas de la racionalidad económica causadas por atajos cognitivos (heurísticos). Esencial para entender el comportamiento del consumidor y el riesgo de fraude.",
+                  "definition_en": "The study of systematic deviations from economic rationality caused by cognitive shortcuts (heuristics). Essential for understanding consumer behavior and fraud risk."
+          },
+          {
+                  "id": "big-data-neuroeconomia",
+                  "term_es": "Big Data en Neuroeconomía",
+                  "term_en": "Big Data in Neuroeconomics",
+                  "definition_es": "Integración de conjuntos masivos de datos biométricos, transaccionales y psicográficos para modelar el comportamiento económico a nivel micro y macro.",
+                  "definition_en": "Integration of massive sets of biometric, transactional, and psychographic data to model economic behavior at micro and macro levels."
+          },
+          {
+                  "id": "ciencia-abierta",
+                  "term_es": "Ciencia Abierta",
+                  "term_en": "Open Science",
+                  "definition_es": "Movimiento para hacer que la investigación científica, los datos y la difusión sean accesibles a todos los niveles de una sociedad inquisitiva, priorizando la transparencia y la reproducibilidad.",
+                  "definition_en": "Movement to make scientific research, data, and dissemination accessible to all levels of an inquisitive society, prioritizing transparency and reproducibility."
+          },
+          {
+                  "id": "datos-fair",
+                  "term_es": "Datos FAIR",
+                  "term_en": "FAIR Data",
+                  "definition_es": "Estándar internacional que exige que los datos científicos sean Localizables, Accesibles, Interoperables y Reutilizables (Findable, Accessible, Interoperable, Reusable).",
+                  "definition_en": "International standard requiring scientific data to be Findable, Accessible, Interoperable, and Reusable."
+          },
+          {
+                  "id": "depositos-datos-investigacion",
+                  "term_es": "Depósitos de Datos de Investigación",
+                  "term_en": "Research Data Repositories",
+                  "definition_es": "Infraestructuras digitales diseñadas para el almacenamiento, preservación y acceso a largo plazo de los conjuntos de datos generados durante la investigación científica.",
+                  "definition_en": "Digital infrastructures designed for the long-term storage, preservation, and access to data sets generated during scientific research."
+          },
+          {
+                  "id": "economia-comportamiento-forense",
+                  "term_es": "Economía del Comportamiento Forense",
+                  "term_en": "Forensic Behavioral Economics",
+                  "definition_es": "Aplicación de modelos de toma de decisiones económicas en contextos legales y criminalísticos para identificar patrones de engaño y malversación.",
+                  "definition_en": "Application of economic decision-making models in legal and forensic contexts to identify patterns of deception and embezzlement."
+          },
+          {
+                  "id": "fnirs-neuroeconomia",
+                  "term_es": "Espectroscopia de Infrarrojo Cercano (fNIRS) en Neuroeconomía",
+                  "term_en": "fNIRS in Neuroeconomics",
+                  "definition_es": "Técnica de neuroimagen no invasiva utilizada para medir la actividad hemodinámica cerebral durante la toma de decisiones económicas en entornos naturales.",
+                  "definition_en": "Non-invasive neuroimaging technique used to measure cerebral hemodynamic activity during economic decision-making in natural settings."
+          },
+          {
+                  "id": "gobernanza-datos-abiertos",
+                  "term_es": "Gobernanza de Datos Abiertos",
+                  "term_en": "Open Data Governance",
+                  "definition_es": "Marco de políticas y procesos que regulan la apertura, calidad y seguridad de los datos públicos y científicos para maximizar su valor social.",
+                  "definition_en": "Framework of policies and processes regulating the opening, quality, and security of public and scientific data to maximize social value."
+          },
+          {
+                  "id": "ia-explicable-finanzas",
+                  "term_es": "IA Explicable (XAI) en Finanzas",
+                  "term_en": "Explainable AI (XAI) in Finance",
+                  "definition_es": "Modelos de inteligencia artificial cuyos procesos de decisión pueden ser comprendidos por humanos, fundamental para la auditoría forense de fraudes automatizados.",
+                  "definition_en": "AI models whose decision processes can be understood by humans, fundamental for forensic auditing of automated fraud."
+          },
+          {
+                  "id": "metadatos-cientificos",
+                  "term_es": "Metadatos Científicos",
+                  "term_en": "Scientific Metadata",
+                  "definition_es": "Información estructurada que describe el contexto, contenido y estructura de un conjunto de datos, facilitando su descubrimiento e interpretación por humanos y máquinas.",
+                  "definition_en": "Structured information describing the context, content, and structure of a data set, facilitating its discovery and interpretation by humans and machines."
+          },
+          {
+                  "id": "neuroeconomia-forense",
+                  "term_es": "Neuroeconomía Forense",
+                  "term_en": "Forensic Neuroeconomics",
+                  "definition_es": "Disciplina que integra la neurociencia, la psicología y la economía para investigar la base biológica del comportamiento fraudulento y la toma de decisiones en entornos de riesgo legal.",
+                  "definition_en": "Discipline integrating neuroscience, psychology, and economics to investigate the biological basis of fraudulent behavior and decision-making in legal-risk environments."
+          },
+          {
+                  "id": "neuromarketing-etico",
+                  "term_es": "Neuromarketing Ético",
+                  "term_en": "Ethical Neuromarketing",
+                  "definition_es": "Uso de técnicas neurocientíficas para comprender las preferencias del consumidor respetando su privacidad y autonomía de decisión.",
+                  "definition_en": "Use of neuroscientific techniques to understand consumer preferences while respecting their privacy and decision autonomy."
+          },
+          {
+                  "id": "plan-gestion-datos",
+                  "term_es": "Plan de Gestión de Datos (DMP)",
+                  "term_en": "Data Management Plan (DMP)",
+                  "definition_es": "Documento formal que describe cómo se manejarán los datos de investigación durante y después de un proyecto científico.",
+                  "definition_en": "Formal document describing how research data will be handled during and after a scientific project."
+          },
+          {
+                  "id": "reproducibilidad-cientifica",
+                  "term_es": "Reproducibilidad Científica",
+                  "term_en": "Scientific Reproducibility",
+                  "definition_es": "Capacidad de un investigador para obtener los mismos resultados que un estudio anterior utilizando los mismos datos y métodos, facilitada por la publicación de datos abiertos.",
+                  "definition_en": "The ability of a researcher to obtain the same results as a previous study using the same data and methods, facilitated by open data publication."
+          },
+          {
+                  "id": "sesgo-confirmacion-finanzas",
+                  "term_es": "Sesgo de Confirmación en Finanzas",
+                  "term_en": "Confirmation Bias in Finance",
+                  "definition_es": "Tendencia a buscar e interpretar información de manera que confirme las creencias financieras previas, ignorando evidencia contraria.",
+                  "definition_en": "Tendency to seek and interpret information in a way that confirms prior financial beliefs, ignoring contrary evidence."
+          },
+          {
+                  "id": "soberania-datos",
+                  "term_es": "Soberanía de Datos",
+                  "term_en": "Data Sovereignty",
+                  "definition_es": "Concepto de que los datos están sujetos a las leyes y estructuras de gobernanza del país o individuo donde se recopilan.",
+                  "definition_en": "Concept that data is subject to the laws and governance structures of the country or individual where it is collected."
+          },
+          {
+                  "id": "toma-decisiones-incertidumbre",
+                  "term_es": "Toma de Decisiones bajo Incertidumbre",
+                  "term_en": "Decision Making under Uncertainty",
+                  "definition_es": "Proceso de elección entre alternativas cuando las probabilidades de los resultados no son conocidas, un área crítica de la neuroeconomía y la gestión de riesgos.",
+                  "definition_en": "Process of choosing between alternatives when the probabilities of outcomes are unknown, a critical area of neuroeconomics and risk management."
+          }
+    ]
+}
