@@ -1,0 +1,8 @@
+127.0.0.1 - - [10/Apr/2026 20:26:54] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:26:54] "GET /assets/css/research-identity.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:26:54] "GET /assets/images/research-logo.svg HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:26:56] "GET /catalog.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:26:59] "GET /dashboard.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:27:02] "GET /AUTHOR.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:27:03] "GET /GLOSSARY.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Apr/2026 20:27:03] "GET /assets/data/glossary.json HTTP/1.1" 200 -

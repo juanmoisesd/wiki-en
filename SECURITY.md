@@ -1,6 +1,6 @@
 # 🛡️ Security Policy: wiki-en
 
-> **Part of the [Open Research Collection by Juan Moisés de la Serna Tuya](https://doi.org/10.5281/zenodo.19145316)**
+> **Part of the [Open Research Collection by Juan Moisés de la Serna Tuya](https://doi.org/10.5281/zenodo.19415092)**
 
 We take the security of our research data and documentation seriously. This policy outlines how to report vulnerabilities and our commitment to maintaining a secure open science environment.
 

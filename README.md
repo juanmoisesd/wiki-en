@@ -1,6 +1,6 @@
 # 📁 wiki-en: Research Wiki & Open Dataset Collection
 
-[![Collection DOI](https://img.shields.io/badge/Collection_DOI-10.5281%2Fzenodo.19145316-blue?logo=zenodo&style=for-the-badge)](https://doi.org/10.5281/zenodo.19145316)
+[![Collection DOI](https://img.shields.io/badge/Collection_DOI-10.5281%2Fzenodo.19415092-blue?logo=zenodo&style=for-the-badge)](https://doi.org/10.5281/zenodo.19415092)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--8401--8018-green?logo=orcid&style=for-the-badge)](https://orcid.org/0000-0002-8401-8018)
 [![License: CC0](https://img.shields.io/badge/License-CC0_1.0-lightgrey?style=for-the-badge)](./LICENSE)
 [![Data: FAIR](https://img.shields.io/badge/Data-FAIR_Compliant-brightgreen?style=for-the-badge)](#-fair-data-principles)

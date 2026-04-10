@@ -20,7 +20,7 @@ This project strictly adheres to the **FAIR Data Principles**:
 
 ## 3. Storage and Preservation
 - **Primary Storage:** GitHub (Public Repository).
-- **Redundancy:** Synchronized with Zenodo (DOI: 10.5281/zenodo.19145316).
+- **Redundancy:** Synchronized with Zenodo (DOI: 10.5281/zenodo.19415092).
 
 ---
 

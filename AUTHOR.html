@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curriculum Vitae | Juan Moisés de la Serna Tuya</title>
+
+  <meta name="description" content="Professional profile and academic trajectory of Juan Moisés de la Serna Tuya, expert in Forensic Neuroeconomics and AI.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <style>
+    .cv-container { max-width: 900px; margin: 4rem auto; padding: 0 2rem; }
+    .cv-header { display: flex; align-items: center; gap: 3rem; margin-bottom: 4rem; border-bottom: 1px solid var(--border); padding-bottom: 3rem; }
+    .cv-photo { width: 180px; height: 180px; border-radius: 50%; background: var(--primary-glow); border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 4rem; flex-shrink: 0; }
+    .cv-title h1 { margin: 0; font-size: 2.8rem; line-height: 1.1; }
+    .cv-title p { color: var(--primary); font-weight: 700; margin-top: 0.5rem; font-size: 1.2rem; }
+
+    .cv-section { margin-bottom: 4rem; }
+    .cv-section h2 { border-left: 5px solid var(--primary); padding-left: 1.5rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1px; font-size: 1.3rem; }
+
+    .timeline { border-left: 2px solid var(--border); padding-left: 2rem; margin-left: 1rem; }
+    .timeline-item { position: relative; margin-bottom: 2.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: calc(-2rem - 6px); top: 5px; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; border: 2px solid var(--bg); }
+    .timeline-date { font-weight: 800; color: var(--primary); font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .timeline-content h3 { margin: 0; font-size: 1.1rem; }
+    .timeline-content p { color: var(--text-muted); margin-top: 0.3rem; }
+
+    .identity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+    .id-card { background: var(--bg-alt); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; transition: var(--transition); text-decoration: none; color: inherit; }
+    .id-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .id-card i { font-size: 1.5rem; color: var(--primary); }
+    .id-info span { display: block; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .id-info strong { font-size: 0.95rem; }
+
+    @media (max-width: 768px) { .cv-header { flex-direction: column; text-align: center; gap: 1.5rem; } }
+  </style>
+</head>
+<body data-theme="light">
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Hub</a>
+      <a href="catalog.html">Catalog</a>
+      <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<div class="cv-container animate">
+  <header class="cv-header">
+    <div class="cv-photo">👤</div>
+    <div class="cv-title">
+      <h1>Juan Moisés de la Serna Tuya</h1>
+      <p data-en="Forensic Neuroeconomist & AI Researcher" data-es="Neuroeconomista Forense e Investigador de IA">Forensic Neuroeconomist & AI Researcher</p>
+      <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+        <span class="badge">ORCID: 0000-0002-8401-8018</span>
+        <span class="badge" style="background: var(--secondary-glow); color: var(--secondary);">Top 1% Academia.edu</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="cv-section">
+    <h2 data-en="📜 Executive Summary" data-es="📜 Resumen Ejecutivo">📜 Executive Summary</h2>
+    <p data-en="Distinguished researcher and expert at the intersection of psychology, economics, and technology. Focused on forensic neuroeconomics, utilizing AI for fraud prevention and understanding cognitive biases in economic decision-making. Contributor to Open Science with 1,273+ datasets and 290+ scientific works."
+       data-es="Distinguido investigador y experto en la intersección de psicología, economía y tecnología. Enfocado en neuroeconomía forense, utilizando IA para la prevención del fraude y la comprensión de los sesgos cognitivos en la toma de decisiones económicas. Colaborador de la Ciencia Abierta con más de 1,273 conjuntos de datos y 290 obras científicas.">
+      Distinguished researcher and expert at the intersection of psychology, economics, and technology. Focused on forensic neuroeconomics, utilizing AI for fraud prevention and understanding cognitive biases in economic decision-making. Contributor to Open Science with 1,273+ datasets and 290+ scientific works.
+    </p>
+  </section>
+
+  <section class="cv-section">
+    <h2 data-en="🏛️ Academic Affiliation" data-es="🏛️ Afiliación Académica">🏛️ Academic Affiliation</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">CURRENT</div>
+        <div class="timeline-content">
+          <h3 data-en="Professor & Researcher" data-es="Profesor e Investigador">Professor & Researcher</h3>
+          <p>Universidad Internacional de La Rioja (UNIR), Spain</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2 data-en="📈 Research Impact" data-es="📈 Impacto de Investigación">📈 Research Impact</h2>
+    <div class="stats-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem;">
+      <div class="stat-box">
+        <span class="stat-val">290+</span>
+        <span class="stat-label">Publications</span>
+      </div>
+      <div class="stat-box" style="border-color: var(--secondary);">
+        <span class="stat-val" style="color: var(--secondary);">1,273+</span>
+        <span class="stat-label">Datasets</span>
+      </div>
+      <div class="stat-box" style="border-color: var(--accent);">
+        <span class="stat-val" style="color: var(--accent);">500+</span>
+        <span class="stat-label">DOIs</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2 data-en="🔗 Digital Identity" data-es="🔗 Identidad Digital">🔗 Digital Identity</h2>
+    <div class="identity-grid">
+      <a href="https://orcid.org/0000-0002-8401-8018" class="id-card" target="_blank">
+        <div class="id-info"><span>ORCID</span><strong>0000-0002-8401-8018</strong></div>
+      </a>
+      <a href="https://www.scopus.com/authid/detail.uri?authorId=26632846700" class="id-card" target="_blank">
+        <div class="id-info"><span>Scopus ID</span><strong>26632846700</strong></div>
+      </a>
+      <a href="https://www.webofscience.com/wos/author/record/M-8296-2019" class="id-card" target="_blank">
+        <div class="id-info"><span>Web of Science</span><strong>M-8296-2019</strong></div>
+      </a>
+      <a href="https://github.com/juanmoisesd" class="id-card" target="_blank">
+        <div class="id-info"><span>GitHub</span><strong>juanmoisesd</strong></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cite-section">
+    <h2 data-en="📜 Cite this Profile" data-es="📜 Citar este Perfil">📜 Cite this Profile</h2>
+    <div class="cite-box">
+      <code id="citeCV" class="citation-text">De la Serna Tuya, J. M. (2025). Academic Curriculum Vitae & Professional Profile. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/AUTHOR.html</code>
+      <button class="cite-btn" onclick="copyCite('citeCV')">Copy APA</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('research-theme', newTheme);
+  }
+
+  function toggleLanguage() {
+    let currentLang = localStorage.getItem('research-lang') || 'en';
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    localStorage.setItem('research-lang', currentLang);
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerText = el.getAttribute(`data-${currentLang}`);
+    });
+  }
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.innerText = '✓ Copied';
+      setTimeout(() => btn.innerText = 'Copy APA', 2000);
+    });
+  }
+
+  const savedTheme = localStorage.getItem('research-theme') || 'light';
+  const savedLang = localStorage.getItem('research-lang') || 'en';
+  document.body.setAttribute('data-theme', savedTheme);
+  if(savedLang === 'es') {
+     document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-es`));
+  }
+</script>
+
+</body>
+</html>

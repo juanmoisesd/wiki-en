@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Data Previewer | Juan Moisés de la Serna Tuya</title>
+  <title>Data Analytics Lab | Juan Moisés de la Serna Tuya</title>
 
   <!-- Academic SEO -->
-  <meta name="description" content="Direct-from-source inspection of raw scientific datasets in forensic and demographic research.">
-  <meta name="citation_title" content="Live Data Previewer: Source Inspection Tool for Open Datasets">
+  <meta name="description" content="Direct-from-source inspection and statistical analysis of raw scientific datasets in forensic and demographic research.">
+  <meta name="citation_title" content="Data Analytics Lab: Source Inspection and Statistical Tool for Open Datasets">
   <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
+  <meta name="citation_publication_date" content="2025">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,15 +22,20 @@
     .preview-card { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 24px; padding: 3rem; margin-top: 3rem; box-shadow: var(--shadow-lg); transition: var(--transition); }
     .input-group { display: flex; gap: 1rem; margin-bottom: 2rem; }
     #csvUrl { flex-grow: 1; padding: 1rem 1.5rem; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; background: var(--bg); color: var(--text); }
-    .data-table-wrapper { overflow-x: auto; margin-top: 2rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); min-height: 200px; }
+    .data-table-wrapper { overflow-x: auto; margin-top: 2rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); max-height: 400px; }
     table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
     th, td { padding: 1rem; border: 1px solid var(--border); text-align: left; }
-    th { background: var(--bg-alt); color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); }
+    th { background: var(--bg-alt); color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); position: sticky; top: 0; }
     tr:hover { background: var(--primary-glow); }
     .status-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: white; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem; margin-bottom: 1rem; }
     .preset-list { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
     .preset-btn { background: var(--bg-alt); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
     .preset-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .stat-mini-card { background: var(--bg); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; }
+    .stat-mini-card h4 { margin: 0 0 0.5rem 0; color: var(--primary); font-size: 0.9rem; }
+    .stat-mini-val { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.4; }
   </style>
 </head>
 <body data-theme="light">
@@ -51,8 +57,8 @@
 
 <div class="container" style="max-width: 1100px;">
   <header class="animate">
-    <h1 data-en="🔬 Live Data Previewer" data-es="🔬 Previsualizador de Datos">🔬 Live Data Previewer</h1>
-    <p class="subtitle" data-en="Direct-from-source inspection of raw scientific datasets." data-es="Inspección directa de la fuente de conjuntos de datos científicos crudos.">Direct-from-source inspection of raw scientific datasets.</p>
+    <h1 data-en="📊 Data Analytics Lab" data-es="📊 Laboratorio Analítico">📊 Data Analytics Lab</h1>
+    <p class="subtitle" data-en="Statistical inspection and source validation for research datasets." data-es="Inspección estadística y validación de fuentes para conjuntos de datos de investigación.">Statistical inspection and source validation.</p>
   </header>
 
   <div class="preview-card animate" style="animation-delay: 0.1s;">
@@ -65,13 +71,18 @@
 
     <div class="input-group">
       <input type="text" id="csvUrl" placeholder="Enter Raw CSV URL from GitHub...">
-      <button class="btn btn-primary" onclick="fetchData()">Fetch Data</button>
+      <button class="btn btn-primary" onclick="fetchData()" data-en="Analyze Data" data-es="Analizar Datos">Analyze Data</button>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+    <div id="statsContainer" style="display:none; margin-bottom: 2rem; border-top: 1px solid var(--border); padding-top: 2rem;">
+      <h3 data-en="📈 Descriptive Statistics" data-es="📈 Estadísticas Descriptivas">📈 Descriptive Statistics</h3>
+      <div id="statsGrid" class="stats-grid"></div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
       <div>
-        <h3 id="currentFile" style="margin:0; font-size: 1.5rem;">Select a dataset to begin.</h3>
-        <p id="rowCount" style="color:var(--text-muted); margin: 0.5rem 0 0 0;">Showing up to 10 rows.</p>
+        <h3 id="currentFile" style="margin:0; font-size: 1.5rem;">Select a dataset.</h3>
+        <p id="rowCount" style="color:var(--text-muted); margin: 0.5rem 0 0 0;">Previewing first 50 rows.</p>
       </div>
     </div>
 
@@ -84,12 +95,13 @@
   </div>
 
   <section class="cite-section animate" style="animation-delay: 0.3s;">
-    <h2 data-en="📜 Cite this Data Tool" data-es="📜 Citar esta Herramienta">📜 Cite this Data Tool</h2>
+    <h2 data-en="📜 Cite this Tool" data-es="📜 Citar esta Herramienta">📜 Cite this Tool</h2>
     <div class="cite-box">
-      <code id="citePreview" class="citation-text">De la Serna Tuya, J. M. (2025). Live Data Previewer: Source Inspection Tool for Open Datasets. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/preview.html</code>
+      <code id="citePreview" class="citation-text">De la Serna Tuya, J. M. (2025). Data Analytics Lab: Source Inspection and Statistical Tool for Open Datasets. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/preview.html</code>
       <button class="cite-btn" onclick="copyCite('citePreview')">Copy APA</button>
     </div>
   </section>
+
 </div>
 
 <footer>
@@ -125,28 +137,77 @@
     const body = document.getElementById('tableBody');
     const title = document.getElementById('currentFile');
     const status = document.getElementById('statusBadge');
+    const statsContainer = document.getElementById('statsContainer');
+    const statsGrid = document.getElementById('statsGrid');
 
     if(!url) return;
 
-    status.innerText = "● FETCHING...";
+    status.innerText = "● PROCESSING...";
     status.style.background = "#ffd33d";
 
     try {
       const res = await fetch(url);
       const text = await res.text();
       const rows = text.trim().split('\n').map(r => r.split(','));
+      const headers = rows[0];
+      const dataRows = rows.slice(1);
 
       title.innerText = url.split('/').pop();
-      head.innerHTML = `<tr>${rows[0].map(h => `<th>${h}</th>`).join('')}</tr>`;
-      body.innerHTML = rows.slice(1, 11).map(r => `<tr>${r.map(d => `<td>${d}</td>`).join('')}</tr>`).join('');
+      head.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+      body.innerHTML = dataRows.slice(0, 50).map(r => `<tr>${r.map(d => `<td>${d}</td>`).join('')}</tr>`).join('');
 
-      status.innerText = "● LIVE GITHUB FETCH SUCCESS";
+      // Calculate Stats
+      statsGrid.innerHTML = '';
+      let statsFound = false;
+
+      headers.forEach((h, colIndex) => {
+        const values = dataRows.map(r => parseFloat(r[colIndex])).filter(v => !isNaN(v));
+        if (values.length > 1) {
+          statsFound = true;
+          const sum = values.reduce((a, b) => a + b, 0);
+          const mean = sum / values.length;
+          const sorted = [...values].sort((a, b) => a - b);
+          const median = sorted[Math.floor(sorted.length / 2)];
+          const min = sorted[0];
+          const max = sorted[sorted.length - 1];
+          const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+          const sd = Math.sqrt(variance);
+
+          statsGrid.innerHTML += `
+            <div class="stat-mini-card">
+              <h4>${h}</h4>
+              <div class="stat-mini-val">
+                Mean: ${mean.toFixed(2)}<br>
+                Median: ${median.toFixed(2)}<br>
+                SD: ${sd.toFixed(2)}<br>
+                Range: ${min} - ${max}
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      statsContainer.style.display = statsFound ? 'block' : 'none';
+      status.innerText = "● ANALYSIS COMPLETE";
       status.style.background = "var(--accent)";
+      document.getElementById('rowCount').innerText = `Full analysis on ${dataRows.length} rows. Showing preview of 50.`;
+
     } catch (e) {
-      title.innerText = "Sync failed.";
+      console.error(e);
+      title.innerText = "Processing error.";
       status.innerText = "● ERROR";
       status.style.background = "#ff4d4d";
     }
+  }
+
+  function copyCite(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const originalText = btn.innerText;
+      btn.innerText = '✓ Copied';
+      setTimeout(() => btn.innerText = originalText, 2000);
+    });
   }
 
   const savedTheme = localStorage.getItem('research-theme') || 'light';
@@ -154,15 +215,6 @@
   document.body.setAttribute('data-theme', savedTheme);
   if(savedLang === 'es') {
      document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-es`));
-  }
-
-  function copyCite(id) {
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = event.target;
-      btn.innerText = '✓ Copied';
-      setTimeout(() => btn.innerText = 'Copy APA', 2000);
-    });
   }
 </script>
 

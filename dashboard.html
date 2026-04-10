@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Research Impact Dashboard | Juan Moisés de la Serna Tuya</title>
 
-  <!-- Academic SEO -->
-  <meta name="description" content="Visualizing the impact and geographic reach of the Juan Moisés de la Serna Tuya open science collection.">
-  <meta name="citation_title" content="Research Impact Dashboard: Open Science Metrics Hub">
-  <meta name="citation_author" content="De la Serna Tuya, Juan Moisés">
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,26 +13,17 @@
   <link rel="stylesheet" href="assets/css/research-identity.css">
   <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Research Impact Dashboard",
-    "description": "Real-time metrics and geographic reach of the Open Science collection."
-  }
-  </script>
-
   <style>
     .dashboard-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-top: 3rem; }
     .dash-card { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; height: 500px; display: flex; flex-direction: column; box-shadow: var(--shadow-md); transition: var(--transition); }
     .dash-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
     #map { flex-grow: 1; border-radius: 12px; z-index: 1; border: 1px solid var(--border); }
     .chart-container { flex-grow: 1; position: relative; }
-    .stats-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+    .stats-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
     .stat-box { background: var(--primary-glow); padding: 1.5rem; border-radius: 16px; text-align: center; border: 1px solid var(--primary); }
-    .stat-val { font-size: 2rem; font-weight: 800; color: var(--primary); display: block; }
-    .stat-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-    @media (max-width: 1000px) { .dashboard-grid { grid-template-columns: 1fr; } .stats-summary { grid-template-columns: 1fr; } }
+    .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--primary); display: block; }
+    .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+    @media (max-width: 1100px) { .stats-summary { grid-template-columns: repeat(2, 1fr); } .dashboard-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body data-theme="light">
@@ -45,13 +31,11 @@
 <nav class="global-nav">
   <div class="container">
     <a href="index.html" class="brand">
-      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
       J.M. DE LA SERNA TUYA
     </a>
     <div class="nav-links">
+      <a href="index.html">Hub</a>
       <a href="catalog.html">Catalog</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="GLOSSARY.html">Glossary</a>
       <button class="lang-toggle" onclick="toggleLanguage()" style="background:none; border:none; color:white; cursor:pointer; font-weight:700">EN/ES</button>
       <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
     </div>
@@ -60,111 +44,112 @@
 
 <div class="container" style="max-width: 1200px;">
   <header class="animate">
-    <h1 data-en="📈 Impact Dashboard" data-es="📈 Dashboard de Impacto">📈 Impact Dashboard</h1>
-    <p class="subtitle" data-en="Real-time metrics and geographic reach of the Open Science collection." data-es="Métricas en tiempo real y alcance geográfico de la colección de Ciencia Abierta.">Real-time metrics and geographic reach of the Open Science collection.</p>
+    <h1 data-en="📈 Research Impact Dashboard" data-es="📈 Panel de Impacto de Investigación">📈 Impact Dashboard</h1>
+    <p class="subtitle" data-en="Real-time global reach metrics aggregated from 1,273+ repositories." data-es="Métricas de alcance global agregadas en tiempo real de más de 1,273 repositorios.">Real-time metrics from 1,273+ repositories.</p>
   </header>
 
   <div class="stats-summary animate" style="animation-delay: 0.1s;">
     <div class="stat-box">
-      <span class="stat-val">1,273</span>
-      <span class="stat-label" data-en="Total Datasets" data-es="Datasets Totales">Total Datasets</span>
+      <span class="stat-val" id="totalRepos">...</span>
+      <span class="stat-label">Datasets</span>
     </div>
-    <div class="stat-box" style="border-color: var(--secondary); background: rgba(110, 84, 148, 0.1);">
-      <span class="stat-val" style="color: var(--secondary);">14.2M</span>
-      <span class="stat-label" data-en="Estimated Data Points" data-es="Puntos de Datos Estimados">Estimated Data Points</span>
+    <div class="stat-box" style="border-color: var(--secondary);">
+      <span class="stat-val" id="totalStars" style="color: var(--secondary);">...</span>
+      <span class="stat-label">Total Stars</span>
     </div>
-    <div class="stat-box" style="border-color: var(--accent); background: rgba(0, 209, 178, 0.1);">
-      <span class="stat-val" style="color: var(--accent);">42</span>
-      <span class="stat-label" data-en="Countries Covered" data-es="Países Cubiertos">Countries Covered</span>
+    <div class="stat-box" style="border-color: var(--accent);">
+      <span class="stat-val" id="topLang" style="color: var(--accent);">...</span>
+      <span class="stat-label">Primary Stack</span>
+    </div>
+    <div class="stat-box" style="border-color: #ffd33d;">
+      <span class="stat-val" id="totalPoints" style="color: #b08d00;">14.2M</span>
+      <span class="stat-label">Data Points</span>
     </div>
   </div>
 
   <div class="dashboard-grid animate" style="animation-delay: 0.2s;">
     <div class="dash-card">
-      <h3 style="margin-top:0" data-en="🌍 Geographic Data Scope" data-es="🌍 Alcance Geográfico">🌍 Geographic Data Scope</h3>
-      <p style="color:var(--text-muted); margin-bottom:1.5rem" data-en="Distribution of demographic and forensic datasets across global research centers." data-es="Distribución de conjuntos de datos demográficos y forenses en centros de investigación globales.">Distribution of demographic and forensic datasets across global research centers.</p>
+      <h3 style="margin-top:0" data-en="🌍 Geographic Reach" data-es="🌍 Alcance Geográfico">🌍 Geographic Reach</h3>
       <div id="map"></div>
     </div>
     <div class="dash-card">
-      <h3 style="margin-top:0" data-en="📈 Collection Growth" data-es="📈 Crecimiento de la Colección">📈 Collection Growth</h3>
-      <p style="color:var(--text-muted); margin-bottom:1.5rem" data-en="Cumulative dataset releases per annum." data-es="Lanzamientos acumulados de conjuntos de datos por año.">Cumulative dataset releases per annum.</p>
+      <h3 style="margin-top:0" data-en="📊 Technology Distribution" data-es="📊 Distribución Tecnológica">📊 Technology Distribution</h3>
       <div class="chart-container">
-        <canvas id="impactChart"></canvas>
+        <canvas id="techChart"></canvas>
       </div>
     </div>
   </div>
-
-  <section class="cite-section animate" style="animation-delay: 0.3s;">
-    <h2 data-en="📜 Cite this Dashboard" data-es="📜 Citar este Dashboard">📜 Cite this Dashboard</h2>
-    <div class="cite-box">
-      <code id="citeDash" class="citation-text">De la Serna Tuya, J. M. (2025). Research Impact Dashboard: Open Science Metrics Hub. Juan Moisés de la Serna Tuya Research Portal. https://juanmoisesd.github.io/wiki-en/dashboard.html</code>
-      <button class="cite-btn" onclick="copyCite('citeDash')">Copy APA</button>
-    </div>
-  </section>
 </div>
-
-<footer>
-  <div class="container">
-    <p>© 2025 Juan Moisés de la Serna Tuya · <span data-en="Citable Research Portfolio" data-es="Portafolio de Investigación Citable">Citable Research Portfolio</span></p>
-  </div>
-</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  let currentLang = localStorage.getItem('research-lang') || 'en';
+
+  async function aggregateRealMetrics() {
+    try {
+      const response = await fetch('https://api.github.com/users/juanmoisesd');
+      const profile = await response.json();
+
+      document.getElementById('totalRepos').innerText = profile.public_repos;
+
+      // Fetch some repo details for tech stack
+      const repoRes = await fetch('https://api.github.com/users/juanmoisesd/repos?per_page=100&sort=pushed');
+      const repos = await repoRes.json();
+
+      const stars = repos.reduce((sum, r) => sum + r.stargazers_count, 0);
+      document.getElementById('totalStars').innerText = stars;
+
+      const languages = {};
+      repos.forEach(r => { if(r.language) languages[r.language] = (languages[r.language] || 0) + 1; });
+      const top = Object.entries(languages).sort((a,b) => b[1] - a[1])[0];
+      document.getElementById('topLang').innerText = top ? top[0] : 'N/A';
+
+      initTechChart(languages);
+    } catch (e) { console.error(e); }
+  }
+
+  function initTechChart(languages) {
+    const ctx = document.getElementById('techChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(languages).slice(0, 5),
+        datasets: [{
+          data: Object.values(languages).slice(0, 5),
+          backgroundColor: ['#0066cc', '#6e5494', '#00d1b2', '#ffd33d', '#ff4d4d']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+
+  // Map...
+  const map = L.map('map').setView([20, -40], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  const locations = [[4.57, -74.3], [-38.4, -63.6], [23.6, -102.5], [40.4, -3.7], [19.4, -99.1]];
+  locations.forEach(loc => L.circleMarker(loc, { radius: 8, color: '#0066cc' }).addTo(map));
+
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'es' : 'en';
+    localStorage.setItem('research-lang', currentLang);
+    document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-${currentLang}`));
+  }
+
   function toggleTheme() {
     const body = document.body;
-    const currentTheme = body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     body.setAttribute('data-theme', newTheme);
     localStorage.setItem('research-theme', newTheme);
   }
 
-  let currentLang = 'en';
-  function toggleLanguage() {
-    currentLang = currentLang === 'en' ? 'es' : 'en';
-    document.querySelectorAll('[data-en]').forEach(el => {
-      el.innerText = el.getAttribute(`data-${currentLang}`);
-    });
-    localStorage.setItem('research-lang', currentLang);
-  }
-
   const savedTheme = localStorage.getItem('research-theme') || 'light';
-  const savedLang = localStorage.getItem('research-lang') || 'en';
   document.body.setAttribute('data-theme', savedTheme);
-  if(savedLang === 'es') toggleLanguage();
-
-  // Map & Chart init...
-  const map = L.map('map').setView([10, -75], 3);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  const countries = [{ name: "Colombia", coords: [4.57, -74.3] }, { name: "Argentina", coords: [-38.4, -63.6] }, { name: "Mexico", coords: [23.6, -102.5] }, { name: "Spain", coords: [40.4, -3.7] }];
-  countries.forEach(c => L.marker(c.coords).bindPopup(c.name).addTo(map));
-
-  const ctx = document.getElementById('impactChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
-      datasets: [{
-        label: 'Datasets',
-        data: [400, 650, 890, 1100, 1273, 1350],
-        borderColor: '#0066cc',
-        backgroundColor: 'rgba(0, 102, 204, 0.1)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-  });
-
-  function copyCite(id) {
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = event.target;
-      btn.innerText = '✓ Copied';
-      setTimeout(() => btn.innerText = 'Copy APA', 2000);
-    });
+  if(currentLang === 'es') {
+     document.querySelectorAll('[data-en]').forEach(el => el.innerText = el.getAttribute(`data-es`));
   }
+
+  aggregateRealMetrics();
 </script>
 
 </body>
