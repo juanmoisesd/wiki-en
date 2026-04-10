@@ -1,0 +1,20 @@
+{
+  "author": {
+    "name": "Juan Moisés de la Serna",
+    "orcid": "0000-0002-8401-8018",
+    "affiliation": "University International of La Rioja (UNIR)",
+    "email": "juanmoises.delaserna@unir.net"
+  },
+  "topics": [
+    {"id": 1, "title": "Ecological Validity in Neuropsychological Assessment", "controversy": "The gap between laboratory performance and real-world functional ability.", "references": ["10.3389/fpsyg.2020.00721", "10.1080/23279095.2023.2170800", "10.1017/S135561772400012X", "10.1016/j.chb.2023.107777"], "key_findings": "Traditional tests often fail to predict daily life success. Virtual Reality is emerging as a bridge."},
+    {"id": 2, "title": "Digital Biomarkers in Neurodegenerative Diseases", "controversy": "Clinical validation vs. technological promise and privacy ethics.", "references": ["10.3389/fdgth.2025.1727707", "10.3390/s25010123", "10.1101/2024.01.15.24301321"], "key_findings": "Passive monitoring can detect decline years earlier, but standardization is lacking."},
+    {"id": 3, "title": "Neuropsychology of ADHD in Adults", "controversy": "Diagnostic mimics and the necessity of symptom validity testing.", "references": ["10.1080/13803395.2021.1950640", "10.1037/pas0000752", "10.1038/s41386-021-00978-8"], "key_findings": "High risk of misdiagnosis due to comorbidities; objective deficits are often subtle."},
+    {"id": 4, "title": "Cultural Bias in Standardized Cognitive Testing", "controversy": "The universal applicability of Western-normed instruments.", "references": ["10.1017/S135561772400012X", "10.1017/S1355617720000456", "10.1080/23279095.2022.2101234"], "key_findings": "Education and language proficiency significantly skew results, requiring localized norms."},
+    {"id": 5, "title": "Tele-neuropsychology: Validity and Clinical Utility", "controversy": "Equivalence to in-person assessment in diverse clinical populations.", "references": ["10.1080/13854046.2020.1764030", "10.1007/s11065-017-9349-1", "10.1016/j.arr.2022.101657"], "key_findings": "Meta-analyses support equivalence for most domains; specific motor tests remain a challenge."},
+    {"id": 6, "title": "The Hype of Brain Plasticity in Neurorehabilitation", "controversy": "Overpromising recovery outcomes in chronic brain injury cases.", "references": ["10.1038/s41583-023-00703-4", "10.1177/15459683231184321", "10.1016/j.neuron.2021.12.015"], "key_findings": "Neural reorganization has limits; focus is shifting from 'rewiring' to 'compensation'."},
+    {"id": 7, "title": "Malingering Detection in Forensic Neuropsychology", "controversy": "The ethical and statistical limits of performance validity tests.", "references": ["10.1007/s11065-023-09581-x", "10.1080/23279095.2021.1953210", "10.1037/pas0000659"], "key_findings": "PVTs are essential in forensics but require cautious interpretation to avoid false positives."},
+    {"id": 8, "title": "Neuroimaging vs. Neuropsychological Testing", "controversy": "Which provides better predictive value for functional decline?", "references": ["10.3389/fnagi.2021.758298", "10.1016/S1474-4422(22)00156-3", "10.1016/j.nicl.2020.102345"], "key_findings": "Imaging shows 'where' and 'what', but neuropsychology shows 'how' the patient functions."},
+    {"id": 9, "title": "Neuropsychological Profiles in Long COVID", "controversy": "Brain fog: Objective impairment or subjective distress?", "references": ["10.1016/j.bbih.2020.100163", "10.1038/s41386-021-00978-8", "10.1101/2023.08.15.23294123"], "key_findings": "Discrepancy between self-report and testing; executive dysfunction is the most common objective finding."},
+    {"id": 10, "title": "Gender and Sex Differences in Cognitive Aging", "controversy": "Biological vulnerability vs. sociocultural disadvantage in dementia risk.", "references": ["10.1093/ageing/afae078", "10.1002/alz.12541", "10.1016/j.jalz.2021.12.008"], "key_findings": "Women show faster decline in some cohorts, linked to reproductive health and education history."}
+  ]
+}
