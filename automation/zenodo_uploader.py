@@ -14,7 +14,6 @@ def upload_preprint(pdf_path, md_path):
         print("Error: ZENODO_ACCESS_TOKEN environment variable not set.")
         sys.exit(1)
 
-    # 1. Read metadata from Markdown source
     with open(md_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -27,7 +26,6 @@ def upload_preprint(pdf_path, md_path):
     keywords_match = re.search(r'\*\*Keywords\*\*: (.*)', content)
     keywords = keywords_match.group(1).split(', ') if keywords_match else ["education"]
 
-    # 2. Create deposition
     headers = {"Content-Type": "application/json"}
     params = {'access_token': ACCESS_TOKEN}
 
@@ -43,7 +41,6 @@ def upload_preprint(pdf_path, md_path):
     deposition_id = r.json()['id']
     bucket_url = r.json()['links']['bucket']
 
-    # 3. Upload file
     filename = os.path.basename(pdf_path)
     with open(pdf_path, "rb") as fp:
         r = requests.put(
@@ -53,10 +50,9 @@ def upload_preprint(pdf_path, md_path):
         )
 
     if r.status_code not in [200, 201]:
-        print(f"Error uploading file (Status {r.status_code}): {r.json()}")
+        print(f"Error uploading file: {r.json()}")
         return None
 
-    # 4. Set metadata
     data = {
         'metadata': {
             'title': title,
@@ -84,7 +80,6 @@ def upload_preprint(pdf_path, md_path):
         print(f"Error setting metadata: {r.json()}")
         return None
 
-    # 5. Publish
     r = requests.post(f"{BASE_URL}/deposit/depositions/{deposition_id}/actions/publish",
                       params=params)
 
@@ -102,23 +97,23 @@ def upload_preprint(pdf_path, md_path):
 if __name__ == "__main__":
     pdf_dir = "preprints_pdf"
     src_dir = "preprints_source"
+    results_file = "zenodo_results_v2.json"
 
-    # Load already uploaded DOIs to avoid duplicates if restarted
-    results_file = "zenodo_results_extended.json"
     results = []
     if os.path.exists(results_file):
         with open(results_file, "r") as f:
-            results = json.load(f)
+            try:
+                results = json.load(f)
+            except:
+                results = []
 
     uploaded_titles = [r['title'] for r in results]
 
-    # Process only the "Ext_" files
-    files = sorted([f for f in os.listdir(pdf_dir) if f.endswith('.pdf') and 'Ext_' in f])
+    files = sorted([f for f in os.listdir(pdf_dir) if f.endswith('.pdf') and 'ExtV2_' in f])
     for filename in files:
         pdf_path = os.path.join(pdf_dir, filename)
         md_path = os.path.join(src_dir, filename.replace('.pdf', '.md'))
 
-        # Extract title to check
         with open(md_path, 'r', encoding='utf-8') as f:
             title_match = re.search(r'Title: (.*)', f.read())
             title = title_match.group(1) if title_match else "Untitled"
@@ -131,10 +126,8 @@ if __name__ == "__main__":
         if res:
             print(f"Success! DOI: {res['doi']}")
             results.append(res)
-            # Save progress every time
             with open(results_file, "w") as f:
                 json.dump(results, f, indent=4)
-            # Avoid rate limits
             time.sleep(1)
         else:
             print(f"Failed to upload {filename}")

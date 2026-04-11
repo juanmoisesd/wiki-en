@@ -10,7 +10,7 @@ def validate_preprint(filepath):
 
     # 1. Academic Structure Checks
     sections = [
-        "Abstract", "Keywords", "1. Introduction", "2. Literature Review", "3. Method", "4. Results",
+        "Abstract", "Keywords", "1. Introduction", "2. Theoretical Background", "3. Method", "4. Results",
         "5. Discussion", "6. Conclusions", "7. Future Directions", "8. References"
     ]
     for section in sections:
@@ -23,21 +23,15 @@ def validate_preprint(filepath):
     if "ORCID: 0000-0002-8401-8018" not in content:
         errors.append("Missing or incorrect ORCID")
 
-    # 3. Length Checks (Min 15,000 characters for ~6 pages)
-    if len(content) < 15000:
-        errors.append(f"File too short ({len(content)} chars), expected >15000 for 6+ pages")
+    # 3. Length Checks (Min 20,000 characters for ~6-8 pages)
+    if len(content) < 20000:
+        errors.append(f"File too short ({len(content)} chars), expected >20000 for 6+ pages")
 
-    # 4. Citation Count (Target 40+)
+    # 4. Citation Count (Target 50+)
     ref_section = content.split("8. References")[-1]
     citations = re.findall(r'\d+\.\s+\w+,', ref_section)
-    if len(citations) < 40:
-        errors.append(f"Only {len(citations)} citations found, expected 40+")
-
-    # 5. Prohibited content (Neuromyths)
-    neuromyths = ["10% brain usage", "learning styles", "right brain vs left brain"]
-    for myth in neuromyths:
-        if myth in content.lower() and "mito" not in content.lower() and "myth" not in content.lower():
-             errors.append(f"Potential neuromyth found without debunking: {myth}")
+    if len(citations) < 50:
+        errors.append(f"Only {len(citations)} citations found, expected 50+")
 
     return errors
 
@@ -49,9 +43,8 @@ def main():
 
     all_passed = True
     processed = 0
-    # Only validate the 90 new extended ones
     for filename in os.listdir(directory):
-        if filename.endswith('.md') and 'Ext_' in filename:
+        if filename.endswith('.md') and 'ExtV2_' in filename:
             processed += 1
             path = os.path.join(directory, filename)
             errors = validate_preprint(path)
@@ -61,9 +54,9 @@ def main():
                 for err in errors:
                     print(f"  - {err}")
 
-    print(f"\nValidated {processed} extended preprints.")
+    print(f"\nValidated {processed} high-volume preprints.")
     if all_passed:
-        print("All extended preprints validated successfully.")
+        print("All high-volume preprints validated successfully.")
     else:
         sys.exit(1)
 

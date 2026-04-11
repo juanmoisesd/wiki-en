@@ -1,0 +1,902 @@
+[
+    {
+        "title": "Addressing the Stigma of Adult Basic Education: Strategies for Enrollment",
+        "doi": "10.5281/zenodo.19506486",
+        "url": "https://zenodo.org/records/19506486/latest"
+    },
+    {
+        "title": "Digital Inclusion for the Elderly: Impact on Cognitive Health and Social Isolation",
+        "doi": "10.5281/zenodo.19506490",
+        "url": "https://zenodo.org/records/19506490/latest"
+    },
+    {
+        "title": "The Role of Adult Education in Promoting Active Citizenship and Democracy",
+        "doi": "10.5281/zenodo.19506494",
+        "url": "https://zenodo.org/records/19506494/latest"
+    },
+    {
+        "title": "Reskilling the Mid-Career Workforce: Barriers and Facilitators to Transition",
+        "doi": "10.5281/zenodo.19506500",
+        "url": "https://zenodo.org/records/19506500/latest"
+    },
+    {
+        "title": "Adult Literacy in the 21st Century: Integrating Digital and Financial Skills",
+        "doi": "10.5281/zenodo.19506506",
+        "url": "https://zenodo.org/records/19506506/latest"
+    },
+    {
+        "title": "The Psychological Impact of Lifelong Learning on Life Satisfaction in Retirement",
+        "doi": "10.5281/zenodo.19506512",
+        "url": "https://zenodo.org/records/19506512/latest"
+    },
+    {
+        "title": "Community-Based Adult Learning: Impact on Regional Social Cohesion",
+        "doi": "10.5281/zenodo.19506517",
+        "url": "https://zenodo.org/records/19506517/latest"
+    },
+    {
+        "title": "The Efficacy of Hybrid Learning for Working Adults with Family Obligations",
+        "doi": "10.5281/zenodo.19506524",
+        "url": "https://zenodo.org/records/19506524/latest"
+    },
+    {
+        "title": "Vocational Re-training in the Green Economy: Outcomes for Displaced Workers",
+        "doi": "10.5281/zenodo.19506534",
+        "url": "https://zenodo.org/records/19506534/latest"
+    },
+    {
+        "title": "The Role of Self-Directed Learning Readiness in Adult Online Education",
+        "doi": "10.5281/zenodo.19506542",
+        "url": "https://zenodo.org/records/19506542/latest"
+    },
+    {
+        "title": "Universal Basic Income and Its Potential Impact on Adult Learning Participation",
+        "doi": "10.5281/zenodo.19506548",
+        "url": "https://zenodo.org/records/19506548/latest"
+    },
+    {
+        "title": "Intergenerational Learning: Seniors and Youth Collaborating in Digital Space",
+        "doi": "10.5281/zenodo.19506554",
+        "url": "https://zenodo.org/records/19506554/latest"
+    },
+    {
+        "title": "The Impact of Workplace Education Programs on Corporate Innovation Rates",
+        "doi": "10.5281/zenodo.19506560",
+        "url": "https://zenodo.org/records/19506560/latest"
+    },
+    {
+        "title": "Refugee Integration through Targeted Adult Language and Civics Programs",
+        "doi": "10.5281/zenodo.19506566",
+        "url": "https://zenodo.org/records/19506566/latest"
+    },
+    {
+        "title": "Lifelong Learning for Prison Populations: Impact on Recidivism and Employment",
+        "doi": "10.5281/zenodo.19506572",
+        "url": "https://zenodo.org/records/19506572/latest"
+    },
+    {
+        "title": "The Future of Open University Models in a Post-Digital Landscape",
+        "doi": "10.5281/zenodo.19506578",
+        "url": "https://zenodo.org/records/19506578/latest"
+    },
+    {
+        "title": "Assessing Critical Thinking Gains in Non-Formal Adult Learning Settings",
+        "doi": "10.5281/zenodo.19506580",
+        "url": "https://zenodo.org/records/19506580/latest"
+    },
+    {
+        "title": "The Role of Professional Bodies in Certifying Adult Continuous Development",
+        "doi": "10.5281/zenodo.19506582",
+        "url": "https://zenodo.org/records/19506582/latest"
+    },
+    {
+        "title": "Mindfulness and Stress Reduction in Adult Community Education Programs",
+        "doi": "10.5281/zenodo.19506584",
+        "url": "https://zenodo.org/records/19506584/latest"
+    },
+    {
+        "title": "Impact of Digital Badges on the Motivation of Adult Voluntary Learners",
+        "doi": "10.5281/zenodo.19506586",
+        "url": "https://zenodo.org/records/19506586/latest"
+    },
+    {
+        "title": "The Use of AI Tutoring in Advanced Calculus for High School Students",
+        "doi": "10.5281/zenodo.19506590",
+        "url": "https://zenodo.org/records/19506590/latest"
+    },
+    {
+        "title": "Advanced Data Literacy: Preparing Bachillerato Students for the Quant Era",
+        "doi": "10.5281/zenodo.19506594",
+        "url": "https://zenodo.org/records/19506594/latest"
+    },
+    {
+        "title": "The Efficacy of Dual-Enrollment Programs on College Readiness and Success",
+        "doi": "10.5281/zenodo.19506602",
+        "url": "https://zenodo.org/records/19506602/latest"
+    },
+    {
+        "title": "Stress Management Workshops and Their Impact on Final Exam Performance",
+        "doi": "10.5281/zenodo.19506608",
+        "url": "https://zenodo.org/records/19506608/latest"
+    },
+    {
+        "title": "Developing Scientific Inquiry Skills through Independent Research in Bachillerato",
+        "doi": "10.5281/zenodo.19506614",
+        "url": "https://zenodo.org/records/19506614/latest"
+    },
+    {
+        "title": "The Role of Arts Education in Fostering Abstract Thinking in Senior Students",
+        "doi": "10.5281/zenodo.19506620",
+        "url": "https://zenodo.org/records/19506620/latest"
+    },
+    {
+        "title": "Evaluating Hybrid Models for Specialized Bachillerato in Rural Areas",
+        "doi": "10.5281/zenodo.19506626",
+        "url": "https://zenodo.org/records/19506626/latest"
+    },
+    {
+        "title": "The Impact of Philosophy on Critical Argumentation in Pre-University Exams",
+        "doi": "10.5281/zenodo.19506632",
+        "url": "https://zenodo.org/records/19506632/latest"
+    },
+    {
+        "title": "Financial Literacy in Bachillerato: Preparing Students for Economic Autonomy",
+        "doi": "10.5281/zenodo.19506639",
+        "url": "https://zenodo.org/records/19506639/latest"
+    },
+    {
+        "title": "Mental Health and Resilience: Targeted Interventions for the Final School Year",
+        "doi": "10.5281/zenodo.19506648",
+        "url": "https://zenodo.org/records/19506648/latest"
+    },
+    {
+        "title": "The Role of Vocational Orientation in Higher Education Course Selection",
+        "doi": "10.5281/zenodo.19506658",
+        "url": "https://zenodo.org/records/19506658/latest"
+    },
+    {
+        "title": "Fostering Leadership through Extracurricular Governance in Bachillerato",
+        "doi": "10.5281/zenodo.19506666",
+        "url": "https://zenodo.org/records/19506666/latest"
+    },
+    {
+        "title": "The Impact of Study Habits on the Transition to University Level Physics",
+        "doi": "10.5281/zenodo.19506670",
+        "url": "https://zenodo.org/records/19506670/latest"
+    },
+    {
+        "title": "Bilingualism in the Bachillerato: Longitudinal Impact on Cognitive Flexibility",
+        "doi": "10.5281/zenodo.19506676",
+        "url": "https://zenodo.org/records/19506676/latest"
+    },
+    {
+        "title": "Evaluating Performance-Based Assessment in Humanities Bachillerato",
+        "doi": "10.5281/zenodo.19506686",
+        "url": "https://zenodo.org/records/19506686/latest"
+    },
+    {
+        "title": "The Role of Internships in Career Goal Clarity for Pre-University Students",
+        "doi": "10.5281/zenodo.19506693",
+        "url": "https://zenodo.org/records/19506693/latest"
+    },
+    {
+        "title": "Addressing Information Overload in Research Tasks for Bachillerato",
+        "doi": "10.5281/zenodo.19506699",
+        "url": "https://zenodo.org/records/19506699/latest"
+    },
+    {
+        "title": "Cyberbullying and Social Pressure in the High-Stakes Senior Secondary Years",
+        "doi": "10.5281/zenodo.19506705",
+        "url": "https://zenodo.org/records/19506705/latest"
+    },
+    {
+        "title": "The Impact of Parental Pressure on Student Burnout in Bachillerato",
+        "doi": "10.5281/zenodo.19506711",
+        "url": "https://zenodo.org/records/19506711/latest"
+    },
+    {
+        "title": "Developing Academic Integrity through Collaborative Research Projects",
+        "doi": "10.5281/zenodo.19506721",
+        "url": "https://zenodo.org/records/19506721/latest"
+    },
+    {
+        "title": "Evaluating the Role of Paraprofessionals in Inclusive Primary Education",
+        "doi": "10.5281/zenodo.19506733",
+        "url": "https://zenodo.org/records/19506733/latest"
+    },
+    {
+        "title": "Assistive Technology for Non-Verbal Students: Impact on Social Inclusion",
+        "doi": "10.5281/zenodo.19506739",
+        "url": "https://zenodo.org/records/19506739/latest"
+    },
+    {
+        "title": "Early Identification of Dyslexia: Longitudinal Impact of Tiered Interventions",
+        "doi": "10.5281/zenodo.19506746",
+        "url": "https://zenodo.org/records/19506746/latest"
+    },
+    {
+        "title": "The Role of Sensory Environments in Reducing Anxiety in Students with Autism",
+        "doi": "10.5281/zenodo.19506750",
+        "url": "https://zenodo.org/records/19506750/latest"
+    },
+    {
+        "title": "Teacher Competency in IEP Development: A Comparative International Study",
+        "doi": "10.5281/zenodo.19506758",
+        "url": "https://zenodo.org/records/19506758/latest"
+    },
+    {
+        "title": "Social Skills Training via Virtual Reality for Neurodivergent Adolescents",
+        "doi": "10.5281/zenodo.19506764",
+        "url": "https://zenodo.org/records/19506764/latest"
+    },
+    {
+        "title": "Addressing the Double Stigma: Inclusion of Minority Groups in Special Ed",
+        "doi": "10.5281/zenodo.19506772",
+        "url": "https://zenodo.org/records/19506772/latest"
+    },
+    {
+        "title": "The Efficacy of Co-Teaching Models in Inclusive Secondary Classrooms",
+        "doi": "10.5281/zenodo.19506778",
+        "url": "https://zenodo.org/records/19506778/latest"
+    },
+    {
+        "title": "Transitions to Adulthood: Support Systems for Special Needs Students in HE",
+        "doi": "10.5281/zenodo.19506784",
+        "url": "https://zenodo.org/records/19506784/latest"
+    },
+    {
+        "title": "The Impact of Parental Advocacy on Resource Allocation in Special Education",
+        "doi": "10.5281/zenodo.19506790",
+        "url": "https://zenodo.org/records/19506790/latest"
+    },
+    {
+        "title": "Predictors of Teacher Burnout in High-Support Special Education Settings",
+        "doi": "10.5281/zenodo.19506796",
+        "url": "https://zenodo.org/records/19506796/latest"
+    },
+    {
+        "title": "Universal Design for Learning (UDL) in Science Labs: Best Practices for Special Ed",
+        "doi": "10.5281/zenodo.19506804",
+        "url": "https://zenodo.org/records/19506804/latest"
+    },
+    {
+        "title": "The Neurodiversity Paradigm in Schools: Moving beyond the Medical Model",
+        "doi": "10.5281/zenodo.19506810",
+        "url": "https://zenodo.org/records/19506810/latest"
+    },
+    {
+        "title": "Impact of Early Speech Therapy on Long-Term Academic Outcomes",
+        "doi": "10.5281/zenodo.19506816",
+        "url": "https://zenodo.org/records/19506816/latest"
+    },
+    {
+        "title": "Behavioral Interventions for ADHD: A Meta-Analysis of School-Based Programs",
+        "doi": "10.5281/zenodo.19506824",
+        "url": "https://zenodo.org/records/19506824/latest"
+    },
+    {
+        "title": "Ethics of Wearable Tech in Monitoring Behavioral Triggers in Special Ed",
+        "doi": "10.5281/zenodo.19506842",
+        "url": "https://zenodo.org/records/19506842/latest"
+    },
+    {
+        "title": "Promoting Self-Determination in Students with Intellectual Disabilities",
+        "doi": "10.5281/zenodo.19506848",
+        "url": "https://zenodo.org/records/19506848/latest"
+    },
+    {
+        "title": "The Role of Art Therapy in Supporting Emotional Regulation in Special Needs",
+        "doi": "10.5281/zenodo.19506856",
+        "url": "https://zenodo.org/records/19506856/latest"
+    },
+    {
+        "title": "Global Trends in Special Education Funding: Equity vs. Efficiency",
+        "doi": "10.5281/zenodo.19506862",
+        "url": "https://zenodo.org/records/19506862/latest"
+    },
+    {
+        "title": "The Impact of Inclusive Physical Education on Social Belongingness",
+        "doi": "10.5281/zenodo.19506868",
+        "url": "https://zenodo.org/records/19506868/latest"
+    },
+    {
+        "title": "The Role of Emotional Intelligence in Mitigating Separation Anxiety in Toddlers",
+        "doi": "10.5281/zenodo.19506875",
+        "url": "https://zenodo.org/records/19506875/latest"
+    },
+    {
+        "title": "Developing Social Resilience in Preschoolers through Cooperative Play Models",
+        "doi": "10.5281/zenodo.19506882",
+        "url": "https://zenodo.org/records/19506882/latest"
+    },
+    {
+        "title": "The Impact of Early Musical Training on Executive Function in Toddlers",
+        "doi": "10.5281/zenodo.19506888",
+        "url": "https://zenodo.org/records/19506888/latest"
+    },
+    {
+        "title": "Neuroscience-Informed Approaches to Sensory Integration in Early Childhood",
+        "doi": "10.5281/zenodo.19506892",
+        "url": "https://zenodo.org/records/19506892/latest"
+    },
+    {
+        "title": "Digital Storytelling as a Tool for Vocabulary Development in Kindergarten",
+        "doi": "10.5281/zenodo.19506898",
+        "url": "https://zenodo.org/records/19506898/latest"
+    },
+    {
+        "title": "Evaluating the Role of Mindfulness and Self-Regulation in 3-5 Year Olds",
+        "doi": "10.5281/zenodo.19506908",
+        "url": "https://zenodo.org/records/19506908/latest"
+    },
+    {
+        "title": "The Efficacy of Nature-Based Classrooms on Motor Development in Early Years",
+        "doi": "10.5281/zenodo.19506916",
+        "url": "https://zenodo.org/records/19506916/latest"
+    },
+    {
+        "title": "Impact of Parent-Teacher Alignment on Behavioral Outcomes in Preschool",
+        "doi": "10.5281/zenodo.19506922",
+        "url": "https://zenodo.org/records/19506922/latest"
+    },
+    {
+        "title": "Cognitive Benefits of Guided Block Play in Developing Early Spatial Skills",
+        "doi": "10.5281/zenodo.19506928",
+        "url": "https://zenodo.org/records/19506928/latest"
+    },
+    {
+        "title": "Addressing Nutritional Barriers to Learning Readiness in Low-SES Preschoolers",
+        "doi": "10.5281/zenodo.19506934",
+        "url": "https://zenodo.org/records/19506934/latest"
+    },
+    {
+        "title": "Visual Literacy in Early Childhood: Analyzing the Role of Illustrated Media",
+        "doi": "10.5281/zenodo.19506942",
+        "url": "https://zenodo.org/records/19506942/latest"
+    },
+    {
+        "title": "Bilingualism and Working Memory: Longitudinal Evidence from Preschool Immersion",
+        "doi": "10.5281/zenodo.19506948",
+        "url": "https://zenodo.org/records/19506948/latest"
+    },
+    {
+        "title": "The Influence of Physical Environment Design on Creative Play in Early Childhood",
+        "doi": "10.5281/zenodo.19506972",
+        "url": "https://zenodo.org/records/19506972/latest"
+    },
+    {
+        "title": "Sleep Patterns and Cognitive Performance in Children Entering Primary Education",
+        "doi": "10.5281/zenodo.19506974",
+        "url": "https://zenodo.org/records/19506974/latest"
+    },
+    {
+        "title": "Assessing the Impact of Puppet-Based Pedagogy on Social-Emotional Growth",
+        "doi": "10.5281/zenodo.19506976",
+        "url": "https://zenodo.org/records/19506976/latest"
+    },
+    {
+        "title": "Early Math Literacy: Scaffolding Numerical Concepts through Gamified Tools",
+        "doi": "10.5281/zenodo.19506978",
+        "url": "https://zenodo.org/records/19506978/latest"
+    },
+    {
+        "title": "The Impact of Teacher Stress on the Classroom Climate of Early Education",
+        "doi": "10.5281/zenodo.19506980",
+        "url": "https://zenodo.org/records/19506980/latest"
+    },
+    {
+        "title": "Integrating Computational Thinking in the Early Childhood Curriculum",
+        "doi": "10.5281/zenodo.19506984",
+        "url": "https://zenodo.org/records/19506984/latest"
+    },
+    {
+        "title": "Gender Socialization in Preschool: Implications for Future Academic Choices",
+        "doi": "10.5281/zenodo.19506988",
+        "url": "https://zenodo.org/records/19506988/latest"
+    },
+    {
+        "title": "The Efficacy of Hybrid Support Models for Neurodivergent Preschoolers",
+        "doi": "10.5281/zenodo.19506993",
+        "url": "https://zenodo.org/records/19506993/latest"
+    },
+    {
+        "title": "Assessing the Impact of Flipped Learning in Primary Social Studies",
+        "doi": "10.5281/zenodo.19506995",
+        "url": "https://zenodo.org/records/19506995/latest"
+    },
+    {
+        "title": "Improving Reading Comprehension through Meta-Cognitive Strategies in Grades 3-5",
+        "doi": "10.5281/zenodo.19506998",
+        "url": "https://zenodo.org/records/19506998/latest"
+    },
+    {
+        "title": "The Role of Peer-Led Inquiry in Enhancing Middle Primary Science Performance",
+        "doi": "10.5281/zenodo.19507002",
+        "url": "https://zenodo.org/records/19507002/latest"
+    },
+    {
+        "title": "Impact of 1:1 Tablet Programs on Collaborative Learning in Elementary Schools",
+        "doi": "10.5281/zenodo.19507008",
+        "url": "https://zenodo.org/records/19507008/latest"
+    },
+    {
+        "title": "Addressing Math Anxiety through Growth Mindset Interventions in Primary Ed",
+        "doi": "10.5281/zenodo.19507010",
+        "url": "https://zenodo.org/records/19507010/latest"
+    },
+    {
+        "title": "Evaluating the Efficacy of 'Brain Breaks' on Student Focus and Retention",
+        "doi": "10.5281/zenodo.19507012",
+        "url": "https://zenodo.org/records/19507012/latest"
+    },
+    {
+        "title": "The Impact of Inquiry-Based Geography Lessons on Global Awareness",
+        "doi": "10.5281/zenodo.19507016",
+        "url": "https://zenodo.org/records/19507016/latest"
+    },
+    {
+        "title": "Nutrition-Based Interventions and Academic Success: Case Studies in Primary Ed",
+        "doi": "10.5281/zenodo.19507018",
+        "url": "https://zenodo.org/records/19507018/latest"
+    },
+    {
+        "title": "The Role of Coding and Robotics in Developing Logical Reasoning in Ages 7-11",
+        "doi": "10.5281/zenodo.19507024",
+        "url": "https://zenodo.org/records/19507024/latest"
+    },
+    {
+        "title": "Teacher-Student Attachment and Its Influence on Academic Risk-Taking",
+        "doi": "10.5281/zenodo.19507026",
+        "url": "https://zenodo.org/records/19507026/latest"
+    },
+    {
+        "title": "Social-Emotional Skills as Predictors of Academic Transition into Secondary Ed",
+        "doi": "10.5281/zenodo.19507028",
+        "url": "https://zenodo.org/records/19507028/latest"
+    },
+    {
+        "title": "Diversity and Inclusion: Promoting Intercultural Competency in the Classroom",
+        "doi": "10.5281/zenodo.19507030",
+        "url": "https://zenodo.org/records/19507030/latest"
+    },
+    {
+        "title": "The Long-Term Impact of Early Music Education on Primary Math Proficiency",
+        "doi": "10.5281/zenodo.19507033",
+        "url": "https://zenodo.org/records/19507033/latest"
+    },
+    {
+        "title": "Cyber-Safety Education for Elementary Students: Effective Pedagogical Models",
+        "doi": "10.5281/zenodo.19507038",
+        "url": "https://zenodo.org/records/19507038/latest"
+    },
+    {
+        "title": "Evaluating the 'Green School' Movement on Environmental Literacy in Kids",
+        "doi": "10.5281/zenodo.19507040",
+        "url": "https://zenodo.org/records/19507040/latest"
+    },
+    {
+        "title": "The Effect of Standardized Testing Pressures on Primary Teacher Autonomy",
+        "doi": "10.5281/zenodo.19507044",
+        "url": "https://zenodo.org/records/19507044/latest"
+    },
+    {
+        "title": "Integrating Mindfulness as a Preventative Measure for Bullying in Schools",
+        "doi": "10.5281/zenodo.19507046",
+        "url": "https://zenodo.org/records/19507046/latest"
+    },
+    {
+        "title": "Visual Arts Integration and the Retention of Historical Concepts in Primary Ed",
+        "doi": "10.5281/zenodo.19507048",
+        "url": "https://zenodo.org/records/19507048/latest"
+    },
+    {
+        "title": "The Impact of Flexible Seating on Student Engagement and Productivity",
+        "doi": "10.5281/zenodo.19507050",
+        "url": "https://zenodo.org/records/19507050/latest"
+    },
+    {
+        "title": "Differentiated Instruction for Gifted Learners in Mainstream Primary Settings",
+        "doi": "10.5281/zenodo.19507052",
+        "url": "https://zenodo.org/records/19507052/latest"
+    },
+    {
+        "title": "The Impact of School Sports Participation on Academic Self-Regulation",
+        "doi": "10.5281/zenodo.19507054",
+        "url": "https://zenodo.org/records/19507054/latest"
+    },
+    {
+        "title": "The Influence of Digital Distraction on Adolescent Deep Work and Focus",
+        "doi": "10.5281/zenodo.19507056",
+        "url": "https://zenodo.org/records/19507056/latest"
+    },
+    {
+        "title": "Restorative Justice in Secondary Schools: Impact on Discipline and Climate",
+        "doi": "10.5281/zenodo.19507058",
+        "url": "https://zenodo.org/records/19507058/latest"
+    },
+    {
+        "title": "Artificial Intelligence in the History Classroom: Enhancing Critical Source Analysis",
+        "doi": "10.5281/zenodo.19507060",
+        "url": "https://zenodo.org/records/19507060/latest"
+    },
+    {
+        "title": "The Role of Peer Mentorship in Reducing High School Dropout Rates",
+        "doi": "10.5281/zenodo.19507066",
+        "url": "https://zenodo.org/records/19507066/latest"
+    },
+    {
+        "title": "Impact of Interdisciplinary STEAM Projects on Secondary Student Motivation",
+        "doi": "10.5281/zenodo.19507068",
+        "url": "https://zenodo.org/records/19507068/latest"
+    },
+    {
+        "title": "Evaluating the Efficacy of Career Pathing Tools in Middle School",
+        "doi": "10.5281/zenodo.19507070",
+        "url": "https://zenodo.org/records/19507070/latest"
+    },
+    {
+        "title": "Adolescent Self-Efficacy and Performance in Online Learning Environments",
+        "doi": "10.5281/zenodo.19507072",
+        "url": "https://zenodo.org/records/19507072/latest"
+    },
+    {
+        "title": "The Role of Ethics and Philosophy in the Modern Secondary Curriculum",
+        "doi": "10.5281/zenodo.19507074",
+        "url": "https://zenodo.org/records/19507074/latest"
+    },
+    {
+        "title": "Addressing Sexual Health Education through Inclusive and Scientific Frameworks",
+        "doi": "10.5281/zenodo.19507076",
+        "url": "https://zenodo.org/records/19507076/latest"
+    },
+    {
+        "title": "Global Exchange Programs and the Development of Intercultural Intelligence",
+        "doi": "10.5281/zenodo.19507078",
+        "url": "https://zenodo.org/records/19507078/latest"
+    },
+    {
+        "title": "Fostering Environmental Activism through Science Education in Teens",
+        "doi": "10.5281/zenodo.19507080",
+        "url": "https://zenodo.org/records/19507080/latest"
+    },
+    {
+        "title": "The Psychological Effects of Academic Competition on Secondary Wellbeing",
+        "doi": "10.5281/zenodo.19507086",
+        "url": "https://zenodo.org/records/19507086/latest"
+    },
+    {
+        "title": "Impact of Generative AI on Authorship and Integrity in High School Essays",
+        "doi": "10.5281/zenodo.19507089",
+        "url": "https://zenodo.org/records/19507089/latest"
+    },
+    {
+        "title": "The Efficacy of Peer-Based Conflict Resolution in Urban Secondary Schools",
+        "doi": "10.5281/zenodo.19507091",
+        "url": "https://zenodo.org/records/19507091/latest"
+    },
+    {
+        "title": "Teacher Retention in Secondary Ed: The Role of Collaborative Autonomy",
+        "doi": "10.5281/zenodo.19507097",
+        "url": "https://zenodo.org/records/19507097/latest"
+    },
+    {
+        "title": "Digital Citizenship and the Mitigation of Social Media Echo Chambers in Youth",
+        "doi": "10.5281/zenodo.19507099",
+        "url": "https://zenodo.org/records/19507099/latest"
+    },
+    {
+        "title": "The Role of Vocational Training in Enhancing Career Readiness for Gen Z",
+        "doi": "10.5281/zenodo.19507103",
+        "url": "https://zenodo.org/records/19507103/latest"
+    },
+    {
+        "title": "Assessing the Impact of Gamified Science Labs on Conceptual Understanding",
+        "doi": "10.5281/zenodo.19507109",
+        "url": "https://zenodo.org/records/19507109/latest"
+    },
+    {
+        "title": "The Influence of Family Socioeconomic Status on Secondary STEM Persistence",
+        "doi": "10.5281/zenodo.19507116",
+        "url": "https://zenodo.org/records/19507116/latest"
+    },
+    {
+        "title": "The Future of the PhD Viva: Traditional Defense vs. Continuous Review",
+        "doi": "10.5281/zenodo.19507122",
+        "url": "https://zenodo.org/records/19507122/latest"
+    },
+    {
+        "title": "The Impact of Remote Supervision on the Quality of Doctoral Dissertations",
+        "doi": "10.5281/zenodo.19507128",
+        "url": "https://zenodo.org/records/19507128/latest"
+    },
+    {
+        "title": "Doctoral Attrition Rates: Identifying the Early Predictors of Withdrawal",
+        "doi": "10.5281/zenodo.19507140",
+        "url": "https://zenodo.org/records/19507140/latest"
+    },
+    {
+        "title": "The Role of Peer Support Groups in Enhancing PhD Completion Rates",
+        "doi": "10.5281/zenodo.19507146",
+        "url": "https://zenodo.org/records/19507146/latest"
+    },
+    {
+        "title": "Evaluating the Impact of Open Access Requirements on Doctoral Research",
+        "doi": "10.5281/zenodo.19507150",
+        "url": "https://zenodo.org/records/19507150/latest"
+    },
+    {
+        "title": "The Mental Health Crisis in PhD Candidates: A Systematic Review of Solutions",
+        "doi": "10.5281/zenodo.19507158",
+        "url": "https://zenodo.org/records/19507158/latest"
+    },
+    {
+        "title": "Ethics in Doctoral AI Research: Navigating Rapid Technological Change",
+        "doi": "10.5281/zenodo.19507164",
+        "url": "https://zenodo.org/records/19507164/latest"
+    },
+    {
+        "title": "The Transition from PhD to Industry: Skills Mapping and Gap Analysis",
+        "doi": "10.5281/zenodo.19507170",
+        "url": "https://zenodo.org/records/19507170/latest"
+    },
+    {
+        "title": "The Role of Doctoral Training Centers in Promoting Multidisciplinary Research",
+        "doi": "10.5281/zenodo.19507178",
+        "url": "https://zenodo.org/records/19507178/latest"
+    },
+    {
+        "title": "Bibliometric Impact of Doctoral Theses: A Decade-Long Longitudinal Study",
+        "doi": "10.5281/zenodo.19507186",
+        "url": "https://zenodo.org/records/19507186/latest"
+    },
+    {
+        "title": "Doctoral Pedagogy: Preparing the Next Generation of Higher Education Faculty",
+        "doi": "10.5281/zenodo.19507192",
+        "url": "https://zenodo.org/records/19507192/latest"
+    },
+    {
+        "title": "Cross-Cultural Challenges in International Doctoral Supervision",
+        "doi": "10.5281/zenodo.19507198",
+        "url": "https://zenodo.org/records/19507198/latest"
+    },
+    {
+        "title": "The Impact of Funding Structures on the Independence of Doctoral Scholars",
+        "doi": "10.5281/zenodo.19507206",
+        "url": "https://zenodo.org/records/19507206/latest"
+    },
+    {
+        "title": "Gender Bias in Doctoral Recommendation Letters and Career Progression",
+        "doi": "10.5281/zenodo.19507212",
+        "url": "https://zenodo.org/records/19507212/latest"
+    },
+    {
+        "title": "The Use of Big Data in Educational Doctoral Research: Ethical Frontiers",
+        "doi": "10.5281/zenodo.19507220",
+        "url": "https://zenodo.org/records/19507220/latest"
+    },
+    {
+        "title": "Developing a Scholarly Identity during the PhD: Longitudinal Narrative Study",
+        "doi": "10.5281/zenodo.19507228",
+        "url": "https://zenodo.org/records/19507228/latest"
+    },
+    {
+        "title": "The Role of Doctoral Education in Driving Regional Economic Innovation",
+        "doi": "10.5281/zenodo.19507236",
+        "url": "https://zenodo.org/records/19507236/latest"
+    },
+    {
+        "title": "Addressing the 'Publication Pressure' in Modern Doctoral Programs",
+        "doi": "10.5281/zenodo.19507280",
+        "url": "https://zenodo.org/records/19507280/latest"
+    },
+    {
+        "title": "Virtual Reality as a Methodology in Doctoral Research: Efficacy and Limits",
+        "doi": "10.5281/zenodo.19507288",
+        "url": "https://zenodo.org/records/19507288/latest"
+    },
+    {
+        "title": "The Impact of Doctoral Mobility on Citation Metrics and Global Collaboration",
+        "doi": "10.5281/zenodo.19507292",
+        "url": "https://zenodo.org/records/19507292/latest"
+    },
+    {
+        "title": "Evaluating the Efficacy of Online Collaborative Tools in Grado Capstone Projects",
+        "doi": "10.5281/zenodo.19507298",
+        "url": "https://zenodo.org/records/19507298/latest"
+    },
+    {
+        "title": "The Role of Project-Based Learning in Undergraduate Engineering Success",
+        "doi": "10.5281/zenodo.19507306",
+        "url": "https://zenodo.org/records/19507306/latest"
+    },
+    {
+        "title": "Mental Health Support Systems in Higher Ed: A Review of Efficacy for Grado Students",
+        "doi": "10.5281/zenodo.19507314",
+        "url": "https://zenodo.org/records/19507314/latest"
+    },
+    {
+        "title": "The Impact of Remote Internships on Post-Graduation Job Placement",
+        "doi": "10.5281/zenodo.19507320",
+        "url": "https://zenodo.org/records/19507320/latest"
+    },
+    {
+        "title": "Evaluating Active Learning in Large Undergraduate Social Science Lectures",
+        "doi": "10.5281/zenodo.19507327",
+        "url": "https://zenodo.org/records/19507327/latest"
+    },
+    {
+        "title": "Digital Literacy as a Prerequisite for Success in Contemporary Grado Programs",
+        "doi": "10.5281/zenodo.19507334",
+        "url": "https://zenodo.org/records/19507334/latest"
+    },
+    {
+        "title": "The Crisis of Student Engagement: Re-thinking Assessment in Grado Degrees",
+        "doi": "10.5281/zenodo.19507348",
+        "url": "https://zenodo.org/records/19507348/latest"
+    },
+    {
+        "title": "Impact of Undergraduate Research Grants on Scientific Career Intentions",
+        "doi": "10.5281/zenodo.19507353",
+        "url": "https://zenodo.org/records/19507353/latest"
+    },
+    {
+        "title": "Social Segregation in Higher Education: Peer Effects on Undergraduate Learning",
+        "doi": "10.5281/zenodo.19507361",
+        "url": "https://zenodo.org/records/19507361/latest"
+    },
+    {
+        "title": "The Role of Mentorship in Reducing Dropout Rates in STEM Degrees",
+        "doi": "10.5281/zenodo.19507367",
+        "url": "https://zenodo.org/records/19507367/latest"
+    },
+    {
+        "title": "Transitioning from Bachillerato to Grado: Identifying the Readiness Gap",
+        "doi": "10.5281/zenodo.19507373",
+        "url": "https://zenodo.org/records/19507373/latest"
+    },
+    {
+        "title": "Global Perspectives in Grado Curricula: Measuring Intercultural Competency",
+        "doi": "10.5281/zenodo.19507381",
+        "url": "https://zenodo.org/records/19507381/latest"
+    },
+    {
+        "title": "The Impact of Part-Time Work on Undergraduate Academic Performance",
+        "doi": "10.5281/zenodo.19507397",
+        "url": "https://zenodo.org/records/19507397/latest"
+    },
+    {
+        "title": "AI in Undergraduate Assessment: Transitioning to AI-Resistant Task Design",
+        "doi": "10.5281/zenodo.19507403",
+        "url": "https://zenodo.org/records/19507403/latest"
+    },
+    {
+        "title": "The Role of Soft Skills Training in Law and Business Grado Degrees",
+        "doi": "10.5281/zenodo.19507411",
+        "url": "https://zenodo.org/records/19507411/latest"
+    },
+    {
+        "title": "Peer Assessment Efficacy in Large-Scale Grado Modules",
+        "doi": "10.5281/zenodo.19507419",
+        "url": "https://zenodo.org/records/19507419/latest"
+    },
+    {
+        "title": "The Impact of Institutional Branding on Undergraduate Career Satisfaction",
+        "doi": "10.5281/zenodo.19507423",
+        "url": "https://zenodo.org/records/19507423/latest"
+    },
+    {
+        "title": "Developing Civic Engagement through Community-Based Undergraduate Projects",
+        "doi": "10.5281/zenodo.19507430",
+        "url": "https://zenodo.org/records/19507430/latest"
+    },
+    {
+        "title": "The Role of Academic Libraries in Supporting Undergraduate Information Literacy",
+        "doi": "10.5281/zenodo.19507439",
+        "url": "https://zenodo.org/records/19507439/latest"
+    },
+    {
+        "title": "Ethics in the Undergraduate Curriculum: A Comparative Analysis across Degrees",
+        "doi": "10.5281/zenodo.19507447",
+        "url": "https://zenodo.org/records/19507447/latest"
+    },
+    {
+        "title": "Social Mobility and Access to Elite Postgraduate Education: A Global Review",
+        "doi": "10.5281/zenodo.19507453",
+        "url": "https://zenodo.org/records/19507453/latest"
+    },
+    {
+        "title": "The Economic ROI of Specialized Master's Degrees in the Global Labor Market",
+        "doi": "10.5281/zenodo.19507459",
+        "url": "https://zenodo.org/records/19507459/latest"
+    },
+    {
+        "title": "Online vs. In-Person MBA: A Comparative Analysis of Networking and Skill Gains",
+        "doi": "10.5281/zenodo.19507465",
+        "url": "https://zenodo.org/records/19507465/latest"
+    },
+    {
+        "title": "The Impact of Postgraduate Specialization on Mid-Career Promotion Rates",
+        "doi": "10.5281/zenodo.19507471",
+        "url": "https://zenodo.org/records/19507471/latest"
+    },
+    {
+        "title": "Fostering Transnational Research Collaboration in Postgraduate Cohorts",
+        "doi": "10.5281/zenodo.19507475",
+        "url": "https://zenodo.org/records/19507475/latest"
+    },
+    {
+        "title": "The Role of Industry Partnerships in the Design of Postgrado Curricula",
+        "doi": "10.5281/zenodo.19507485",
+        "url": "https://zenodo.org/records/19507485/latest"
+    },
+    {
+        "title": "Mental Health and Resilience in High-Pressure Professional Master's Programs",
+        "doi": "10.5281/zenodo.19507493",
+        "url": "https://zenodo.org/records/19507493/latest"
+    },
+    {
+        "title": "Evaluating the Efficacy of Micro-Credentials as Stackable Credits for Master's",
+        "doi": "10.5281/zenodo.19507504",
+        "url": "https://zenodo.org/records/19507504/latest"
+    },
+    {
+        "title": "Academic Integrity in the Age of AI: Challenges for Postgraduate Research",
+        "doi": "10.5281/zenodo.19507510",
+        "url": "https://zenodo.org/records/19507510/latest"
+    },
+    {
+        "title": "The Role of Executive Coaching in Postgraduate Leadership Development",
+        "doi": "10.5281/zenodo.19507518",
+        "url": "https://zenodo.org/records/19507518/latest"
+    },
+    {
+        "title": "Transitioning from Generalist Grado to Specialist Postgrado: Cognitive Shifts",
+        "doi": "10.5281/zenodo.19507524",
+        "url": "https://zenodo.org/records/19507524/latest"
+    },
+    {
+        "title": "The Impact of Postgraduate Mobility on Global Knowledge Transfer",
+        "doi": "10.5281/zenodo.19507536",
+        "url": "https://zenodo.org/records/19507536/latest"
+    },
+    {
+        "title": "Diversity and Representation in Postgraduate Research in Social Sciences",
+        "doi": "10.5281/zenodo.19507542",
+        "url": "https://zenodo.org/records/19507542/latest"
+    },
+    {
+        "title": "The Future of Professional Doctorate Degrees in the Corporate World",
+        "doi": "10.5281/zenodo.19507548",
+        "url": "https://zenodo.org/records/19507548/latest"
+    },
+    {
+        "title": "Evaluating Critical Thinking Gains in Interdisciplinary Master's Programs",
+        "doi": "10.5281/zenodo.19507554",
+        "url": "https://zenodo.org/records/19507554/latest"
+    },
+    {
+        "title": "The Impact of Digital Portfolio Assessment on Postgraduate Employability",
+        "doi": "10.5281/zenodo.19507560",
+        "url": "https://zenodo.org/records/19507560/latest"
+    },
+    {
+        "title": "Addressing the Skills Gap through Work-Integrated Postgraduate Learning",
+        "doi": "10.5281/zenodo.19507568",
+        "url": "https://zenodo.org/records/19507568/latest"
+    },
+    {
+        "title": "Ethics and Data Privacy in Postgraduate Data Science Training",
+        "doi": "10.5281/zenodo.19507572",
+        "url": "https://zenodo.org/records/19507572/latest"
+    },
+    {
+        "title": "The Role of Mentorship in Enhancing Retention in Master's Programs",
+        "doi": "10.5281/zenodo.19507574",
+        "url": "https://zenodo.org/records/19507574/latest"
+    },
+    {
+        "title": "Transdisciplinary Approaches to Problem Solving in Postgraduate Education",
+        "doi": "10.5281/zenodo.19507576",
+        "url": "https://zenodo.org/records/19507576/latest"
+    }
+]
