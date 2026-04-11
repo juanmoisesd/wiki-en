@@ -104,14 +104,16 @@ if __name__ == "__main__":
     src_dir = "preprints_source"
 
     # Load already uploaded DOIs to avoid duplicates if restarted
+    results_file = "zenodo_results_extended.json"
     results = []
-    if os.path.exists("zenodo_results_100.json"):
-        with open("zenodo_results_100.json", "r") as f:
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
             results = json.load(f)
 
     uploaded_titles = [r['title'] for r in results]
 
-    files = sorted([f for f in os.listdir(pdf_dir) if f.endswith('.pdf')])
+    # Process only the "Ext_" files
+    files = sorted([f for f in os.listdir(pdf_dir) if f.endswith('.pdf') and 'Ext_' in f])
     for filename in files:
         pdf_path = os.path.join(pdf_dir, filename)
         md_path = os.path.join(src_dir, filename.replace('.pdf', '.md'))
@@ -130,7 +132,7 @@ if __name__ == "__main__":
             print(f"Success! DOI: {res['doi']}")
             results.append(res)
             # Save progress every time
-            with open("zenodo_results_100.json", "w") as f:
+            with open(results_file, "w") as f:
                 json.dump(results, f, indent=4)
             # Avoid rate limits
             time.sleep(1)

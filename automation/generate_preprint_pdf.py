@@ -56,6 +56,10 @@ def markdown_to_pdf(md_path, pdf_path):
         if end_yaml != -1:
             content = content[end_yaml+3:].strip()
 
+    # Sanitize content for non-latin characters before splitting
+    content = content.replace('ó', 'o').replace('í', 'i').replace('é', 'e').replace('á', 'a').replace('ú', 'u')
+    content = content.replace('ñ', 'n').replace('Ü', 'U').replace('ü', 'u')
+
     sections = content.split('\n')
     for line in sections:
         line = line.strip()
@@ -63,7 +67,6 @@ def markdown_to_pdf(md_path, pdf_path):
             pdf.ln(5)
             continue
 
-        # Simple Markdown parsing
         if line.startswith('# '):
             pdf.set_font("Times", "B", 18)
             text = line[2:]
@@ -81,7 +84,7 @@ def markdown_to_pdf(md_path, pdf_path):
             pdf.set_font("Times", "", 12)
             text = line.replace('*', '')
 
-        # Sanitize for latin-1
+        # Final encoding check
         clean_text = text.encode('latin-1', 'replace').decode('latin-1')
 
         try:
