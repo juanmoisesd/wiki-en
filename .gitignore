@@ -1,0 +1,4 @@
+# Preprint generation artifacts
+preprints_source/
+preprints_pdf/
+__pycache__/

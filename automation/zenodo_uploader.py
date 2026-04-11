@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+import time
 
 # Zenodo API configuration
 ACCESS_TOKEN = os.environ.get('ZENODO_ACCESS_TOKEN')
@@ -17,14 +18,11 @@ def upload_preprint(pdf_path, md_path):
     with open(md_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    title = re.search(r'Title: (.*)', content).group(1)
-    # Be more flexible with abstract extraction
+    title_match = re.search(r'Title: (.*)', content)
+    title = title_match.group(1) if title_match else "Untitled"
+
     abstract_match = re.search(r'\*\*Abstract\*\*\n(.*?)\n\n', content, re.DOTALL)
-    if abstract_match:
-        abstract = abstract_match.group(1).strip()
-    else:
-        # Fallback
-        abstract = "Academic preprint by Juan Moisés de la Serna."
+    abstract = abstract_match.group(1).strip() if abstract_match else "Academic preprint by Juan Moisés de la Serna."
 
     keywords_match = re.search(r'\*\*Keywords\*\*: (.*)', content)
     keywords = keywords_match.group(1).split(', ') if keywords_match else ["education"]
@@ -48,15 +46,12 @@ def upload_preprint(pdf_path, md_path):
     # 3. Upload file
     filename = os.path.basename(pdf_path)
     with open(pdf_path, "rb") as fp:
-        # Note: bucket_url already includes deposition id sometimes,
-        # but let's follow the Quickstart exactly
         r = requests.put(
             f"{bucket_url}/{filename}",
             data=fp,
             params=params,
         )
 
-    # Zenodo returns 201 for new file creation in bucket
     if r.status_code not in [200, 201]:
         print(f"Error uploading file (Status {r.status_code}): {r.json()}")
         return None
@@ -74,8 +69,9 @@ def upload_preprint(pdf_path, md_path):
                           'affiliation': 'University International of La Rioja (UNIR)',
                           'orcid': '0000-0002-8401-8018'}],
             'keywords': keywords,
-            # Communities must exist, let's use common ones or omit if unsure
-            # 'communities': [{'identifier': 'education'}]
+            'communities': [{'identifier': 'education'},
+                            {'identifier': 'educational-research'},
+                            {'identifier': 'pedagogy'}]
         }
     }
 
@@ -107,18 +103,36 @@ if __name__ == "__main__":
     pdf_dir = "preprints_pdf"
     src_dir = "preprints_source"
 
+    # Load already uploaded DOIs to avoid duplicates if restarted
     results = []
-    for filename in sorted(os.listdir(pdf_dir)):
-        if filename.endswith('.pdf'):
-            pdf_path = os.path.join(pdf_dir, filename)
-            md_path = os.path.join(src_dir, filename.replace('.pdf', '.md'))
-            print(f"Uploading {filename}...")
-            res = upload_preprint(pdf_path, md_path)
-            if res:
-                print(f"Success! DOI: {res['doi']}")
-                results.append(res)
-            else:
-                print(f"Failed to upload {filename}")
+    if os.path.exists("zenodo_results_100.json"):
+        with open("zenodo_results_100.json", "r") as f:
+            results = json.load(f)
 
-    with open("zenodo_results.json", "w") as f:
-        json.dump(results, f, indent=4)
+    uploaded_titles = [r['title'] for r in results]
+
+    files = sorted([f for f in os.listdir(pdf_dir) if f.endswith('.pdf')])
+    for filename in files:
+        pdf_path = os.path.join(pdf_dir, filename)
+        md_path = os.path.join(src_dir, filename.replace('.pdf', '.md'))
+
+        # Extract title to check
+        with open(md_path, 'r', encoding='utf-8') as f:
+            title_match = re.search(r'Title: (.*)', f.read())
+            title = title_match.group(1) if title_match else "Untitled"
+
+        if title in uploaded_titles:
+            continue
+
+        print(f"Uploading {filename}...")
+        res = upload_preprint(pdf_path, md_path)
+        if res:
+            print(f"Success! DOI: {res['doi']}")
+            results.append(res)
+            # Save progress every time
+            with open("zenodo_results_100.json", "w") as f:
+                json.dump(results, f, indent=4)
+            # Avoid rate limits
+            time.sleep(1)
+        else:
+            print(f"Failed to upload {filename}")
