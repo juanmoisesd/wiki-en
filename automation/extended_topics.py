@@ -1,0 +1,110 @@
+EXTENDED_TOPICS = {
+    "Infantil": [
+        {"id": "Infantil_1", "title": "The Impact of Screen Time on Early Language Acquisition in Preschoolers"},
+        {"id": "Infantil_2", "title": "Play-Based Learning vs. Academic Rigor in Early Childhood Education"},
+        {"id": "Infantil_3", "title": "The Role of Emotional Regulation in Kindergarten Success: A Longitudinal Study"},
+        {"id": "Infantil_4", "title": "Neurobiological Effects of Bilingual Exposure in Children Under Five"},
+        {"id": "Infantil_5", "title": "Parental Involvement and the Development of Early Literacy Skills"},
+        {"id": "Infantil_6", "title": "The Efficacy of Montessori Methods in Promoting Executive Function"},
+        {"id": "Infantil_7", "title": "Impact of Nutrition on Cognitive Development in the First 1,000 Days"},
+        {"id": "Infantil_8", "title": "Evaluating the Role of Outdoor Play in Developing Motor Skills"},
+        {"id": "Infantil_9", "title": "Early Identification of Neurodevelopmental Disorders in Preschool Settings"},
+        {"id": "Infantil_10", "title": "The Influence of Peer Interactions on Social Competence in Early Childhood"}
+    ],
+    "Primaria": [
+        {"id": "Primaria_1", "title": "Gamification and Mathematics Achievement in Primary School Students"},
+        {"id": "Primaria_2", "title": "The Effectiveness of Inquiry-Based Science Education in Grades 1-6"},
+        {"id": "Primaria_3", "title": "Socioeconomic Status and the Reading Achievement Gap in Elementary Education"},
+        {"id": "Primaria_4", "title": "The Impact of Physical Activity on Attention Span in the Primary Classroom"},
+        {"id": "Primaria_5", "title": "Integrating Social-Emotional Learning into the Standard Primary Curriculum"},
+        {"id": "Primaria_6", "title": "Digital Literacy in Elementary Schools: Balancing Tool Proficiency with Critical Thinking"},
+        {"id": "Primaria_7", "title": "The Role of Arts Education in Developing Creative Problem-Solving Skills"},
+        {"id": "Primaria_8", "title": "Addressing Bullying in Primary Schools: A Meta-Analysis of Peer-Mediation Programs"},
+        {"id": "Primaria_9", "title": "The Efficacy of Personalized Learning Pathways in Primary Mathematics"},
+        {"id": "Primaria_10", "title": "Parental Communication and Student Motivation in Primary Education"}
+    ],
+    "Secundaria": [
+        {"id": "Secundaria_1", "title": "Adolescent Mental Health and Academic Performance: The Role of School Counseling"},
+        {"id": "Secundaria_2", "title": "Impact of Social Media Usage on Cognitive Load and Study Habits in Teens"},
+        {"id": "Secundaria_3", "title": "The Flipped Classroom Model in Secondary Science: A Comparative Analysis"},
+        {"id": "Secundaria_4", "title": "Gender Differences in STEM Career Aspirations among Secondary Students"},
+        {"id": "Secundaria_5", "title": "The Efficacy of Project-Based Learning in Developing 21st-Century Skills"},
+        {"id": "Secundaria_6", "title": "Vocational vs. Academic Tracks in Secondary Education: Long-Term Economic Outcomes"},
+        {"id": "Secundaria_7", "title": "Addressing the Digital Divide in Secondary Education during Remote Learning"},
+        {"id": "Secundaria_8", "title": "The Role of Extracurricular Activities in Fostering School Belongingness"},
+        {"id": "Secundaria_9", "title": "Evaluating Formative Assessment Strategies in Secondary Language Arts"},
+        {"id": "Secundaria_10", "title": "The Impact of School Start Times on Adolescent Sleep and Achievement"}
+    ],
+    "Bachillerato": [
+        {"id": "Bachillerato_1", "title": "Critical Thinking and Media Literacy: Preparing Bachillerato Students for Higher Ed"},
+        {"id": "Bachillerato_2", "title": "The Stress of University Entrance Exams: Impact on Student Wellbeing and Performance"},
+        {"id": "Bachillerato_3", "title": "Advanced Mathematics in Bachillerato: Predictors of Success in Engineering Degrees"},
+        {"id": "Bachillerato_4", "title": "The Role of Philosophy in Developing Ethical Reasoning in Pre-University Students"},
+        {"id": "Bachillerato_5", "title": "Impact of Bilingual Bachillerato Programs on Global Citizenship Identity"},
+        {"id": "Bachillerato_6", "title": "The Efficacy of Hybrid Learning Models in High-Stakes Senior Secondary Education"},
+        {"id": "Bachillerato_7", "title": "Fostering Research Skills in Bachillerato: The Impact of the Monographic Thesis"},
+        {"id": "Bachillerato_8", "title": "Career Guidance and Decision-Making Self-Efficacy in Bachillerato Students"},
+        {"id": "Bachillerato_9", "title": "The Influence of Teacher-Student Relationships on Academic Resilience in Teens"},
+        {"id": "Bachillerato_10", "title": "Digital Portfolios as a Method for Competency Assessment in Bachillerato"}
+    ],
+    "Uni_Grado": [
+        {"id": "UniGrado_1", "title": "The Efficacy of Active Learning in Large-Scale Undergraduate STEM Courses"},
+        {"id": "UniGrado_2", "title": "First-Year Experience Programs and Undergraduate Retention Rates"},
+        {"id": "UniGrado_3", "title": "Impact of Internship Experiences on Post-Graduation Employability for Degree Holders"},
+        {"id": "UniGrado_4", "title": "The Role of Peer Tutoring in Reducing Academic Failure in Undergraduate Mathematics"},
+        {"id": "UniGrado_5", "title": "Digital Transformation of the Undergraduate Library: Impact on Information Literacy"},
+        {"id": "UniGrado_6", "title": "Mental Health and Academic Burnout among Undergraduate Medical Students"},
+        {"id": "UniGrado_7", "title": "The Impact of Student Loan Debt on the Choice of Undergraduate Major"},
+        {"id": "UniGrado_8", "title": "Evaluating the Efficacy of Online vs. In-Person Undergraduate Degrees"},
+        {"id": "UniGrado_9", "title": "Collaborative Research between Undergraduate Students and Faculty: Benefits and Barriers"},
+        {"id": "UniGrado_10", "title": "The Role of Soft Skills Development in the Contemporary Undergraduate Curriculum"}
+    ],
+    "Uni_Postgrado": [
+        {"id": "UniPost_1", "title": "Master's Degree Specialization and Professional Growth: A Longitudinal Analysis"},
+        {"id": "UniPost_2", "title": "The Impact of Online Executive Education on Leadership Competency Development"},
+        {"id": "UniPost_3", "title": "Work-Life Balance Challenges for Part-Time Postgraduate Students"},
+        {"id": "UniPost_4", "title": "The Value of Micro-Credentials vs. Full Master's Degrees in the Tech Industry"},
+        {"id": "UniPost_5", "title": "Internationalization of Postgraduate Education: Impact of Multi-Cultural Cohorts"},
+        {"id": "UniPost_6", "title": "Advanced Research Methodologies in Postgraduate Social Science Training"},
+        {"id": "UniPost_7", "title": "The Role of Mentorship in Success Rates of MBA Programs"},
+        {"id": "UniPost_8", "title": "Postgraduate Education as a Driver of Social Mobility: Evidence from Global Trends"},
+        {"id": "UniPost_9", "title": "Evaluating the Impact of Artificial Intelligence on Postgraduate Research Productivity"},
+        {"id": "UniPost_10", "title": "The Transition from Degree to Master: Psychological and Academic Readiness"}
+    ],
+    "Uni_Doctorado": [
+        {"id": "UniDoc_1", "title": "Predictors of Completion in Doctoral Programs: The Role of Supervisor Relationship"},
+        {"id": "UniDoc_2", "title": "The Mental Health Crisis in PhD Candidates: Causes and Institutional Responses"},
+        {"id": "UniDoc_3", "title": "Evolving Models of the Doctoral Thesis: Monograph vs. Compendium of Articles"},
+        {"id": "UniDoc_4", "title": "The Impact of Funding Availability on Doctoral Research Quality and Innovation"},
+        {"id": "UniDoc_5", "title": "Doctoral Training and the 'Alt-Ac' Career Path: Preparing Researchers for Industry"},
+        {"id": "UniDoc_6", "title": "The Role of Peer Support Networks in Reducing Isolation during the PhD"},
+        {"id": "UniDoc_7", "title": "Ethics in Doctoral Research: Navigating Data Privacy and Institutional Boards"},
+        {"id": "UniDoc_8", "title": "Impact of International Doctoral Mobility on Scientific Collaboration Networks"},
+        {"id": "UniDoc_9", "title": "The Use of AI in Literature Reviews: Implications for Doctoral Scholarship"},
+        {"id": "UniDoc_10", "title": "Evaluating the 'Impact Factor' of Doctoral Dissertations in the Digital Age"}
+    ],
+    "Adultos": [
+        {"id": "Adultos_1", "title": "Lifelong Learning and the Digital Divide: Challenges for the Aging Workforce"},
+        {"id": "Adultos_2", "title": "The Impact of Adult Literacy Programs on Economic Empowerment in Developing Countries"},
+        {"id": "Adultos_3", "title": "Transformative Learning Theory in Adult Education: Case Studies of Career Shifts"},
+        {"id": "Adultos_4", "title": "Online Learning Platforms for Seniors: Improving Cognitive Health and Social Inclusion"},
+        {"id": "Adultos_5", "title": "The Role of Vocational Education and Training (VET) in Adult Re-skilling"},
+        {"id": "Adultos_6", "title": "Psychological Barriers to Returning to Education in Late Adulthood"},
+        {"id": "Adultos_7", "title": "Adult Learning in the Workplace: Informal vs. Formal Training Efficacy"},
+        {"id": "Adultos_8", "title": "The Impact of Refugee Education Programs on Adult Integration and Employment"},
+        {"id": "Adultos_9", "title": "Self-Directed Learning Readiness among Adult Learners in Online Environments"},
+        {"id": "Adultos_10", "title": "Evaluating the Impact of Mindfulness Training in Adult Community Education"}
+    ],
+    "Especial": [
+        {"id": "Especial_1", "title": "Universal Design for Learning (UDL) in Inclusive Classrooms: A Systematic Review"},
+        {"id": "Especial_2", "title": "Assistive Technology Efficacy for Students with Severe Motor Impairments"},
+        {"id": "Especial_3", "title": "The Impact of Early Intervention on Long-Term Outcomes for Children with Autism"},
+        {"id": "Especial_4", "title": "Social Skills Training in Special Education: Evidence-Based Best Practices"},
+        {"id": "Especial_5", "title": "Teacher Preparedness for Inclusion: A Comparative Study of Special vs. Mainstream Training"},
+        {"id": "Especial_6", "title": "The Role of Sensory Rooms in Managing Behavioral Challenges in Schools"},
+        {"id": "Especial_7", "title": "Impact of Individualized Education Programs (IEP) on Academic Success Metrics"},
+        {"id": "Especial_8", "title": "Neurodiversity in the Workplace: Transition Support for Students with ADHD"},
+        {"id": "Especial_9", "title": "Evaluating the Impact of Peer-Buddy Systems on Social Inclusion for Special Needs"},
+        {"id": "Especial_10", "title": "Family-Centered Approaches in Special Education: Impact on Student and Parent Wellbeing"}
+    ]
+}
