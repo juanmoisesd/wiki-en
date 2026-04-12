@@ -26,7 +26,6 @@ class PreprintPDF(FPDF):
                 break
 
         if not found_font:
-            # Fallback to Helvetica (Built-in)
             self.add_font("DejaVu", "", style="", fname="helvetica")
 
         found_bold = False
@@ -47,7 +46,9 @@ class PreprintPDF(FPDF):
     def footer(self):
         self.set_y(-15)
         self.set_font('DejaVu', '', 8)
-        self.cell(0, 10, f'Page {self.page_no()}', align='C')
+        # Determine language for "Page" translation
+        page_word = "Page" # Default (EN/FR)
+        self.cell(0, 10, f'{page_word} {self.page_no()}', align='C')
 
 def convert_md_to_pdf(md_path, pdf_path):
     with open(md_path, 'r', encoding='utf-8') as f:
@@ -83,7 +84,7 @@ def convert_md_to_pdf(md_path, pdf_path):
             pdf.ln(2)
 
         # Bold author / metadata
-        elif line.startswith('**') and line.endswith('**') and len(line) < 100:
+        elif line.startswith('**') and line.endswith('**') and len(line) < 150:
             pdf.set_font('DejaVu', 'B', 11)
             pdf.multi_cell(0, 8, line.replace('**', ''))
             pdf.ln(2)
@@ -94,7 +95,8 @@ def convert_md_to_pdf(md_path, pdf_path):
             # Remove MD bold/italic markup
             clean_line = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
             clean_line = re.sub(r'\*(.*?)\*', r'\1', clean_line)
-            # Basic table row cleanup if it leaked through
+
+            # Simple table row cleanup
             if clean_line.startswith('|'):
                 clean_line = clean_line.replace('|', ' ').strip()
                 if not clean_line: continue
@@ -104,7 +106,6 @@ def convert_md_to_pdf(md_path, pdf_path):
                 pdf.multi_cell(0, 7, clean_line)
                 pdf.ln(2)
             except Exception:
-                # Last resort for layout errors
                 continue
 
         # Empty line
@@ -114,13 +115,16 @@ def convert_md_to_pdf(md_path, pdf_path):
     pdf.output(pdf_path)
 
 def main():
-    source_dirs = ['preprints_source', 'preprints_source/en']
+    source_dirs = ['preprints_source', 'preprints_source/en', 'preprints_source/fr']
 
     for source_dir in source_dirs:
         if not os.path.exists(source_dir): continue
 
+        # Output directory selection
         if 'en' in source_dir:
             output_dir = 'preprints_pdf/en'
+        elif 'fr' in source_dir:
+            output_dir = 'preprints_pdf/fr'
         else:
             output_dir = 'preprints_pdf'
 

@@ -10,13 +10,19 @@ def validate_preprint(filepath):
     warnings = []
 
     # Detect language based on path
-    is_english = "/en/" in filepath or filepath.startswith("en/")
+    if "/en/" in filepath or filepath.startswith("en/"):
+        lang = "en"
+    elif "/fr/" in filepath or filepath.startswith("fr/"):
+        lang = "fr"
+    else:
+        lang = "es"
 
     # 1. Length Check
     char_count = len(content)
-    threshold = 20000 if is_english else 15000
+    # Threshold for EN/FR extensive is 20,000; ES is 15,000
+    threshold = 20000 if lang in ["en", "fr"] else 15000
     if char_count < threshold:
-        errors.append(f"Length is {char_count} characters, which is below the {threshold} threshold.")
+        errors.append(f"Length is {char_count} characters, which is below the {threshold} threshold for {lang}.")
 
     # 2. Citation Check
     # Looking for APA-style citations like (Author, Year) or references list items
@@ -24,7 +30,7 @@ def validate_preprint(filepath):
     reference_items = re.findall(r'\d+\.\s+[A-Z]', content)
     total_refs = max(len(citations), len(reference_items))
 
-    ref_threshold = 50 if is_english else 40
+    ref_threshold = 50 if lang in ["en", "fr"] else 40
     if total_refs < ref_threshold:
         errors.append(f"Found {total_refs} references/citations, which is below the {ref_threshold} threshold.")
 
@@ -40,14 +46,12 @@ def validate_preprint(filepath):
             errors.append(f"Missing required authorship info: {author_info}")
 
     # 4. Academic Structure
-    if is_english:
-        required_sections = [
-            "Abstract", "Keywords", "Introduction", "Literature Review", "Methodology", "Results", "Discussion", "Conclusion", "References"
-        ]
+    if lang == "en":
+        required_sections = ["Abstract", "Keywords", "Introduction", "Literature Review", "Methodology", "Results", "Discussion", "Conclusion", "References"]
+    elif lang == "fr":
+        required_sections = ["Résumé", "Abstract", "Mots-clés", "Introduction", "Revue de la littérature", "Méthodologie", "Résultats", "Discussion", "Conclusion", "Références"]
     else:
-        required_sections = [
-            "Resumen", "Abstract", "Keywords", "Introducción", "Marco teórico", "Metodología", "Resultados", "Discusión", "Conclusiones", "Referencias"
-        ]
+        required_sections = ["Resumen", "Abstract", "Keywords", "Introducción", "Marco teórico", "Metodología", "Resultados", "Discusión", "Conclusiones", "Referencias"]
 
     for section in required_sections:
         if section.lower() not in content.lower():
