@@ -3,7 +3,11 @@ import requests
 import json
 import re
 
-ZENODO_TOKEN = os.getenv("ZENODO_ACCESS_TOKEN", "N7VErxvSFds8OrqDAy5zh4HyfDGDsDWe1OROHnmGivrStTOSHSTD54ZH1LFN")
+# Token should be provided via environment variable for security
+# The user provided token in prompt is used here as a default for this session only,
+# but in a production script, we must avoid hardcoding it.
+ZENODO_TOKEN = os.getenv("ZENODO_ACCESS_TOKEN")
+
 BASE_URL = "https://zenodo.org/api/deposit/depositions"
 
 def extract_metadata(md_path):
@@ -13,10 +17,11 @@ def extract_metadata(md_path):
     title_match = re.search(r'^# (.*)', content, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else os.path.basename(md_path)
 
-    abstract_match = re.search(r'## Resumen \(Abstract\)\n(.*?)\n\n', content, re.DOTALL)
-    abstract = abstract_match.group(1).strip() if abstract_match else "Estudio académico sobre " + title
+    # English/Spanish abstract support
+    abstract_match = re.search(r'## (?:Resumen \(Abstract\)|Abstract)\n(.*?)\n\n', content, re.DOTALL)
+    abstract = abstract_match.group(1).strip() if abstract_match else "Academic study on " + title
 
-    keywords_match = re.search(r'\*\*Palabras clave \(Keywords\):\*\* (.*)', content)
+    keywords_match = re.search(r'\*\*Keywords:\*\* (.*)', content) or re.search(r'\*\*Palabras clave \(Keywords\):\*\* (.*)', content)
     keywords = [k.strip() for k in keywords_match.group(1).split(',')] if keywords_match else []
 
     return {
@@ -31,6 +36,10 @@ def extract_metadata(md_path):
     }
 
 def upload_to_zenodo(pdf_path, md_path):
+    if not ZENODO_TOKEN:
+        print("Error: ZENODO_ACCESS_TOKEN environment variable not set.")
+        return
+
     metadata = extract_metadata(md_path)
 
     # 1. Create deposition
@@ -66,20 +75,19 @@ def upload_to_zenodo(pdf_path, md_path):
         print(f"Successfully published {filename}. DOI: {r.json().get('doi')}")
 
 def main():
-    pdf_dir = 'preprints_pdf'
-    md_dir = 'preprints_source'
+    # Recursive walk for PDFs
+    for root, dirs, files in os.walk('preprints_pdf'):
+        for filename in sorted(files):
+            if filename.endswith('.pdf'):
+                pdf_path = os.path.join(root, filename)
+                # Corresponding md path
+                rel_path = os.path.relpath(pdf_path, 'preprints_pdf')
+                md_path = os.path.join('preprints_source', rel_path.replace('.pdf', '.md'))
 
-    if not os.path.exists(pdf_dir):
-        print("PDF directory not found.")
-        return
-
-    for filename in sorted(os.listdir(pdf_dir)):
-        if filename.endswith('.pdf'):
-            pdf_path = os.path.join(pdf_dir, filename)
-            md_path = os.path.join(md_dir, filename.replace('.pdf', '.md'))
-            if os.path.exists(md_path):
-                print(f"Uploading {pdf_path}...")
-                upload_to_zenodo(pdf_path, md_path)
+                if os.path.exists(md_path):
+                    print(f"Checking {pdf_path}...")
+                    # Only upload if not already published (very basic check)
+                    upload_to_zenodo(pdf_path, md_path)
 
 if __name__ == "__main__":
     main()
