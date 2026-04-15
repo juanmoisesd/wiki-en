@@ -1,0 +1,5 @@
+automation/*.log
+automation/last_upload_results*.json
+automation/multilingual_log.txt
+preprints_pdf*/
+preprints_source*/
