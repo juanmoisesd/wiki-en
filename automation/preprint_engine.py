@@ -120,9 +120,16 @@ def upload_to_zenodo(pdf_path, title, token):
     print(f"Successfully uploaded and published {filename} to Zenodo. Deposition ID: {deposition_id}")
     return deposition_id
 
+import argparse
+
 def main():
-    source_dir = 'preprints_source'
-    output_dir = 'preprints_pdf'
+    parser = argparse.ArgumentParser(description='Generate PDFs and upload to Zenodo.')
+    parser.add_argument('--source', default='preprints_source', help='Source directory for Markdown files')
+    parser.add_argument('--output', default='preprints_pdf', help='Output directory for PDF files')
+    args = parser.parse_args()
+
+    source_dir = args.source
+    output_dir = args.output
     # Use environment variable for token
     token = os.getenv("ZENODO_ACCESS_TOKEN")
 
