@@ -1,0 +1,16 @@
+{
+  "name": "juan-moises-zenodo-collection",
+  "title": "Juan Moisés de la Serna Zenodo Collection",
+  "publisher": {
+    "name": "Juan Moisés de la Serna",
+    "path": "https://juanmoisesd.github.io"
+  },
+  "resources": [
+    {
+      "name": "zenodo-metadata",
+      "path": "metadata.jsonl",
+      "format": "jsonl",
+      "profile": "data-resource"
+    }
+  ]
+}
