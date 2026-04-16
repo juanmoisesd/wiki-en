@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "The Thin Line: The Correlation Between Genius, Eccentricity, and Neurodivergence",
+  "description": "The historical and persistent association between genius and \"madness,\" or between high intellectual capacity and behavioral eccentricity, has recently found a new and robust interpretive framework in the contemporary concept of neurodivergence. This manuscript provides a comprehensive and multi-layered analysis of the prevalence and neurobiological basis of the coexistence of a superior Intelligence Quotient (IQ) with neurodevelopmental conditions such as Autism Spectrum Disorder (ASD), Attention Deficit Hyperactivity Disorder (ADHD), and certain biologically based mood disorders (e.g., bipolar spectrum). We explore in depth the phenomenon of \"double exceptionality\" (2e)\u2014a clinical and educational condition where exceptional talent often masks or is masked by a developmental difficulty, significantly complicating accurate diagnosis and specialized intervention. Through a systematic review of behavioral genetics, high-resolution neuroimaging, and clinical psychology studies, we examine the \"shared vulnerability\" hypothesis. This hypothesis suggests that certain genetic traits and neural connectivity patterns (such as reduced latent inhibition and high sensory sensitivity) that favor radical creativity and complex, multi-variable thinking also predispose individuals to atypical social processing or divergent attention. The findings indicate that genius often sits on a spectrum of non-normative brain functioning, where eccentricity is not an accidental or pathological byproduct but an integral, functional component of a highly specialized and divergent cognitive architecture. We discuss the implications for inclusive education, workplace neurodiversity, and the psychological well-being of the twice-exceptional population.",
+  "url": "https://zenodo.org/record/19588560",
+  "identifier": "10.5281/zenodo.19588560",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

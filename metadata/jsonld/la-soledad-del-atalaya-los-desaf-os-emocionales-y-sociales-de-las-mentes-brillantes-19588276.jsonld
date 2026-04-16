@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "La soledad del atalaya: Los desaf\u00edos emocionales y sociales de las mentes brillantes",
+  "description": "La alta capacidad intelectual y la genialidad a menudo se perciben socialmente como una ventaja inequ\u00edvoca y un camino directo al \u00e9xito; sin embargo, la literatura cient\u00edfica especializada sugiere de forma consistente que el talento excepcional puede conllevar vulnerabilidades psicodin\u00e1micas y sociales profundas y espec\u00edficas. Este manuscrito explora de forma exhaustiva la dimensi\u00f3n socioemocional de la superdotaci\u00f3n, analizando fen\u00f3menos cr\u00edticos como la asincron\u00eda del desarrollo, las sobreexcitabilidades (Overexcitabilities) y el aislamiento social resultante de la brecha de comunicaci\u00f3n. Se examina la hip\u00f3tesis de la \"discrepancia cognitiva-social\", un estado donde la capacidad de razonamiento abstracto avanzado supera con creces la madurez emocional cronol\u00f3gica o la capacidad de aceptaci\u00f3n por parte del grupo de pares. A trav\u00e9s de una revisi\u00f3n sistem\u00e1tica de estudios cl\u00ednicos, cualitativos y longitudinales, se investiga la prevalencia de sentimientos de incomprensi\u00f3n, el denominado \"s\u00edndrome del impostor\" y la hipersensibilidad sensorial y emocional en individuos con un Cociente Intelectual (CI) muy elevado. Los resultados de la investigaci\u00f3n indican que, si bien la inteligencia act\u00faa como un factor protector en m\u00faltiples contextos, los genios enfrentan desaf\u00edos existenciales \u00fanicos relacionados con la b\u00fasqueda de significado profundo y la dificultad de establecer conexiones aut\u00e9nticas en entornos que no comparten su ritmo, intensidad o profundidad de procesamiento de la informaci\u00f3n. Se discuten, finalmente, diversas estrategias de intervenci\u00f3n psicopedag\u00f3gica y cl\u00ednica orientadas a fomentar la resiliencia, el autoconocimiento y el ajuste social saludable en las mentes brillantes.",
+  "url": "https://zenodo.org/record/19588276",
+  "identifier": "10.5281/zenodo.19588276",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

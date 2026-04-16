@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Neuroplasticity and Obsession: How Deliberate Practice Resculpts the Genius Brain",
+  "description": "The development of extraordinary skills and the emergence of genius are not merely consequences of a favorable genetic endowment, but the result of a dynamic, prolonged, and bidirectional interaction between initial biological potential and intensive sensory, motor, and cognitive experience. This manuscript provides a comprehensive and multi-layered exploration of the critical role of \"deliberate practice\" and obsessive dedication in the physical and functional remodeling of the human brain architecture through the sophisticated mechanisms of neuroplasticity. We critically analyze the popular \"10,000-hour rule\" concept and its neurophysiological basis in the strengthening of axonal myelination, regional synaptogenesis, dendritic arborization, and the expansion of specialized cortical maps. Through a systematic review of neuroimaging studies in experts across diverse domains (elite musicians, high-level chess players, world-class athletes, and polyglots), we examine how prolonged, high-quality training induces measurable structural changes in gray matter volume and significantly improves the microstructural integrity of white matter tracts. The findings suggest that an \"obsessive\" focus on mastering a discipline acts as the necessary motivational and dopaminergic engine to sustain the extreme cognitive effort required for permanent neural reconfiguration. We conclude that genius is, to a large extent, a product of directed plasticity, where persistent passion literally resculpts the brain to achieve cognitive and motor performance levels far superior to the population norm. Finally, we discuss the role of glial cells in this process and the potential for neuroplasticity-based interventions in both healthy and clinical populations.",
+  "url": "https://zenodo.org/record/19588300",
+  "identifier": "10.5281/zenodo.19588300",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

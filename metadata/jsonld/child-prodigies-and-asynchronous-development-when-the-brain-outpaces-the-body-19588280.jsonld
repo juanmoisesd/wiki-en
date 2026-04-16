@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Child Prodigies and Asynchronous Development: When the Brain Outpaces the Body",
+  "description": "The development of child prodigies is characterized by a remarkable and often highly problematic discrepancy between their adult-level cognitive capacities, their age-appropriate emotional maturity, and their chronological physical development\u2014a phenomenon scientifically known as \"asynchronous development.\" This manuscript provides an extensive and multi-dimensional examination of the neurobiological, psychological, and social particularities of asynchrony in high-ability children. We analyze how the accelerated and selective maturation of specific cortical areas (especially in the prefrontal and parietal association hubs) coexists with standard or even delayed maturation of subcortical limbric systems regulating emotions and primary motor areas involved in fine-scale skills. Through a systematic review of developmental theories (including those by Silverman and the Columbus Group) and recent longitudinal pediatric neuroimaging studies (e.g., Shaw's maturation curves), we explore the consequences of this internal \"disharmony\" for the child's subjective well-being, identity formation, and adjustment in traditional school environments. The findings suggest that asynchrony should not be treated as a clinical disorder, but rather as an intrinsic, defining feature of giftedness that generates highly specialized educational and affective \"scaffolding\" needs. We conclude that comprehensive support for child prodigies must consider their mental age over their chronological age, fostering an environment that validates their internal complexity and minimizes the impact of the developmental lag on their social integration. Finally, we discuss the \"masking\" effect in gifted girls and the risks of misdiagnosis in the twice-exceptional (2e) population.",
+  "url": "https://zenodo.org/record/19588280",
+  "identifier": "10.5281/zenodo.19588280",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "La delgada l\u00ednea: La correlaci\u00f3n entre la genialidad, la excentricidad y la neurodivergencia",
+  "description": "La asociaci\u00f3n hist\u00f3rica entre el genio y la \"locura\", o entre la alta capacidad intelectual y la excentricidad conductual, ha encontrado un nuevo y robusto marco interpretativo en el concepto contempor\u00e1neo de neurodivergencia. Este manuscrito analiza exhaustivamente la prevalencia y la base neurobiol\u00f3gica de la coexistencia de un Cociente Intelectual (CI) superior con condiciones del neurodesarrollo como el Trastorno del Espectro Autista (TEA), el Trastorno por D\u00e9ficit de Atenci\u00f3n con Hiperactividad (TDAH) y ciertos trastornos del estado de \u00e1nimo de base biol\u00f3gica. Se explora con profundidad el fen\u00f3meno de la \"doble excepcionalidad\" (2e), una condici\u00f3n donde el talento excepcional a menudo enmascara o es enmascarado por una dificultad del desarrollo, dificultando el diagn\u00f3stico y la intervenci\u00f3n. A trav\u00e9s de una revisi\u00f3n sistem\u00e1tica de estudios de gen\u00e9tica conductual, neuroimagen y psicolog\u00eda cl\u00ednica, se examina la hip\u00f3tesis de la \"vulnerabilidad compartida\", la cual sugiere que ciertos rasgos gen\u00e9ticos y patrones de conectividad que favorecen la creatividad y el pensamiento complejo tambi\u00e9n predisponen a una sensibilidad sensorial at\u00edpica o a una atenci\u00f3n divergente. Los hallazgos indican que la genialidad a menudo se sit\u00faa en un espectro de funcionamiento cerebral no normativo, donde la excentricidad no es un subproducto accidental, sino un componente integral y funcional de una arquitectura cognitiva altamente especializada y divergente.",
+  "url": "https://zenodo.org/record/19588266",
+  "identifier": "10.5281/zenodo.19588266",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

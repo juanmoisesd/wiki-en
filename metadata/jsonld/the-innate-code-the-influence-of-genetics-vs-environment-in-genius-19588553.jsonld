@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "The Innate Code: The Influence of Genetics vs. Environment in Genius",
+  "description": "The long-standing debate over the origin of exceptional intelligence has historically oscillated between biological determinism and radical environmentalism. This manuscript provides a comprehensive and extensive analysis of the genetic architecture of genius and its complex, non-linear interaction with environmental factors. Drawing on a century of research from twin and adoption studies, and integrating the most recent findings from quantitative genomics and Genome-Wide Association Studies (GWAS), we examine the biological constraints and opportunities that define human cognitive potential. We explore the concept of \"heritability of intelligence\" in depth, highlighting the \"Wilson Effect\"\u2014the phenomenon where genetic influence on IQ increases with chronological age. Simultaneously, we discuss the critical role of \"environmental enrichment,\" socioeconomic status (SES), and the Flynn effect in the phenotypic expression and \"crystallization\" of genetic potential into high-level achievement. The results of this systematic review suggest that while the \"innate code\" provides the biological reaction range and neural infrastructure, the environment is the essential catalyst for the manifestation of true genius. We propose a dynamic gene-environment interaction (GxE) and correlation (rGE) model to understand the emergence of exceptional talent, emphasizing the individual's active role in \"niche-picking\" and self-directed neural development. Finally, we address the ethical implications of polygenic scoring and the future of \"personalized education\" based on genomic profiles.",
+  "url": "https://zenodo.org/record/19588553",
+  "identifier": "10.5281/zenodo.19588553",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

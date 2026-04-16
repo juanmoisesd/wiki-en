@@ -6,7 +6,9 @@
   "description": "Comprehensive collection of over 1,273 open research datasets, terminology wikis, and academic publications managed by Juan Moisés de la Serna Tuya.",
   "creator": {
     "@type": "Person",
-    "name": "Juan Moisés de la Serna Tuya",
+    "name": "Juan Moisés de la Serna",
+    "givenName": "Juan Moisés",
+    "familyName": "De la Serna",
     "identifier": "https://orcid.org/0000-0002-8401-8018",
     "affiliation": {
       "@type": "Organization",

@@ -1,11 +1,13 @@
 # Jekyll configuration for GitHub Pages
 title: "wiki-en"
-description: "🇬🇧 Research Wiki — de la Serna Tuya, Juan Moisés · ORCID 0000-0002-8401-8018"
+description: "🇬🇧 Research Wiki — Juan Moisés de la Serna · ORCID 0000-0002-8401-8018"
 url: "https://juanmoisesd.github.io"
 baseurl: "/wiki-en"
 
 author:
-  name: "Juan Moisés de la Serna Tuya"
+  name: "Juan Moisés de la Serna"
+  given_names: "Juan Moisés"
+  family_names: "De la Serna"
   orcid: "0000-0002-8401-8018"
   linkedin: "https://www.linkedin.com/in/juanmoisesdelaserna/"
   scopus: "26632846700"

@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "The Future of Intelligence: Brain Augmentation, Neurotechnology, and the New Genius",
+  "description": "The evolution of human intelligence is at a historical turning point due to the emergence of disruptive technologies capable of directly intervening in brain function and architecture. This manuscript provides an extensive and critical exploration of the current and future frontiers of cognitive enhancement, analyzing the rigorous impact of neurotechnology, vanguard nootropic pharmacology, and Artificial Intelligence (AI) on the redefinition of the human genius concept. We examine state-of-the-art techniques such as transcranial Direct Current Stimulation (tDCS), high-resolution Brain-Computer Interfaces (BCI) like Neuralink, and the use of generative AI algorithms as high-level \"cognitive prostheses.\" Through a systematic review of the literature on neuroethics, bioengineering, and transhumanism, we discuss whether these tools will democratize genius or, conversely, create new and profound forms of neurobiological and social inequality. The findings suggest that biotechnological integration will allow for overcoming current biological limits of memory, attention, and processing speed, giving rise to a \"new genius\" of a hybrid nature\u2014the \"hacker of the connectome.\" We conclude that the future of human intelligence will depend on our collective ability to ethically integrate these technologies, preserving the essence of human intuition, empathy, and philosophical inquiry in an increasingly algorithmic world. Finally, we propose a \"Neuro-Rights\" regulatory framework for the responsible advancement of brain augmentation.",
+  "url": "https://zenodo.org/record/19588517",
+  "identifier": "10.5281/zenodo.19588517",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

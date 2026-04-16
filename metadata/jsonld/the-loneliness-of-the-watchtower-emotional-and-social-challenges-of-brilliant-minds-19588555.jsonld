@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "The Loneliness of the Watchtower: Emotional and Social Challenges of Brilliant Minds",
+  "description": "High intellectual capacity and genius are often socially perceived as unequivocal advantages and direct paths to success; however, specialized scientific literature consistently suggests that exceptional talent can carry profound and specific psychodynamic and social vulnerabilities. This manuscript provides an extensive exploration of the socio-emotional dimension of giftedness, analyzing critical phenomena such as developmental asynchrony, overexcitabilities (OEs), and the chronic social isolation resulting from the \"communication gap\" and the \"alienation effect.\" We examine the \"cognitive-social discrepancy\" hypothesis\u2014a state where advanced abstract reasoning capacity far outpaces chronological emotional maturity or the capacity for acceptance by the peer group. Through a systematic review of clinical, qualitative, and longitudinal studies, we investigate the prevalence of feelings of pervasive misunderstanding, the \"imposter syndrome,\" and sensory and emotional hypersensitivity in individuals with a very high Intelligence Quotient (IQ). The findings indicate that while intelligence acts as a protective factor in multiple contexts (resilience), geniuses face unique existential challenges related to the search for deep meaning and the difficulty of establishing authentic connections in environments that do not share their pace, intensity, or depth of information processing. We discuss the impact of \"social masking\" on mental health and the high incidence of perfectionism-related anxiety. Finally, we propose various psychopedagogical and clinical intervention strategies aimed at fostering resilience, self-knowledge, and healthy social adjustment in brilliant minds, emphasizing the need for peer-group clusters.",
+  "url": "https://zenodo.org/record/19588555",
+  "identifier": "10.5281/zenodo.19588555",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

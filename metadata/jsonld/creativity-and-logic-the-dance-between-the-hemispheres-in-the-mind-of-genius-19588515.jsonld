@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Creativity and Logic: The Dance Between the Hemispheres in the Mind of Genius",
+  "description": "The relationship between logical-analytical thinking and creative capacity has been a subject of intense debate in intelligence psychology and cognitive neuroscience for decades. This manuscript provides a comprehensive and multi-disciplinary investigation into the neurofunctional interaction between logic and creativity in individuals with exceptional talent, challenging the classic and simplistic dichotomy of the \"logical left hemisphere\" versus the \"creative right hemisphere.\" Through an exhaustive and systematic review of functional Magnetic Resonance Imaging (fMRI), electroencephalography (EEG), and voxel-based morphometry (VBM) studies, we examine the roles of long-range functional connectivity, interhemispheric integration, and the structural integrity of the white matter tracts. The manuscript analyzes the critical role of divergent thinking and its neurobiological basis in the dynamic interplay between the Default Mode Network (DMN), the Executive Control Network (ECN), and the Salience Network. The findings suggest that genius is not characterized by the dominance of a single hemisphere, but by a coordinated, flexible, and highly efficient \"dance\" between both, allowing logical rigor to act as an evaluative and refining filter for desultory creative production. We discuss the implications of this fluid integration of associative and analytical processes\u2014mediated by a robust and highly myelinated corpus callosum\u2014for the development of interdisciplinary and \"polymathic\" pedagogical frameworks. Finally, we explore the \"transient hypofrontality\" hypothesis and the role of the dopaminergic system in facilitating the state of creative \"flow\" in high-performance cognitive systems.",
+  "url": "https://zenodo.org/record/19588515",
+  "identifier": "10.5281/zenodo.19588515",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

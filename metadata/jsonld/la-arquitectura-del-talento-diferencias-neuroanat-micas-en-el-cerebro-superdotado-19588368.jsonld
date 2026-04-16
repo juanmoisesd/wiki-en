@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "La arquitectura del talento: Diferencias neuroanat\u00f3micas en el cerebro superdotado",
+  "description": "El estudio de la superdotaci\u00f3n intelectual ha evolucionado desde una perspectiva psicom\u00e9trica pura hacia un enfoque neurobiol\u00f3gico integral. El presente trabajo analiza las particularidades neuroanat\u00f3micas que subyacen a las capacidades cognitivas excepcionales, examinando si existe una \"arquitectura del talento\" distintiva. A trav\u00e9s de una revisi\u00f3n exhaustiva de la literatura basada en neuroimagen estructural (IRM), se exploran variables como el volumen de la materia gris en \u00e1reas prefrontales y parietales, la integridad de la materia blanca medida por im\u00e1genes de tensor de difusi\u00f3n (DTI), y la complejidad de la morfolog\u00eda cortical. Los hallazgos sugieren que el cerebro superdotado no solo se caracteriza por un mayor volumen global, sino por una organizaci\u00f3n regional espec\u00edfica, una mayor densidad neuronal en nodos cr\u00edticos de la red de integraci\u00f3n parieto-frontal (P-FIT) y una trayectoria de maduraci\u00f3n cortical \u00fanica. Se discuten las implicaciones de estas diferencias estructurales en la eficiencia del procesamiento de la informaci\u00f3n y se plantean futuras l\u00edneas de investigaci\u00f3n sobre la interacci\u00f3n entre la dotaci\u00f3n gen\u00e9tica y la plasticidad inducida por el entorno.",
+  "url": "https://zenodo.org/record/19588368",
+  "identifier": "10.5281/zenodo.19588368",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Plasticidad y obsesi\u00f3n: C\u00f3mo la pr\u00e1ctica deliberada reesculpe el cerebro",
+  "description": "Academic study on Plasticidad y obsesi\u00f3n: C\u00f3mo la pr\u00e1ctica deliberada reesculpe el cerebro",
+  "url": "https://zenodo.org/record/19588507",
+  "identifier": "10.5281/zenodo.19588507",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}
