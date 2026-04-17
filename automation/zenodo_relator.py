@@ -10,7 +10,7 @@ TOKEN = os.getenv("ZENODO_ACCESS_TOKEN")
 ORCID = "0000-0002-8401-8018"
 BASE_URL = "https://zenodo.org/api"
 
-def api_request(url, method="GET", data=None):
+def api_request(url, method="GET", data=None, max_retries=3):
     if not TOKEN:
         print("Error: ZENODO_ACCESS_TOKEN environment variable is not set.")
         return None
@@ -19,29 +19,39 @@ def api_request(url, method="GET", data=None):
         "Authorization": f"Bearer {TOKEN}",
         "Content-Type": "application/json"
     }
-    req = urllib.request.Request(url, method=method, headers=headers)
-    if data:
-        json_data = json.dumps(data).encode('utf-8')
-        req.data = json_data
+
+    for attempt in range(max_retries):
+        req = urllib.request.Request(url, method=method, headers=headers)
+        if data:
+            json_data = json.dumps(data).encode('utf-8')
+            req.data = json_data
 
     try:
         with urllib.request.urlopen(req) as response:
             return json.loads(response.read().decode('utf-8'))
     except urllib.error.HTTPError as e:
-        print(f"HTTP Error {e.code}: {e.read().decode('utf-8')}")
-        return None
+        if e.code in [429, 500, 502, 503, 504]:
+            wait_time = (attempt + 1) * 5
+            print(f"HTTP Error {e.code} on {method} {url}. Retrying in {wait_time}s... (Attempt {attempt+1}/{max_retries})")
+            time.sleep(wait_time)
+            # return api_request(url, method, data, max_retries-1) # Simplified retry
+        else:
+            print(f"HTTP Error {e.code}: {e.read().decode('utf-8')}")
+            return None
     except Exception as e:
         print(f"Error: {e}")
         return None
+    return None
 
-def get_all_records(limit_pages=None):
+def get_all_records(start_page=1, end_page=None, custom_query=None):
     records = []
-    page = 1
+    page = start_page
     size = 100
     while True:
         print(f"Fetching page {page}...", flush=True)
         # Encode query parameters manually for urllib
-        query = urllib.parse.quote(f'creators.orcid:"{ORCID}"')
+        query_str = custom_query if custom_query else f'creators.orcid:"{ORCID}"'
+        query = urllib.parse.quote(query_str)
         url = f"{BASE_URL}/records?q={query}&size={size}&page={page}"
         data = api_request(url)
         if not data or not data.get('hits', {}).get('hits'):
@@ -49,7 +59,7 @@ def get_all_records(limit_pages=None):
         records.extend(data['hits']['hits'])
         if len(data['hits']['hits']) < size:
             break
-        if limit_pages and page >= limit_pages:
+        if end_page and page >= end_page:
             break
         page += 1
     return records
@@ -57,9 +67,9 @@ def get_all_records(limit_pages=None):
 def normalize_title(title):
     # Remove known document type prefixes followed by optional language in parenthesis
     # e.g., "Press Release (English): " or "Policy Brief: "
-    # We look for the last colon that follows a known type pattern to handle "Type: Subject: Subtitle"
     types = ["Press Release", "Policy Brief", "Research Brief", "Executive Summary",
-             "Visual Summary", "Infographic", "Methodology Sheet", "Data Note", "Teaching Guide"]
+             "Visual Summary", "Infographic", "Methodology Sheet", "Data Note", "Teaching Guide",
+             "Registered Report", "Dataset", "Taxonomía Completa", "Academic Preprint"]
 
     pattern = r'^(' + '|'.join(types) + r')\s*(\([^)]*\))?:\s*(.*)$'
     match = re.search(pattern, title, re.IGNORECASE)
@@ -78,16 +88,14 @@ def group_records(records):
 
 def update_record_relations(record, related_dois, dry_run=True):
     current_related = record['metadata'].get('related_identifiers', [])
-    existing_ids = {item['identifier'] for item in current_related}
+    existing_ids = {item['identifier'].lower() for item in current_related}
 
     new_related = list(current_related)
     added = False
 
     for doi in related_dois:
-        if doi != record['doi'] and doi not in existing_ids:
+        if doi.lower() != record['doi'].lower() and doi.lower() not in existing_ids:
             # Determine relation type
-            # Default to isVariantFormOf if it's likely a translation
-            # Use isSupplementTo if it's a brief/press release
             relation = "isVariantFormOf"
             title = record['metadata']['title'].lower()
             if any(x in title for x in ["press release", "policy brief", "research brief", "executive summary", "visual summary", "infographic"]):
@@ -134,12 +142,12 @@ def update_record_relations(record, related_dois, dry_run=True):
     resp = api_request(publish_url, method="POST")
     return resp is not None
 
-def main(dry_run=True, limit_pages=None):
+def main(dry_run=True, start_page=1, end_page=None, custom_query=None):
     if not TOKEN:
-        print("Error: ZENODO_ACCESS_TOKEN environment variable not found. Please set it before running.")
+        print("Error: ZENODO_ACCESS_TOKEN environment variable not found.")
         return
 
-    records = get_all_records(limit_pages=limit_pages)
+    records = get_all_records(start_page=start_page, end_page=end_page, custom_query=custom_query)
     print(f"Found {len(records)} records.", flush=True)
     groups = group_records(records)
     print(f"Grouped into {len(groups)} thematic topics.", flush=True)
@@ -149,20 +157,31 @@ def main(dry_run=True, limit_pages=None):
         if len(group) < 2:
             continue
 
-        print(f"Processing group: {base_title} ({len(group)} records)", flush=True)
-        all_dois = [rec['doi'] for rec in group]
+        all_dois = [rec['doi'] for rec in group if 'doi' in rec]
+        if not all_dois: continue
 
         for rec in group:
             if update_record_relations(rec, all_dois, dry_run=dry_run):
                 updated_count += 1
                 if not dry_run:
-                    time.sleep(1) # Rate limiting
+                    time.sleep(0.5) # Rate limiting
 
     print(f"Finished. Total records {'to be updated' if dry_run else 'updated'}: {updated_count}", flush=True)
 
 if __name__ == "__main__":
     import sys
     dry_run = "--run" not in sys.argv
-    # In dry run mode, limit to 2 pages for performance. In run mode, process everything.
-    limit_pages = 2 if dry_run else None
-    main(dry_run=dry_run, limit_pages=limit_pages)
+
+    # Parse arguments
+    start_page = 1
+    end_page = None
+    custom_query = None
+
+    if "--start" in sys.argv:
+        start_page = int(sys.argv[sys.argv.index("--start") + 1])
+    if "--end" in sys.argv:
+        end_page = int(sys.argv[sys.argv.index("--end") + 1])
+    if "--query" in sys.argv:
+        custom_query = sys.argv[sys.argv.index("--query") + 1]
+
+    main(dry_run=dry_run, start_page=start_page, end_page=end_page, custom_query=custom_query)
