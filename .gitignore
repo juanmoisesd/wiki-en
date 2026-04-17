@@ -1,7 +1,4 @@
 zenodo_records.json
-zenodo_records_subset.json
-sample_records.json
-/home/jules/self_created_tools/
+zenodo_pages/
 *.log
-page_*.json
-block_*.json
+/home/jules/self_created_tools/
