@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Synaptic Speed: The Efficiency of Neural Processing in High IQ",
+  "description": "The velocity of information processing has emerged as a fundamental pillar for understanding individual differences in human intelligence and the biological basis of genius. This manuscript provides an extensive and systematic examination of the neural conduction velocity (NCV) and synaptic efficiency hypotheses as primary determinants of the Intelligence Quotient (IQ) and the general factor of intelligence (*g*). Through an exhaustive review of electrophysiological studies, including Event-Related Potentials (ERP), Inspection Time (IT), and sophisticated Reaction Time (RT) paradigms, we analyze how the rapidity and precision of neuronal transmission facilitate complex cognitive operations across distributed brain networks. We explore the underlying biological mechanisms in detail, including the degree of axonal myelination, the density and sensitivity of neurotransmitter receptors (particularly glutamatergic and GABAergic systems), and the significant reduction of neuronal \"jitter\" or response variability in high-ability individuals. The synthesis of recent research suggests a robust and significant correlation between the latency of the P300 component and psychometric intelligence, indicating that high-IQ brains not only process information faster but do so with lower temporal variance and higher metabolic efficiency. We discuss the integration of these findings with the \"neural efficiency\" hypothesis and the \"limited capacity\" model of working memory, proposing that speed is the foundational constraint on human reasoning depth. Finally, we address the implications for the development of biological markers of cognitive potential and the transformative impact of neuroplasticity on processing speed.",
+  "url": "https://zenodo.org/record/19588302",
+  "identifier": "10.5281/zenodo.19588302",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

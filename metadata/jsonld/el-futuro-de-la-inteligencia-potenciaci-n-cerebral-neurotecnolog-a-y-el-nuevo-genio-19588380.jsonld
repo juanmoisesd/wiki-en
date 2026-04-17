@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "El futuro de la inteligencia: Potenciaci\u00f3n cerebral, neurotecnolog\u00eda y el nuevo genio",
+  "description": "La evoluci\u00f3n de la inteligencia humana se encuentra en un punto de inflexi\u00f3n hist\u00f3rico debido al surgimiento de tecnolog\u00edas disruptivas capaces de intervenir directamente en el funcionamiento y la arquitectura cerebral. Este manuscrito explora las fronteras actuales y futuras de la potenciaci\u00f3n cognitiva, analizando con rigor el impacto de la neurotecnolog\u00eda, la farmacolog\u00eda nootr\u00f3pica de vanguardia y la Inteligencia Artificial (IA) en la redefinici\u00f3n del concepto de genio humano. Se examinan t\u00e9cnicas de vanguardia como la estimulaci\u00f3n transcraneal de corriente continua (tDCS), los interfaces cerebro-computadora (BCI) de alta resoluci\u00f3n y el uso de algoritmos generativos de IA como \"pr\u00f3tesis cognitivas\" de alto nivel. A trav\u00e9s de una revisi\u00f3n sistem\u00e1tica de la literatura sobre neuro\u00e9tica, bioingenier\u00eda y transhumanismo, se discute si estas herramientas democratizar\u00e1n la genialidad o si, por el contrario, crear\u00e1n nuevas y profundas formas de desigualdad neurobiol\u00f3gica y social. Los resultados sugieren que la integraci\u00f3n biotecnol\u00f3gica permitir\u00e1 superar los l\u00edmites biol\u00f3gicos actuales de la memoria y la velocidad de procesamiento, dando lugar a un \"nuevo genio\" de naturaleza h\u00edbrida. Se concluye que el futuro de la inteligencia humana depender\u00e1 de nuestra capacidad colectiva para integrar \u00e9ticamente estas tecnolog\u00edas, preservando la esencia de la intuici\u00f3n y la creatividad humana en un mundo cada vez m\u00e1s algor\u00edtmico y automatizado.",
+  "url": "https://zenodo.org/record/19588380",
+  "identifier": "10.5281/zenodo.19588380",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

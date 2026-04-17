@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Creatividad y l\u00f3gica: La danza entre los hemisferios en la mente del genio",
+  "description": "La relaci\u00f3n entre el pensamiento l\u00f3gico-anal\u00edtico y la capacidad creativa ha sido objeto de intenso debate en la psicolog\u00eda de la inteligencia y la neurociencia cognitiva. Este manuscrito investiga exhaustivamente la interacci\u00f3n neurofuncional entre la l\u00f3gica y la creatividad en individuos con talento excepcional, desafiando la dicotom\u00eda cl\u00e1sica y simplista del \"hemisferio izquierdo l\u00f3gico\" frente al \"hemisferio derecho creativo\". A trav\u00e9s de una revisi\u00f3n sistem\u00e1tica de estudios de resonancia magn\u00e9tica funcional (fMRI), electroencefalograf\u00eda (EEG) y morfometr\u00eda basada en v\u00f3xeles (VBM), se examina la conectividad funcional de largo alcance y la integraci\u00f3n interhemisf\u00e9rica. Se analiza el papel cr\u00edtico del pensamiento divergente y su base neurobiol\u00f3gica en la Red de Modo Predeterminado (DMN), la Red de Control Ejecutivo (ECN) y la Red de Saliencia. Los resultados sugieren que el genio no se caracteriza por la dominancia de un hemisferio, sino por una \"danza\" coordinada, flexible y altamente eficiente entre ambos, permitiendo que la rigurosidad l\u00f3gica act\u00fae como un filtro evaluativo para la desbordante producci\u00f3n creativa. Se discuten las implicaciones de esta integraci\u00f3n fluida de procesos asociativos y anal\u00edticos, mediada por un cuerpo calloso robusto y una plasticidad sin\u00e1ptica superior, para el desarrollo de pedagog\u00edas interdisciplinares.",
+  "url": "https://zenodo.org/record/19588374",
+  "identifier": "10.5281/zenodo.19588374",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

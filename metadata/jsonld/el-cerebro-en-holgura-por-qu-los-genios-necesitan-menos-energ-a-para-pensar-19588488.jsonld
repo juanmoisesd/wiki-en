@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "El cerebro en holgura: Por qu\u00e9 los genios necesitan menos energ\u00eda para pensar",
+  "description": "Academic study on El cerebro en holgura: Por qu\u00e9 los genios necesitan menos energ\u00eda para pensar",
+  "url": "https://zenodo.org/record/19588488",
+  "identifier": "10.5281/zenodo.19588488",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

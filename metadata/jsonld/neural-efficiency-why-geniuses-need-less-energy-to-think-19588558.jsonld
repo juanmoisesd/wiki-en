@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Neural Efficiency: Why Geniuses Need Less Energy to Think",
+  "description": "The Neural Efficiency Hypothesis (NEH) posits that human intelligence and the emergence of genius are not correlated with increased global cerebral effort, but rather with a highly optimized allocation of metabolic resources during cognitive activity. This manuscript provides an extensive and multi-modal analysis of the neurobiological basis of neural efficiency in gifted individuals, examining evidence from Positron Emission Tomography (PET), functional Magnetic Resonance Imaging (fMRI), and electroencephalography (EEG). We investigate why brains with a higher Intelligence Quotient (IQ) consume significantly less glucose and show more focalized, selective activation patterns when solving tasks of moderate complexity\u2014a phenomenon termed \"the brain in slack.\" We explore the underlying mechanisms of refined synaptic pruning, superior axonal myelination, and functional network segregation (modularity) as primary facilitators of this metabolic economy. The synthesis of findings suggests that genius is characterized by the systematic elimination of irrelevant neuronal activity and the bypassing of redundant processing nodes, allowing for faster and more precise output with minimal biological cost. We further discuss the limitations of the NEH when faced with \"wicked\" problems of extreme difficulty, the role of cognitive fatigue in high-performance environments, and the implications for the development of energy-efficient Artificial Intelligence. Finally, we address how this metabolic advantage contributes to a robust \"cognitive reserve\" that protects the gifted individual against neurodegenerative decline in later life.",
+  "url": "https://zenodo.org/record/19588558",
+  "identifier": "10.5281/zenodo.19588558",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

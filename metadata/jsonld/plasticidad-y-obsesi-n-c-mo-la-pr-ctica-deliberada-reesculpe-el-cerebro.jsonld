@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Plasticidad y obsesi\u00f3n: C\u00f3mo la pr\u00e1ctica deliberada reesculpe el cerebro",
+  "description": "El desarrollo de habilidades extraordinarias y la emergencia de la genialidad no son solo consecuencia de una dotaci\u00f3n gen\u00e9tica favorable, sino el resultado de una interacci\u00f3n din\u00e1mica, prolongada y bidireccional entre el potencial biol\u00f3gico inicial y la experiencia sensorial y cognitiva intensiva. Este manuscrito explora en profundidad el papel determinante de la \"pr\u00e1ctica deliberada\" y la dedicaci\u00f3n obsesiva en la remodelaci\u00f3n f\u00edsica y funcional de la arquitectura cerebral humana a trav\u00e9s de los mecanismos de la neuroplasticidad. Se analiza cr\u00edticamente el concepto de la \"regla de las 10,000 horas\" y su base neurofisiol\u00f3gica en el fortalecimiento de la mielinizaci\u00f3n ax\u00f3nica, la sinaptog\u00e9nesis regional y la expansi\u00f3n de los mapas corticales especializados. Mediante una revisi\u00f3n sistem\u00e1tica de estudios de neuroimagen en expertos de diversos dominios (m\u00fasicos de \u00e9lite, ajedrecistas de alto nivel, atletas), se examina c\u00f3mo el entrenamiento prolongado induce cambios estructurales medibles en la materia gris y mejora significativamente la integridad microestructural de la materia blanca. Los hallazgos sugieren que la obsesi\u00f3n por el dominio de una disciplina act\u00faa como el motor motivacional y dopamin\u00e9rgico necesario para sostener el esfuerzo cognitivo extremo requerido para la reconfiguraci\u00f3n neural permanente. Se concluye que el genio es, en gran medida, un producto de la plasticidad dirigida, donde la pasi\u00f3n persistente reesculpe literalmente el cerebro para alcanzar niveles de rendimiento cognitivo y motor muy superiores a la norma poblacional.",
+  "url": "https://zenodo.org/record/19588274",
+  "identifier": "10.5281/zenodo.19588274",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

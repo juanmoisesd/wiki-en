@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "El cerebro en holgura: Por qu\u00e9 los genios necesitan menos energ\u00eda para pensar",
+  "description": "La Hip\u00f3tesis de la Eficiencia Neural (HEN) postula que la inteligencia no se correlaciona con un mayor esfuerzo cerebral, sino con una optimizaci\u00f3n de los recursos metab\u00f3licos durante la actividad cognitiva. Este manuscrito analiza la base neurobiol\u00f3gica de la eficiencia neural en individuos superdotados, examinando estudios de Tomograf\u00eda por Emisi\u00f3n de Positrones (PET) y resonancia magn\u00e9tica funcional (fMRI). Se investiga por qu\u00e9 los cerebros con un Cociente Intelectual (CI) m\u00e1s alto consumen menos glucosa y muestran patrones de activaci\u00f3n m\u00e1s focalizados al resolver tareas de complejidad moderada, fen\u00f3meno denominado \"cerebro en holgura\". Se exploran los mecanismos de poda sin\u00e1ptica, la integridad de la materia blanca y la segregaci\u00f3n de redes neuronales como facilitadores de esta econom\u00eda energ\u00e9tica. Los resultados de la revisi\u00f3n sugieren que el genio se caracteriza por la eliminaci\u00f3n de la actividad neuronal irrelevante, permitiendo un procesamiento m\u00e1s r\u00e1pido y preciso con un coste metab\u00f3lico m\u00ednimo. Se discuten las limitaciones de la HEN ante tareas de dificultad extrema y las implicaciones para el estudio de la fatiga cognitiva y el rendimiento a largo plazo en entornos de alta exigencia intelectual.",
+  "url": "https://zenodo.org/record/19588260",
+  "identifier": "10.5281/zenodo.19588260",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

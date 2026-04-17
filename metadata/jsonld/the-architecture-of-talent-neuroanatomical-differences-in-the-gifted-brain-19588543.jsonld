@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "The Architecture of Talent: Neuroanatomical Differences in the Gifted Brain",
+  "description": "The investigation of intellectual giftedness has transitioned from a purely psychometric paradigm toward a comprehensive neurobiological framework. This manuscript provides an extensive and multi-layered analysis of the specific neuroanatomical features that underpin exceptional cognitive abilities, examining whether a distinct \"architecture of talent\" exists at both macroscopic and microscopic levels. Utilizing a systematic review of structural Magnetic Resonance Imaging (sMRI), Diffusion Tensor Imaging (DTI), and recent post-mortem studies, we explore variables such as regional gray matter volume in prefrontal and parietal hubs, white matter microstructural integrity, and the complexity of cortical gyrification and surface area. The findings suggest that the gifted brain is not merely characterized by a larger global volume, but by a highly specific and efficient regional organization. Key observations include increased neuronal density and cortical thickness in critical nodes of the Parieto-Frontal Integration Theory (P-FIT) network, a unique and prolonged trajectory of cortical maturation characterized by delayed peak thickening, and enhanced inter-hemispheric connectivity through a robust corpus callosum. We further discuss the implications of these structural differences for information processing efficiency, cognitive reserve, and the \"neural efficiency\" hypothesis. Furthermore, we address the interaction between genetic predisposition (polygenic influences) and environment-induced plasticity (deliberate practice), proposing a synergistic multi-level model of talent development. Finally, we evaluate the role of glial cells and vascular support systems in maintaining the high metabolic demands of the gifted neural architecture.",
+  "url": "https://zenodo.org/record/19588543",
+  "identifier": "10.5281/zenodo.19588543",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

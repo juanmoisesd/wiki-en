@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Ni\u00f1os prodigio y el desarrollo asincr\u00f3nico: Cuando el cerebro corre m\u00e1s que el cuerpo",
+  "description": "El desarrollo de los ni\u00f1os prodigio se caracteriza por una notable y a menudo problem\u00e1tica discrepancia entre sus capacidades cognitivas de nivel adulto, su madurez emocional infantil y su desarrollo f\u00edsico acorde a su edad cronol\u00f3gica, fen\u00f3meno conocido cient\u00edficamente como asincron\u00eda. Este manuscrito examina de forma exhaustiva las particularidades neurobiol\u00f3gicas, psicol\u00f3gicas y sociales del desarrollo asincr\u00f3nico en la infancia de alta capacidad intelectual. Se analiza c\u00f3mo la maduraci\u00f3n acelerada y selectiva de ciertas \u00e1reas corticales (especialmente en los l\u00f3bulos frontal y parietal) coexiste con una maduraci\u00f3n est\u00e1ndar o incluso retrasada de los sistemas subcorticales reguladores de las emociones y de las \u00e1reas motoras implicadas en las habilidades finas. A trav\u00e9s de una revisi\u00f3n sistem\u00e1tica de las teor\u00edas del desarrollo (como las de Silverman y el Columbus Group) y estudios recientes de neuroimagen pedi\u00e1trica longitudinal, se exploran las consecuencias de esta \"disarmon\u00eda\" interna en el bienestar subjetivo del ni\u00f1o y en su ajuste en el entorno escolar tradicional. Los hallazgos sugieren que la asincron\u00eda no debe ser tratada como un trastorno, sino como un rasgo intr\u00ednseco y definitorio de la superdotaci\u00f3n que genera necesidades educativas y afectivas altamente especializadas. Se concluye que el apoyo integral a los ni\u00f1os prodigio debe contemplar su edad mental por encima de su edad cronol\u00f3gica, fomentando un entorno que valide su complejidad interna y minimice el impacto del desfase madurativo en su identidad en formaci\u00f3n.",
+  "url": "https://zenodo.org/record/19588378",
+  "identifier": "10.5281/zenodo.19588378",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}

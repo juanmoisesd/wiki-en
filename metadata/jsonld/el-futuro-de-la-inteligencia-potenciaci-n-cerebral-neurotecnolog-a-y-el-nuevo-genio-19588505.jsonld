@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "El futuro de la inteligencia: Potenciaci\u00f3n cerebral, neurotecnolog\u00eda y el nuevo genio",
+  "description": "Academic study on El futuro de la inteligencia: Potenciaci\u00f3n cerebral, neurotecnolog\u00eda y el nuevo genio",
+  "url": "https://zenodo.org/record/19588505",
+  "identifier": "10.5281/zenodo.19588505",
+  "creator": {
+    "@type": "Person",
+    "name": "Juan Mois\u00e9s de la Serna",
+    "givenName": "Juan Mois\u00e9s",
+    "familyName": "De la Serna",
+    "identifier": "https://orcid.org/0000-0002-8401-8018",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Universidad Internacional de La Rioja (UNIR)"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "datePublished": "2026-04-15",
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+}
