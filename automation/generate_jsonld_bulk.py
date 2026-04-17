@@ -63,7 +63,7 @@ def generate_all(records_json_path, output_dir='metadata/jsonld'):
              filepath = os.path.join(output_dir, filename)
 
         with open(filepath, 'w') as f:
-            json.dump(generate_jsonld(r), f, indent=2)
+            json.dump(generate_jsonld(r), f, indent=2, ensure_ascii=False)
         count += 1
 
     return count
