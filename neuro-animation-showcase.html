@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Showcase de Neuro-Animación | Juan Moisés de la Serna</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/research-identity.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/research-logo.svg">
+
+  <style>
+    .showcase-container {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .animation-wrapper {
+      height: 400px;
+      position: relative;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .snippet-box {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      position: relative;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .instruction-card {
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+<nav class="global-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/research-logo.svg" width="30" height="30" alt="Logo">
+      J.M. DE LA SERNA TUYA
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="catalog.html">Catalog</a>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="animate">
+    <h1>🧠 Showcase de Neuro-Animación</h1>
+    <p class="subtitle">Visualización dinámica de redes neuronales para blogs académicos.</p>
+  </header>
+
+  <div class="showcase-container animate" style="animation-delay: 0.1s;">
+    <div class="animation-wrapper">
+      <canvas id="neuroCanvas"></canvas>
+    </div>
+    <div class="instruction-card">
+      <h3>Cómo usar esto en tu blog</h3>
+      <p>Sigue estos pasos para integrar la red neuronal dinámica en tus entradas de blog basadas en HTML.</p>
+
+      <ol>
+        <li>Añade el elemento Canvas donde quieras que aparezca la animación.</li>
+        <li>Incluye el CSS para definir la altura del contenedor.</li>
+        <li>Carga el script al final de tu etiqueta body.</li>
+      </ol>
+
+      <div class="snippet-box">
+        <button class="copy-btn" onclick="copySnippet(event)">Copiar Código</button>
+        <pre id="codeSnippet"><code>&lt;!-- 1. Contenedor de la Animación --&gt;
+&lt;div style="height: 400px; background: #f8fafc; border-radius: 12px; overflow: hidden;"&gt;
+  &lt;canvas id="neuroCanvas"&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+
+&lt;!-- 2. Cargar el Script de Animación --&gt;
+&lt;script src="assets/js/neuro-animation.js"&gt;&lt;/script&gt;</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Juan Moisés de la Serna Tuya · Research Identity 10.0</p>
+  </div>
+</footer>
+
+<script src="assets/js/neuro-animation.js"></script>
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+  }
+
+  function copySnippet(event) {
+    const code = document.getElementById('codeSnippet').innerText;
+    const btn = event.target;
+    navigator.clipboard.writeText(code).then(() => {
+      const originalText = btn.innerText;
+      btn.innerText = '✓ Copiado';
+      setTimeout(() => btn.innerText = originalText, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
