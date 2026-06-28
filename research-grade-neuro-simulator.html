@@ -210,6 +210,8 @@
         let astrocytes = [];
         let time = 0;
         let simSpeed = 1.0;
+        let currentGNa = 120.0;
+        let currentGK = 36.0;
         let historyVm = Array(200).fill(0);
         let historyNa = Array(200).fill(0);
         let historyK = Array(200).fill(0);
@@ -230,8 +232,8 @@
                 this.m = 0.05;
                 this.h = 0.6;
                 this.n = 0.32;
-                this.gNa = 120.0;
-                this.gK = 36.0;
+                this.gNa = currentGNa;
+                this.gK = currentGK;
                 this.gL = 0.3;
                 this.ENa = 50.0;
                 this.EK = -77.0;
@@ -430,9 +432,9 @@
             const dt = 0.1 * simSpeed;
 
             neurons.forEach((n, idx) => {
-                const spiked = n.Vm < 0;
+                const wasFiring = n.isFiring;
                 n.update(dt);
-                if (!spiked && n.Vm >= 0) {
+                if (!wasFiring && n.isFiring) {
                     rasterData.push({ time: Date.now(), id: idx });
                 }
                 n.draw();
@@ -485,15 +487,26 @@
 
         // Slider Listeners
         document.getElementById('gna-slider').addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            neurons.forEach(n => n.gNa = val);
+            currentGNa = parseFloat(e.target.value);
+            neurons.forEach(n => n.gNa = currentGNa);
         });
         document.getElementById('gk-slider').addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            neurons.forEach(n => n.gK = val);
+            currentGK = parseFloat(e.target.value);
+            neurons.forEach(n => n.gK = currentGK);
         });
         document.getElementById('tau-slider').addEventListener('input', (e) => {
             simSpeed = parseFloat(e.target.value) / 50;
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            neurons.forEach(n => {
+                const dist = Math.sqrt((n.x - mouseX)**2 + (n.y - mouseY)**2);
+                if (dist < 40) n.inject(50);
+            });
         });
 
         window.addEventListener('resize', init);
