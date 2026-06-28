@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación Científica de Neurociencias | Dr. Juan Moisés de la Serna</title>
+    <style>
+        :root {
+            --bg: #05070a;
+            --text: #e0e0e0;
+            --soma: #d35400;
+            --axon: #2c3e50;
+            --myelin: #f1c40f;
+            --dendrite: #7f8c8d;
+            --spine: #95a5a6;
+            --excitation: #2ecc71;
+            --inhibition: #e74c3c;
+            --impulse: #00fbff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-group h1 { margin: 0; font-size: 1.2rem; letter-spacing: 1px; color: var(--soma); }
+        .title-group p { margin: 2px 0 0; font-size: 0.8rem; opacity: 0.6; }
+
+        #container {
+            flex-grow: 1;
+            position: relative;
+            cursor: crosshair;
+        }
+
+        canvas { display: block; width: 100%; height: 100%; }
+
+        .ui-panel {
+            position: absolute;
+            background: rgba(10, 15, 20, 0.9);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 0.75rem;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        #stats-panel { top: 20px; left: 20px; width: 220px; }
+        #legend-panel { bottom: 20px; right: 20px; }
+
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .stat-val { font-family: 'JetBrains Mono', monospace; color: var(--impulse); }
+
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+
+        .graph-container {
+            height: 40px;
+            width: 100%;
+            background: #000;
+            margin-top: 10px;
+            position: relative;
+            border: 1px solid #222;
+        }
+        #potential-path { stroke: var(--impulse); fill: none; stroke-width: 1; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-group">
+            <h1>🔬 SIMULACIÓN CORTICAL AVANZADA v2.0</h1>
+            <p>Dinámica Electrogénica y Plasticidad Sináptica</p>
+        </div>
+        <div style="font-size: 0.7rem; text-align: right; opacity: 0.5;">
+            DR. JUAN MOISÉS DE LA SERNA<br>Laboratorio de Neuroanatomía Funcional
+        </div>
+    </header>
+
+    <div id="container">
+        <canvas id="neuroCanvas"></canvas>
+
+        <div id="stats-panel" class="ui-panel">
+            <div style="font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">MONITOR INTRACELULAR</div>
+            <div class="stat-row"><span>Estado:</span> <span id="cell-state" class="stat-val">Reposo</span></div>
+            <div class="stat-row"><span>V_membrana:</span> <span id="cell-vm" class="stat-val">-70.0 mV</span></div>
+            <div class="stat-row"><span>Umbral:</span> <span class="stat-val">-55.0 mV</span></div>
+            <div class="stat-row"><span>Iones Na+/K+:</span> <span class="stat-val">Homeostasis</span></div>
+            <div class="graph-container">
+                <svg width="100%" height="100%" viewBox="0 0 100 40">
+                    <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-dasharray="2,2" />
+                    <path id="potential-path" d="M 0 30" />
+                </svg>
+            </div>
+        </div>
+
+        <div id="legend-panel" class="ui-panel">
+            <div class="legend-item"><div class="dot" style="background: var(--soma)"></div> Neurona Piramidal (Córtex)</div>
+            <div class="legend-item"><div class="dot" style="background: var(--myelin)"></div> Vaina de Mielina</div>
+            <div class="legend-item"><div class="dot" style="background: var(--excitation)"></div> Sinapsis Excitatoria (EPSP)</div>
+            <div class="legend-item"><div class="dot" style="background: var(--inhibition)"></div> Sinapsis Inhibitoria (IPSP)</div>
+            <div class="legend-item"><div class="dot" style="background: var(--impulse)"></div> Frente de Despolarización</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('neuroCanvas');
+        const ctx = canvas.getContext('2d');
+        let neurons = [];
+        let history = Array(100).fill(30);
+
+        const COLORS = {
+            excitation: '#2ecc71',
+            inhibition: '#e74c3c',
+            impulse: '#00fbff',
+            bg: '#05070a'
+        };
+
+        class Neuron {
+            constructor(x, y, isInhibitory = false) {
+                this.x = x;
+                this.y = y;
+                this.isInhibitory = isInhibitory;
+                this.vm = -70; // Membrane potential
+                this.threshold = -55;
+                this.restingVm = -70;
+                this.isFiring = false;
+                this.refractoryTime = 0;
+                this.axon = null;
+                this.dendrites = this.createMorphology();
+                this.somaPulse = 0;
+            }
+
+            createMorphology() {
+                const dendrites = [];
+                // Apical Dendrite (Primary branch)
+                dendrites.push(this.createBranch(-Math.PI/2, 60, 4, true));
+                // Basal Dendrites (Multiple smaller branches)
+                for (let i = 0; i < 3; i++) {
+                    dendrites.push(this.createBranch(Math.PI/4 + (i * Math.PI/3), 30, 2));
+                }
+                return dendrites;
+            }
+
+            createBranch(angle, length, width, isApical = false) {
+                const branch = { angle, length, width, isApical, spines: [] };
+                // Add dendritic spines (where synapses occur)
+                const spineCount = isApical ? 8 : 4;
+                for (let i = 0; i < spineCount; i++) {
+                    branch.spines.push({
+                        pos: 0.3 + (Math.random() * 0.6),
+                        side: Math.random() > 0.5 ? 1 : -1
+                    });
+                }
+                return branch;
+            }
+
+            draw() {
+                const somaColor = this.isInhibitory ? '#c0392b' : '#d35400';
+
+                // 1. Draw Dendrites & Spines
+                this.dendrites.forEach(b => {
+                    const endX = this.x + Math.cos(b.angle) * b.length;
+                    const endY = this.y + Math.sin(b.angle) * b.length;
+
+                    ctx.strokeStyle = '#555';
+                    ctx.lineWidth = b.width;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+
+                    // Spines
+                    b.spines.forEach(s => {
+                        const sx = this.x + Math.cos(b.angle) * (b.length * s.pos);
+                        const sy = this.y + Math.sin(b.angle) * (b.length * s.pos);
+                        const sa = b.angle + (Math.PI/2 * s.side);
+                        ctx.beginPath();
+                        ctx.moveTo(sx, sy);
+                        ctx.lineTo(sx + Math.cos(sa) * 4, sy + Math.sin(sa) * 4);
+                        ctx.stroke();
+                    });
+                });
+
+                // 2. Axon Hillock & Axon Path
+                if (this.axon) {
+                    this.drawAxon();
+                }
+
+                // 3. Soma (Pyramidal Shape)
+                ctx.fillStyle = this.isFiring ? '#fff' : somaColor;
+                if (this.somaPulse > 0) {
+                    ctx.shadowBlur = 15 * this.somaPulse;
+                    ctx.shadowColor = this.somaPulse > 0.5 ? COLORS.excitation : COLORS.inhibition;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y - 10);
+                ctx.lineTo(this.x + 8, this.y + 6);
+                ctx.lineTo(this.x - 8, this.y + 6);
+                ctx.closePath();
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            drawAxon() {
+                const target = this.axon.target;
+                const dx = target.x - this.x;
+                const dy = target.y - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                const angle = Math.atan2(dy, dx);
+
+                // Axon Hillock (The cone)
+                ctx.fillStyle = '#2c3e50';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.arc(this.x, this.y, 12, angle - 0.3, angle + 0.3);
+                ctx.fill();
+
+                // Axon Path
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(target.x, target.y);
+                ctx.stroke();
+
+                // Myelin Sheaths
+                const seg = 18;
+                const gap = 4;
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = 4;
+                for (let d = 25; d < dist - 20; d += seg + gap) {
+                    const x1 = this.x + Math.cos(angle) * d;
+                    const y1 = this.y + Math.sin(angle) * d;
+                    const x2 = this.x + Math.cos(angle) * (d + seg);
+                    const y2 = this.y + Math.sin(angle) * (d + seg);
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+
+                // Action Potential (Saltatory Propagation)
+                for (let i = this.axon.pulses.length - 1; i >= 0; i--) {
+                    const p = this.axon.pulses[i];
+                    const px = this.x + Math.cos(angle) * (dist * p.progress);
+                    const py = this.y + Math.sin(angle) * (dist * p.progress);
+
+                    ctx.fillStyle = COLORS.impulse;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = COLORS.impulse;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 4, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Vesicle Release at synapse
+                    if (p.progress > 0.95) this.drawSynapse(target);
+
+                    p.progress += 0.02;
+                    if (p.progress >= 1) {
+                        target.receive(this.isInhibitory ? -20 : 25);
+                        this.axon.pulses.splice(i, 1);
+                    }
+                }
+            }
+
+            drawSynapse(target) {
+                // Visualize Neurotransmitter release and receptor binding
+                const color = this.isInhibitory ? COLORS.inhibition : COLORS.excitation;
+                ctx.fillStyle = color;
+
+                // Vesicles and neurotransmitter diffusion
+                for (let i = 0; i < 8; i++) {
+                    const progress = Math.random();
+                    const tx = target.x + (Math.random() - 0.5) * 40 * progress;
+                    const ty = target.y + (Math.random() - 0.5) * 40 * progress;
+
+                    ctx.globalAlpha = 1 - progress;
+                    ctx.beginPath();
+                    ctx.arc(tx, ty, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1.0;
+
+                // Receptor binding "glow" on target
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = color;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 15, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            receive(val) {
+                if (this.refractoryTime <= 0) {
+                    // Temporal and Spatial Summation of PSPs
+                    this.vm += val;
+                    // Visualize integration in the soma
+                    this.somaPulse = 1.0;
+                }
+            }
+
+            update() {
+                if (this.somaPulse > 0) this.somaPulse -= 0.1;
+
+                if (this.refractoryTime > 0) {
+                    this.refractoryTime--;
+                    // Absolute & Relative Refractory Period Simulation
+                    if (this.refractoryTime > 20) {
+                        this.vm = -85; // Hyperpolarization
+                    } else {
+                        // Gradual recovery from hyperpolarization
+                        this.vm += (this.restingVm - this.vm) * 0.1;
+                    }
+                } else {
+                    // Leaky Integrate-and-Fire (LIF) model dynamics
+                    this.vm += (this.restingVm - this.vm) * 0.08;
+
+                    if (this.vm >= this.threshold) this.fire();
+                }
+            }
+
+            fire() {
+                this.isFiring = true;
+                this.vm = 40; // Overshoot
+                this.refractoryTime = 40;
+                if (this.axon) this.axon.pulses.push({ progress: 0 });
+                setTimeout(() => this.isFiring = false, 80);
+            }
+        }
+
+        function init() {
+            const container = document.getElementById('container');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            neurons = [];
+
+            // Layered cortical-like structure
+            for (let i = 0; i < 12; i++) {
+                neurons.push(new Neuron(
+                    100 + Math.random() * (canvas.width - 200),
+                    100 + Math.random() * (canvas.height - 200),
+                    Math.random() > 0.8 // 20% inhibitory interneurons
+                ));
+            }
+
+            // Synaptic connections based on proximity
+            neurons.forEach(n => {
+                const target = neurons.find(o => o !== n && Math.hypot(o.x-n.x, o.y-n.y) < 300);
+                if (target) n.axon = { target, pulses: [] };
+            });
+        }
+
+        function animate() {
+            ctx.fillStyle = COLORS.bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            neurons.forEach(n => {
+                n.update();
+                n.draw();
+            });
+
+            // Update UI Panel for the "Master" neuron (first one)
+            if (neurons.length > 0) {
+                const master = neurons[0];
+                document.getElementById('cell-vm').innerText = master.vm.toFixed(1) + " mV";
+                const stateEl = document.getElementById('cell-state');
+                if (master.isFiring) {
+                    stateEl.innerText = "SPIKE!";
+                    stateEl.style.color = "#fff";
+                } else if (master.refractoryTime > 0) {
+                    stateEl.innerText = "Refractario";
+                    stateEl.style.color = COLORS.inhibition;
+                } else {
+                    stateEl.innerText = "Reposo";
+                    stateEl.style.color = COLORS.impulse;
+                }
+
+                // Potential Graph Update
+                history.push(30 - (master.vm + 70) * 0.3);
+                history.shift();
+                const d = history.map((v, i) => `${i === 0 ? 'M' : 'L'} ${i} ${v}`).join(' ');
+                document.getElementById('potential-path').setAttribute('d', d);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        document.getElementById('container').addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const sorted = [...neurons].sort((a, b) => Math.hypot(a.x-x, a.y-y) - Math.hypot(b.x-x, b.y-y));
+            if (sorted[0]) sorted[0].receive(30);
+        });
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+
+        // Stochastic stimulation
+        setInterval(() => {
+            if (Math.random() > 0.6 && neurons.length > 0) {
+                neurons[Math.floor(Math.random()*neurons.length)].receive(15);
+            }
+        }, 400);
+
+    </script>
+</body>
+</html>
