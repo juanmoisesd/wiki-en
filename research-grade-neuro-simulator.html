@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigación en Neurociencias | Plataforma de Simulación Biofísica</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg: #030508;
+            --panel: #0a0e14;
+            --primary: #00f2ff;
+            --soma: #e67e22;
+            --interneuron: #9b59b6;
+            --astrocyte: #f1c40f;
+            --axon: #34495e;
+            --excitation: #2ecc71;
+            --inhibition: #e74c3c;
+            --text: #aab8c2;
+            --border: #1c2938;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            grid-template-rows: 60px 1fr 200px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            grid-column: 1 / span 2;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            justify-content: space-between;
+        }
+
+        .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; color: var(--primary); }
+        .author-info { font-size: 0.75rem; text-align: right; opacity: 0.6; }
+
+        sidebar {
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        main {
+            position: relative;
+            background: radial-gradient(circle at center, #0a111a 0%, #030508 100%);
+            cursor: crosshair;
+        }
+
+        footer {
+            grid-column: 1 / span 2;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            padding: 15px 25px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        canvas { display: block; width: 100%; height: 100%; }
+
+        .widget {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .widget-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .osc-container {
+            height: 60px;
+            background: #000;
+            border: 1px solid #111;
+            position: relative;
+        }
+
+        .osc-path { stroke: var(--primary); fill: none; stroke-width: 1.5; }
+        .osc-grid { stroke: #111; stroke-width: 1; }
+
+        .stat-group { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-top: 4px; }
+        .val { color: var(--primary); }
+
+        .control-group { margin-bottom: 12px; }
+        .control-group label { display: block; font-size: 0.7rem; margin-bottom: 4px; opacity: 0.7; }
+        input[type="range"] { width: 100%; height: 4px; background: var(--border); appearance: none; border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; cursor: pointer; }
+
+        .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.7rem; }
+        .legend-item { display: flex; align-items: center; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">NEURO-DYNAMIC PLATFORM v3.0</div>
+        <div class="author-info">
+            DR. JUAN MOISÉS DE LA SERNA<br>
+            Cátedra de Psicobiología y Neuroanatomía
+        </div>
+    </header>
+
+    <sidebar>
+        <div class="widget">
+            <div class="widget-title">PARÁMETROS BIOFÍSICOS</div>
+            <div class="control-group">
+                <label>G_Na (Conductancia Na+)</label>
+                <input type="range" id="gna-slider" min="0" max="120" value="120">
+            </div>
+            <div class="control-group">
+                <label>G_K (Conductancia K+)</label>
+                <input type="range" id="gk-slider" min="0" max="36" value="36">
+            </div>
+            <div class="control-group">
+                <label>Sim-Speed (Temporal Resolution)</label>
+                <input type="range" id="tau-slider" min="1" max="100" value="50">
+            </div>
+        </div>
+
+        <div class="widget">
+            <div class="widget-title">ESTADO SINÁPTICO</div>
+            <div class="stat-group"><span>E/I Ratio:</span> <span class="val" id="ei-ratio">4.0</span></div>
+            <div class="stat-group"><span>Vesicle Pool:</span> <span class="val">Homeostatic</span></div>
+            <div class="stat-group"><span>Plasticity:</span> <span class="val">STDP Enabled</span></div>
+        </div>
+
+        <div class="widget">
+            <div class="widget-title">LEYENDA ANATÓMICA</div>
+            <div class="legend-grid">
+                <div class="legend-item"><div class="dot" style="background: var(--soma)"></div> Piramidal</div>
+                <div class="legend-item"><div class="dot" style="background: var(--interneuron)"></div> Interneurona</div>
+                <div class="legend-item"><div class="dot" style="background: var(--astrocyte)"></div> Astrocito</div>
+                <div class="legend-item"><div class="dot" style="background: var(--excitation)"></div> Glutamato</div>
+            </div>
+        </div>
+    </sidebar>
+
+    <main id="simulation-viewport">
+        <canvas id="neuroCanvas"></canvas>
+    </main>
+
+    <footer>
+        <div class="widget" style="margin:0">
+            <div class="widget-title">OSCILOSCOPIO - NEURONA PIRAMIDAL V</div>
+            <div class="osc-container">
+                <svg width="100%" height="100%" id="vm-osc">
+                    <path class="osc-path" d="M0,30 L300,30" id="vm-path"/>
+                </svg>
+            </div>
+            <div class="stat-group"><span>V_mem:</span> <span class="val" id="vm-text">-70.00 mV</span></div>
+        </div>
+        <div class="widget" style="margin:0">
+            <div class="widget-title">CINÉTICA DE CANALES Na+ (m)</div>
+            <div class="osc-container">
+                <svg width="100%" height="100%">
+                    <path class="osc-path" style="stroke:#e67e22" d="M0,30" id="na-path"/>
+                </svg>
+            </div>
+        </div>
+        <div class="widget" style="margin:0">
+            <div class="widget-title">CINÉTICA DE CANALES K+ (n)</div>
+            <div class="osc-container">
+                <svg width="100%" height="100%">
+                    <path class="osc-path" style="stroke:#3498db" d="M0,30" id="k-path"/>
+                </svg>
+            </div>
+        </div>
+        <div class="widget" style="margin:0">
+            <div class="widget-title">RASTER PLOT (CORTICAL ACTIVITY)</div>
+            <div class="osc-container" style="background:#05070a">
+                <canvas id="rasterCanvas"></canvas>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * Neuro-Dynamic Platform v3.0
+         * Biophysical Simulation Engine
+         */
+        const canvas = document.getElementById('neuroCanvas');
+        const ctx = canvas.getContext('2d');
+        const rasterCanvas = document.getElementById('rasterCanvas');
+        const rasterCtx = rasterCanvas.getContext('2d');
+
+        let neurons = [];
+        let astrocytes = [];
+        let time = 0;
+        let simSpeed = 1.0;
+        let historyVm = Array(200).fill(0);
+        let historyNa = Array(200).fill(0);
+        let historyK = Array(200).fill(0);
+
+        class Cell {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        class Neuron extends Cell {
+            constructor(x, y, type = 'pyramidal') {
+                super(x, y);
+                this.type = type;
+                // HH Parameters
+                this.Vm = -70.0;
+                this.m = 0.05;
+                this.h = 0.6;
+                this.n = 0.32;
+                this.gNa = 120.0;
+                this.gK = 36.0;
+                this.gL = 0.3;
+                this.ENa = 50.0;
+                this.EK = -77.0;
+                this.EL = -54.387;
+
+                this.axon = null;
+                this.pulses = [];
+                this.morphology = this.generateFractalMorphology();
+                this.organelles = this.generateOrganelles();
+            }
+
+            generateFractalMorphology() {
+                const branches = [];
+                const levels = 3;
+
+                const addBranch = (x, y, angle, len, level) => {
+                    if (level <= 0) return;
+                    const ex = x + Math.cos(angle) * len;
+                    const ey = y + Math.sin(angle) * len;
+                    branches.push({ x1: x, y1: y, x2: ex, y2: ey, width: level * 1.5 });
+
+                    // Recursive bifurcation
+                    addBranch(ex, ey, angle - 0.4, len * 0.7, level - 1);
+                    addBranch(ex, ey, angle + 0.4, len * 0.7, level - 1);
+                };
+
+                if (this.type === 'pyramidal') {
+                    addBranch(this.x, this.y, -Math.PI/2, 50, levels); // Apical
+                    addBranch(this.x, this.y, Math.PI/4, 25, levels); // Basal
+                    addBranch(this.x, this.y, 3*Math.PI/4, 25, levels); // Basal
+                } else {
+                    for(let i=0; i<6; i++) addBranch(this.x, this.y, (Math.PI*2/6)*i, 30, 2);
+                }
+                return branches;
+            }
+
+            generateOrganelles() {
+                return Array(3).fill(0).map(() => ({
+                    x: (Math.random()-0.5)*10,
+                    y: (Math.random()-0.5)*10,
+                    type: Math.random() > 0.5 ? 'mitochondria' : 'er'
+                }));
+            }
+
+            update(dt) {
+                // Synaptic Plasticity (STDP) & Vesicle Dynamics
+                this.synapticWeight = this.synapticWeight || 1.0;
+
+                // Hodgkin-Huxley Model Equations (Classic 1952 formulation)
+                const v = this.Vm;
+
+                const alphaM = 0.1 * (v + 40.0) / (1.0 - Math.exp(-(v + 40.0) / 10.0));
+                const betaM = 4.0 * Math.exp(-(v + 65.0) / 18.0);
+                const alphaH = 0.07 * Math.exp(-(v + 65.0) / 20.0);
+                const betaH = 1.0 / (1.0 + Math.exp(-(v + 35.0) / 10.0));
+                const alphaN = 0.01 * (v + 55.0) / (1.0 - Math.exp(-(v + 55.0) / 10.0));
+                const betaN = 0.125 * Math.exp(-(v + 65.0) / 80.0);
+
+                // Sub-stepping for numerical stability
+                const substeps = 5;
+                const sdt = dt / substeps;
+
+                for (let s = 0; s < substeps; s++) {
+                    this.m += (alphaM * (1.0 - this.m) - betaM * this.m) * sdt;
+                    this.h += (alphaH * (1.0 - this.h) - betaH * this.h) * sdt;
+                    this.n += (alphaN * (1.0 - this.n) - betaN * this.n) * sdt;
+
+                    const INa = this.gNa * Math.pow(this.m, 3) * this.h * (v - this.ENa);
+                    const IK = this.gK * Math.pow(this.n, 4) * (v - this.EK);
+                    const IL = this.gL * (v - this.EL);
+
+                    const I_ext = Math.random() > 0.99 ? 20 : 0; // Simulated background synaptic noise
+                    this.Vm -= (INa + IK + IL - I_ext) * sdt;
+                }
+
+                // Spike detection
+                if (this.Vm > 0 && !this.isFiring) {
+                    this.isFiring = true;
+                    if(this.axon) this.pulses.push({ progress: 0, speed: 0.02 });
+                }
+                if (this.Vm < -60) this.isFiring = false;
+
+                // Axonal pulses
+                for (let i = this.pulses.length - 1; i >= 0; i--) {
+                    const p = this.pulses[i];
+                    p.progress += p.speed;
+                    if(p.progress >= 1) {
+                        const magnitude = (this.type === 'pyramidal' ? 14 : -12) * (this.synapticWeight || 1.0);
+                        this.axon.target.inject(magnitude);
+                        this.pulses.splice(i, 1);
+                    }
+                }
+            }
+
+            inject(val) { this.Vm += val; }
+
+            draw() {
+                const color = this.type === 'pyramidal' ? '#e67e22' : '#9b59b6';
+
+                // Fractal Dendrites
+                ctx.strokeStyle = '#2c3e50';
+                this.morphology.forEach(b => {
+                    ctx.lineWidth = b.width;
+                    ctx.beginPath();
+                    ctx.moveTo(b.x1, b.y1);
+                    ctx.lineTo(b.x2, b.y2);
+                    ctx.stroke();
+                });
+
+                // Soma (Detailed)
+                ctx.fillStyle = color;
+                if(this.isFiring) {
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#fff';
+                }
+                ctx.beginPath();
+                if(this.type === 'pyramidal') {
+                    ctx.moveTo(this.x, this.y - 12);
+                    ctx.lineTo(this.x + 10, this.y + 8);
+                    ctx.lineTo(this.x - 10, this.y + 8);
+                } else {
+                    ctx.arc(this.x, this.y, 8, 0, Math.PI*2);
+                }
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Axon
+                if(this.axon) {
+                    ctx.strokeStyle = '#34495e';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.axon.target.x, this.axon.target.y);
+                    ctx.stroke();
+
+                    // Saltatory conduction visualization
+                    this.pulses.forEach(p => {
+                        const target = this.axon.target;
+                        const px = this.x + (target.x - this.x) * p.progress;
+                        const py = this.y + (target.y - this.y) * p.progress;
+                        ctx.fillStyle = '#00f2ff';
+                        ctx.beginPath();
+                        ctx.arc(px, py, 4, 0, Math.PI*2);
+                        ctx.fill();
+                    });
+                }
+            }
+        }
+
+        class Astrocyte extends Cell {
+            constructor(x, y) {
+                super(x, y);
+            }
+            draw() {
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = 0.5;
+                for(let i=0; i<12; i++) {
+                    const ang = (Math.PI*2/12)*i;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + Math.cos(ang)*20, this.y + Math.sin(ang)*20);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function init() {
+            const viewport = document.getElementById('simulation-viewport');
+            canvas.width = viewport.offsetWidth;
+            canvas.height = viewport.offsetHeight;
+            rasterCanvas.width = rasterCanvas.parentElement.offsetWidth;
+            rasterCanvas.height = rasterCanvas.parentElement.offsetHeight;
+
+            neurons = [];
+            astrocytes = [];
+
+            // Population
+            for(let i=0; i<10; i++) {
+                neurons.push(new Neuron(100+Math.random()*(canvas.width-200), 100+Math.random()*(canvas.height-200), Math.random()>0.8 ? 'interneuron' : 'pyramidal'));
+            }
+            for(let i=0; i<5; i++) {
+                astrocytes.push(new Astrocyte(Math.random()*canvas.width, Math.random()*canvas.height));
+            }
+
+            // Topology
+            neurons.forEach(n => {
+                const target = neurons[Math.floor(Math.random()*neurons.length)];
+                if(target !== n) n.axon = { target };
+            });
+        }
+
+        let rasterData = [];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const dt = 0.1 * simSpeed;
+
+            neurons.forEach((n, idx) => {
+                const spiked = n.Vm < 0;
+                n.update(dt);
+                if (!spiked && n.Vm >= 0) {
+                    rasterData.push({ time: Date.now(), id: idx });
+                }
+                n.draw();
+            });
+            astrocytes.forEach(a => a.draw());
+
+            // Oscilloscopes
+            const master = neurons[0];
+            historyVm.push(master.Vm);
+            historyVm.shift();
+            historyNa.push(master.m);
+            historyNa.shift();
+            historyK.push(master.n);
+            historyK.shift();
+
+            updatePath('vm-path', historyVm, -80, 40, 60);
+            updatePath('na-path', historyNa, 0, 1, 60);
+            updatePath('k-path', historyK, 0, 1, 60);
+
+            document.getElementById('vm-text').innerText = master.Vm.toFixed(2) + " mV";
+
+            drawRaster();
+            requestAnimationFrame(animate);
+        }
+
+        function updatePath(id, data, min, max, h) {
+            const path = document.getElementById(id);
+            const svgWidth = path.closest('svg').clientWidth;
+            const step = svgWidth / data.length;
+            const d = data.map((v, i) => {
+                const y = h - ((v - min) / (max - min)) * h;
+                return `${i === 0 ? 'M' : 'L'} ${i * step} ${y}`;
+            }).join(' ');
+            path.setAttribute('d', d);
+        }
+
+        function drawRaster() {
+            rasterCtx.clearRect(0, 0, rasterCanvas.width, rasterCanvas.height);
+            const now = Date.now();
+            const windowMs = 5000;
+            rasterData = rasterData.filter(d => now - d.time < windowMs);
+
+            rasterCtx.fillStyle = '#00f2ff';
+            rasterData.forEach(d => {
+                const x = rasterCanvas.width - ((now - d.time) / windowMs) * rasterCanvas.width;
+                const y = (d.id / neurons.length) * rasterCanvas.height;
+                rasterCtx.fillRect(x, y, 2, 4);
+            });
+        }
+
+        // Slider Listeners
+        document.getElementById('gna-slider').addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            neurons.forEach(n => n.gNa = val);
+        });
+        document.getElementById('gk-slider').addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            neurons.forEach(n => n.gK = val);
+        });
+        document.getElementById('tau-slider').addEventListener('input', (e) => {
+            simSpeed = parseFloat(e.target.value) / 50;
+        });
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+    </script>
+</body>
+</html>
