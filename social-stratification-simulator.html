@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Estratificación Social Pro | Juan Moisés de la Serna</title>
+    <style>
+        :root {
+            --primary: #0366d6;
+            --primary-glow: rgba(3, 102, 214, 0.3);
+            --bg: #ffffff;
+            --bg-alt: #f6f8fa;
+            --text: #24292e;
+            --text-muted: #586069;
+            --border: #e1e4e8;
+            --accent: #28a745;
+            --danger: #d73a49;
+            --sidebar-width: 350px;
+            --header-height: 60px;
+            --stats-height: 80px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #58a6ff;
+            --primary-glow: rgba(88, 166, 255, 0.3);
+            --bg: #0d1117;
+            --bg-alt: #161b22;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --border: #30363d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "main sidebar"
+                "stats sidebar";
+            grid-template-columns: 1fr var(--sidebar-width);
+            grid-template-rows: var(--header-height) 1fr var(--stats-height);
+            height: 100vh;
+        }
+
+        header {
+            grid-area: header;
+            background: var(--bg-alt);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+
+        main { grid-area: main; position: relative; background: #000; overflow: hidden; perspective: 1000px; }
+
+        #simulationCanvas { width: 100%; height: 100%; display: block; }
+
+        aside { grid-area: sidebar; background: var(--bg-alt); border-left: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; z-index: 90; }
+
+        .stats-bar { grid-area: stats; background: var(--bg-alt); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 1.5rem; gap: 2rem; overflow-x: auto; }
+
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .stat-value { font-weight: 700; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; }
+
+        .control-group { margin-bottom: 1.5rem; }
+        .control-group h3 { font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--primary); border-bottom: 1px solid var(--border); }
+        .chart-container { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem; }
+        .chart-container label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 5px; }
+
+        label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        input[type="range"] { width: 100%; margin-bottom: 1rem; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+        button { padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; font-weight: 600; transition: var(--transition); }
+        button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+
+        #didacticOverlay, #profileOverlay, #reportOverlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto; z-index: 200; display: none;
+        }
+
+        .close-btn { position: absolute; top: 1rem; right: 1rem; cursor: pointer; font-size: 1.5rem; }
+
+        #recordingIndicator {
+            position: absolute; top: 10px; left: 10px; background: rgba(215, 58, 73, 0.8);
+            color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold;
+            display: none; align-items: center; gap: 5px; z-index: 101;
+        }
+        .dot { width: 8px; height: 8px; background: white; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body data-theme="light">
+
+<header>
+    <div class="brand">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        SIMULADOR ESTRATIFICACIÓN v10
+    </div>
+    <div class="header-controls">
+        <button onclick="toggleTheme()">🌓</button>
+        <button onclick="toggleComparison()">⚖️ Comparar</button>
+        <button onclick="showDidactic()">📖 Teoría</button>
+        <button onclick="generateReport()">📋 Informe</button>
+        <button class="btn-primary" onclick="togglePlay()">⏸ Pausar</button>
+    </div>
+</header>
+
+<main id="simulationContainer">
+    <div id="recordingIndicator"><div class="dot"></div> REC</div>
+    <canvas id="simulationCanvas"></canvas>
+</main>
+
+<aside>
+    <div class="control-panel">
+        <div class="control-group">
+            <h3>Población y Velocidad</h3>
+            <label>Individuos: <span id="val_population">2000</span></label>
+            <input type="range" id="param_population" min="1000" max="10000" step="500" value="2000">
+            <label>Velocidad: <span id="val_speed">1</span></label>
+            <input type="range" id="param_speed" min="0.1" max="5" step="0.1" value="1">
+        </div>
+
+        <div class="control-group">
+            <h3>Políticas y Herencia</h3>
+            <label>Impuestos: <span id="val_taxes">0.2</span></label>
+            <input type="range" id="param_taxes" min="0" max="1" step="0.05" value="0.2">
+            <label>Transmisión Herencia: <span id="val_inheritance">0.7</span></label>
+            <input type="range" id="param_inheritance" min="0" max="1" step="0.05" value="0.7">
+            <label>Acceso Educación: <span id="val_edu_access">0.5</span></label>
+            <input type="range" id="param_edu_access" min="0" max="1" step="0.05" value="0.5">
+        </div>
+
+        <div class="control-group">
+            <h3>Eventos Sociales</h3>
+            <div class="btn-group">
+                <button onclick="triggerEvent('crisis')">📉 Crisis</button>
+                <button onclick="triggerEvent('reform')">🎓 Reforma</button>
+                <button onclick="triggerEvent('war')">⚔️ Guerra</button>
+                <button onclick="triggerEvent('tech')">🚀 Tech</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>Análisis Visual</h3>
+            <div class="chart-container">
+                <label>Pirámide Social</label>
+                <svg id="pyramidChart" width="300" height="120"></svg>
+            </div>
+            <div class="chart-container">
+                <label>Desigualdad (Lorenz)</label>
+                <svg id="lorenzChart" width="300" height="120"></svg>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>Exportación Pro</h3>
+            <div class="btn-group">
+                <button onclick="exportData('csv')">CSV</button>
+                <button onclick="exportData('json')">JSON</button>
+                <button onclick="exportData('png')">Captura</button>
+                <button id="recordBtn" onclick="toggleRecording()">Grabar WebM</button>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<div class="stats-bar">
+    <div class="stat-item"><span class="stat-label">Año</span><span class="stat-value" id="stat_year">2024</span></div>
+    <div class="stat-item"><span class="stat-label">Gini</span><span class="stat-value" id="stat_gini">0.32</span></div>
+    <div class="stat-item"><span class="stat-label">Clase Media</span><span class="stat-value" id="stat_middle">60%</span></div>
+    <div class="stat-item"><span class="stat-label">Población</span><span class="stat-value" id="stat_pop">2000</span></div>
+</div>
+
+<div id="didacticOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="didacticContent"></div></div>
+<div id="profileOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="profileContent"></div></div>
+<div id="reportOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="reportContent"></div></div>
+
+<script>
+    /**
+     * SIMULADOR DE ESTRATIFICACIÓN SOCIAL - NÚCLEO
+     */
+    class Individual {
+        constructor(id, options = {}) {
+            this.id = id;
+            this.age = options.age || Math.floor(Math.random() * 50) + 15;
+            this.sex = options.sex || (Math.random() > 0.5 ? 'M' : 'F');
+
+            // Bourdieu Capitals
+            this.culturalCapital = options.culturalCapital || Math.random();
+            this.economicCapital = options.economicCapital || Math.random();
+            this.socialCapital = options.socialCapital || Math.random();
+
+            this.education = options.education || Math.random();
+            this.wealth = this.economicCapital * 100000;
+            this.income = 0;
+            this.prestige = (this.culturalCapital + this.education) / 2;
+            this.power = options.power || (this.wealth > 150000 ? Math.random() : Math.random() * 0.2);
+            this.influence = (this.socialCapital + this.power) / 2;
+
+            this.originClass = options.originClass || 'Baja';
+            this.currentClass = 'Baja';
+            this.isAlive = true;
+            this.parentId = options.parentId || null;
+
+            // Visual tridimensional (simulado)
+            this.x = Math.random();
+            this.z = Math.random(); // Profundidad
+            this.y = 0.5;
+            this.targetY = 0.5;
+
+            this.mobilityTimer = 0;
+            this.mobilityDirection = 'up';
+        }
+
+        getStatus(w) {
+            return (this.education * w.edu + (this.wealth/1000000) * w.wealth + this.culturalCapital * w.cult + this.socialCapital * w.soc) / (w.edu + w.wealth + w.cult + w.soc);
+        }
+
+        update(dt, society) {
+            if (!this.isAlive) return;
+            this.age += dt * society.params.speed;
+
+            if (Math.random() < Math.pow(this.age / 100, 5) * dt * 0.5) {
+                this.isAlive = false;
+                society.onIndividualDeath(this);
+                return;
+            }
+
+            // Economía
+            const base = 12000;
+            const bonus = (this.education * 40000) + (this.socialCapital * 20000) + (this.power * 50000);
+            this.income = (base + bonus) * (0.9 + Math.random() * 0.2);
+
+            const tax = this.income * society.params.taxes;
+            const cost = base * 0.8 + (this.income - base) * 0.4;
+            this.wealth += (this.income - tax - cost) * dt * society.params.speed;
+            if (this.wealth < 0) this.wealth = 0;
+        }
+    }
+
+    class Society {
+        constructor(popSize) {
+            this.year = 2024;
+            this.population = [];
+            this.params = { population: popSize, speed: 1.0, taxes: 0.2, inheritance: 0.7, edu_access: 0.5, w_edu: 0.4, w_wealth: 0.4, w_cult: 0.1, w_soc: 0.1 };
+            this.metrics = { gini: 0, middle: 0 };
+            this.history = [];
+            this.init();
+        }
+
+        init() {
+            this.population = Array.from({length: this.params.population}, (_, i) => new Individual(i));
+        }
+
+        onIndividualDeath(ind) {
+            // Reproducción intergeneracional
+            const inheritance = ind.wealth * this.params.inheritance;
+            const child = new Individual(Date.now() + Math.random(), {
+                age: 0,
+                parentId: ind.id,
+                culturalCapital: ind.culturalCapital * (0.7 + Math.random() * 0.3),
+                socialCapital: ind.socialCapital * (0.6 + Math.random() * 0.4),
+                economicCapital: inheritance / 100000,
+                education: this.params.edu_access * Math.random(),
+                originClass: ind.currentClass
+            });
+            child.wealth = inheritance;
+
+            const idx = this.population.indexOf(ind);
+            if (idx > -1) this.population[idx] = child;
+        }
+
+        update(dt) {
+            this.year += dt * this.params.speed;
+            const weights = { edu: this.params.w_edu, wealth: this.params.w_wealth, cult: this.params.w_cult, soc: this.params.w_soc };
+
+            this.population.forEach(ind => {
+                ind.update(dt, this);
+                const status = ind.getStatus(weights);
+                ind.targetY = 0.95 - (status * 0.9);
+
+                const old = ind.currentClass;
+                if (status > 0.8) ind.currentClass = 'Alta';
+                else if (status > 0.6) ind.currentClass = 'Media Alta';
+                else if (status > 0.4) ind.currentClass = 'Media';
+                else if (status > 0.2) ind.currentClass = 'Media Baja';
+                else ind.currentClass = 'Baja';
+
+                if (old !== ind.currentClass && this.year > 2025) {
+                    ind.mobilityTimer = 1.5;
+                    ind.mobilityDirection = status > (ind.lastStatus || 0) ? 'up' : 'down';
+                }
+                ind.lastStatus = status;
+            });
+        }
+
+        getGini() {
+            const w = this.population.map(p => p.wealth).sort((a, b) => a - b);
+            const n = w.length;
+            let sumW = 0, cumW = 0;
+            for(let i=0; i<n; i++) { sumW += w[i]; cumW += (i+1)*w[i]; }
+            return sumW > 0 ? (2 * cumW) / (n * sumW) - (n + 1) / n : 0;
+        }
+    }
+
+    class Engine {
+        constructor() {
+            this.canvas = document.getElementById('simulationCanvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.society = new Society(2000);
+            this.societyB = null;
+            this.isComparison = false;
+            this.isPlaying = true;
+            this.lastTime = 0;
+            this.throttle = 0;
+            this.recorder = null;
+            this.chunks = [];
+
+            window.addEventListener('resize', () => this.resize());
+            this.resize();
+            this.loop(0);
+        }
+
+        resize() {
+            this.canvas.width = this.canvas.parentElement.clientWidth;
+            this.canvas.height = this.canvas.parentElement.clientHeight;
+        }
+
+        loop(t) {
+            const dt = (t - this.lastTime) / 1000;
+            this.lastTime = t;
+
+            if (this.isPlaying && dt < 0.1) {
+                this.society.update(dt);
+                if (this.isComparison && this.societyB) this.societyB.update(dt);
+
+                this.throttle += dt;
+                if (this.throttle > 0.5) {
+                    this.updateStats();
+                    this.throttle = 0;
+                }
+            }
+
+            this.draw();
+            requestAnimationFrame(t => this.loop(t));
+        }
+
+        draw() {
+            const { ctx, canvas, society, societyB, isComparison } = this;
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (isComparison && societyB) {
+                this.drawSociety(society, 0, 0, canvas.width / 2, canvas.height, isDark, "Actual");
+                this.drawSociety(societyB, canvas.width / 2, 0, canvas.width / 2, canvas.height, isDark, "Contraste");
+            } else {
+                this.drawSociety(society, 0, 0, canvas.width, canvas.height, isDark, "");
+            }
+        }
+
+        drawSociety(soc, ox, oy, w, h, isDark, label) {
+            const { ctx } = this;
+            ctx.save();
+            ctx.translate(ox, oy);
+
+            // BG Strata
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)';
+            for(let i=0; i<5; i++) {
+                if(i%2===0) ctx.fillRect(0, i*0.2*h, w, 0.2*h);
+            }
+
+            // Agents
+            const sorted = soc.population.slice().sort((a,b) => a.z - b.z); // Depth sort
+            sorted.forEach(p => {
+                p.y += (p.targetY - p.y) * 0.1;
+                const perspective = 0.5 + p.z * 0.5;
+                const screenX = (0.1 + p.x * 0.8) * w;
+                const screenY = p.y * h;
+                const r = (1 + Math.sqrt(p.wealth)/150) * perspective;
+
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, r, 0, Math.PI*2);
+                const hue = 200 + p.education * 60;
+                const lit = 30 + p.prestige * 50;
+                ctx.fillStyle = `hsla(${hue}, 70%, ${lit}%, ${perspective})`;
+
+                if (p.power > 0.8) {
+                    ctx.shadowBlur = 10 * perspective;
+                    ctx.shadowColor = `hsla(${hue}, 100%, 70%, 0.6)`;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fill();
+
+                if (p.mobilityTimer > 0) {
+                    this.drawArrow(ctx, screenX, screenY, p.mobilityDirection, p.mobilityTimer);
+                    p.mobilityTimer -= 0.016;
+                }
+            });
+
+            if(label) {
+                ctx.fillStyle = isDark ? '#fff' : '#000';
+                ctx.font = 'bold 12px Inter';
+                ctx.fillText(label, 10, 20);
+            }
+            ctx.restore();
+        }
+
+        drawArrow(ctx, x, y, dir, alpha) {
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, alpha);
+            ctx.strokeStyle = dir === 'up' ? '#28a745' : '#d73a49';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, dir === 'up' ? y-15 : y+15);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        updateStats() {
+            const s = this.society;
+            document.getElementById('stat_year').innerText = Math.floor(s.year);
+            const gini = s.getGini();
+            document.getElementById('stat_gini').innerText = gini.toFixed(3);
+            const middle = (s.population.filter(p => p.currentClass.startsWith('Media')).length / s.population.length) * 100;
+            document.getElementById('stat_middle').innerText = middle.toFixed(1) + '%';
+            document.getElementById('stat_pop').innerText = s.population.length;
+
+            this.drawCharts(s, gini);
+        }
+
+        drawCharts(s, gini) {
+            // Pyramid
+            const svgP = document.getElementById('pyramidChart');
+            const counts = { Alta:0, 'Media Alta':0, Media:0, 'Media Baja':0, Baja:0 };
+            s.population.forEach(p => counts[p.currentClass]++);
+            const max = Math.max(...Object.values(counts));
+            const cls = ['Alta', 'Media Alta', 'Media', 'Media Baja', 'Baja'];
+            svgP.innerHTML = cls.map((c, i) => {
+                const bw = (counts[c]/max) * 200;
+                return `<rect x="${(300-bw)/2}" y="${i*22+5}" width="${bw}" height="18" fill="var(--primary)" fill-opacity="${0.2+i*0.15}"/>
+                        <text x="5" y="${i*22+18}" font-size="9" fill="currentColor">${c}</text>`;
+            }).join('');
+
+            // Lorenz
+            const svgL = document.getElementById('lorenzChart');
+            const w = s.population.map(p => p.wealth).sort((a,b) => a-b);
+            const total = w.reduce((a,b)=>a+b, 0);
+            let path = "M 0 120", cum = 0;
+            w.forEach((v, i) => {
+                cum += v;
+                path += ` L ${(i/w.length)*300} ${120 - (cum/total)*120}`;
+            });
+            svgL.innerHTML = `<line x1="0" y1="120" x2="300" y2="0" stroke="#ccc" stroke-dasharray="3"/><path d="${path}" fill="none" stroke="var(--primary)" stroke-width="2"/>`;
+        }
+    }
+
+    const engine = new Engine();
+
+    function togglePlay() {
+        engine.isPlaying = !engine.isPlaying;
+        document.querySelector('.header-controls .btn-primary').innerText = engine.isPlaying ? '⏸ Pausar' : '▶ Reanudar';
+    }
+
+    function toggleTheme() {
+        const b = document.body;
+        b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    }
+
+    function toggleComparison() {
+        engine.isComparison = !engine.isComparison;
+        if (engine.isComparison && !engine.societyB) {
+            engine.societyB = new Society(engine.society.params.population);
+            engine.societyB.params.inheritance = 1.0;
+            engine.societyB.params.edu_access = 0.1;
+        }
+    }
+
+    function showDidactic() {
+        const content = document.getElementById('didacticContent');
+        content.innerHTML = `<h2>Fundamentos de Estratificación</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1rem;">
+                <div><h4>Capitales de Bourdieu</h4><p><b>Económico:</b> Dinero y activos.<br><b>Cultural:</b> Conocimiento y títulos.<br><b>Social:</b> Redes y contactos.</p></div>
+                <div><h4>Movilidad</h4><p>Cambio de posición en la jerarquía. La <b>reproducción social</b> ocurre cuando el origen predice el destino.</p></div>
+            </div>`;
+        document.getElementById('didacticOverlay').style.display = 'block';
+    }
+
+    function generateReport() {
+        const s = engine.society;
+        const report = document.getElementById('reportContent');
+        const avgWealth = s.population.reduce((a,b)=>a+b.wealth,0)/s.population.length;
+        report.innerHTML = `<h2>Informe de Estado Social (Año ${Math.floor(s.year)})</h2>
+            <p>Coeficiente Gini: <b>${s.getGini().toFixed(4)}</b></p>
+            <p>Patrimonio Medio: <b>$${Math.floor(avgWealth).toLocaleString()}</b></p>
+            <p>Distribución de Clase: ${JSON.stringify(s.population.reduce((acc,p)=>{acc[p.currentClass]=(acc[p.currentClass]||0)+1; return acc;},{}))}</p>`;
+        document.getElementById('reportOverlay').style.display = 'block';
+    }
+
+    function closeOverlays() {
+        ['didacticOverlay', 'profileOverlay', 'reportOverlay'].forEach(id => document.getElementById(id).style.display='none');
+    }
+
+    function triggerEvent(e) {
+        const s = engine.society;
+        if(e==='crisis') { s.population.forEach(p=>p.wealth *= 0.7); alert("¡Crack Bursátil!"); }
+        if(e==='reform') { s.params.edu_access = 0.9; alert("Universidad Gratuita"); }
+        if(e==='tech') { s.population.forEach(p=>p.education += 0.2); alert("Revolución IA"); }
+        if(e==='war') { s.population = s.population.filter(()=>Math.random()>0.1); alert("Movilización General"); }
+    }
+
+    function exportData(fmt) {
+        const s = engine.society;
+        if(fmt==='csv') {
+            let c = "ID,Clase,Patrimonio,Educacion\n" + s.population.map(p=>`${p.id},${p.currentClass},${p.wealth},${p.education}`).join('\n');
+            download(c, 'data.csv', 'text/csv');
+        } else if(fmt==='json') {
+            download(JSON.stringify({year: s.year, params: s.params, pop: s.population}), 'sim.json', 'application/json');
+        } else if(fmt==='png') {
+            const a = document.createElement('a'); a.href = engine.canvas.toDataURL(); a.download = 'snapshot.png'; a.click();
+        }
+    }
+
+    function download(content, name, type) {
+        const b = new Blob([content], {type});
+        const url = URL.createObjectURL(b);
+        const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    }
+
+    function toggleRecording() {
+        const btn = document.getElementById('recordBtn');
+        const indicator = document.getElementById('recordingIndicator');
+        if (!engine.recorder) {
+            engine.chunks = [];
+            const stream = engine.canvas.captureStream(30);
+            engine.recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            engine.recorder.ondataavailable = e => engine.chunks.push(e.data);
+            engine.recorder.onstop = () => {
+                const blob = new Blob(engine.chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = 'simulacion.webm'; a.click();
+            };
+            engine.recorder.start();
+            btn.innerText = "Detener Grabación";
+            indicator.style.display = 'flex';
+        } else {
+            engine.recorder.stop();
+            engine.recorder = null;
+            btn.innerText = "Grabar WebM";
+            indicator.style.display = 'none';
+        }
+    }
+
+    // Interacción
+    engine.canvas.addEventListener('click', e => {
+        const rect = engine.canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) / engine.canvas.width;
+        const my = (e.clientY - rect.top) / engine.canvas.height;
+        let best = null, dMin = 0.05;
+        engine.society.population.forEach(p => {
+            const d = Math.sqrt((p.x - mx)**2 + (p.y - my)**2);
+            if(d < dMin) { dMin = d; best = p; }
+        });
+        if(best) {
+            const pc = document.getElementById('profileContent');
+            pc.innerHTML = `<h3>Perfil del Ciudadano</h3>
+                <p>ID: ${best.id}</p><p>Clase: ${best.currentClass} (Origen: ${best.originClass})</p>
+                <p>Patrimonio: $${Math.floor(best.wealth).toLocaleString()}</p>
+                <p>Padre ID: ${best.parentId || 'Fundador'}</p>
+                <div style="margin-top:10px; height:4px; width:100%; background:#eee;"><div style="height:100%; width:${best.education*100}%; background:var(--primary);"></div></div>
+                <small>Nivel Educativo: ${Math.floor(best.education*100)}%</small>`;
+            document.getElementById('profileOverlay').style.display='block';
+        }
+    });
+
+    document.querySelectorAll('input[type="range"]').forEach(i => {
+        i.addEventListener('input', e => {
+            const k = e.target.id.replace('param_', '');
+            const v = parseFloat(e.target.value);
+            document.getElementById('val_'+k).innerText = v;
+            if(engine.society.params.hasOwnProperty(k)) engine.society.params[k] = v;
+        });
+    });
+</script>
+</body>
+</html>
