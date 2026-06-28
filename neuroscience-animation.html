@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro-V10 | Simulación Biofísica de Alta Fidelidad</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;600&family=JetBrains+Mono:wght@400&display=swap');
+
+        :root {
+            --accent: #00f2ff;
+            --accent-glow: rgba(0, 242, 255, 0.4);
+            --bg: #02060c;
+            --panel: rgba(10, 15, 25, 0.75);
+            --text: #e0e6ed;
+            --pyramidal: #ff9d00;
+            --interneuron: #a05cff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #app-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #050a12 0%, #02060c 100%);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            filter: contrast(1.1) brightness(1.1);
+        }
+
+        /* UI Elements */
+        .hud {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hud-header {
+            top: 40px;
+            left: 40px;
+        }
+
+        .hud-header h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 8px;
+            margin: 0;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .hud-header p {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Stats Panel */
+        .hud-stats {
+            bottom: 40px;
+            left: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px;
+            min-width: 110px;
+        }
+
+        .stat-label { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--accent); }
+
+        /* Oscilloscope */
+        .hud-oscilloscope {
+            bottom: 40px;
+            right: 40px;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            width: 280px;
+        }
+
+        .osc-title { font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; margin-bottom: 10px; text-transform: uppercase; }
+        .osc-canvas-wrap { height: 80px; background: rgba(0,0,0,0.4); border-radius: 8px; overflow: hidden; position: relative; }
+        #oscCanvas { width: 100%; height: 100%; }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            pointer-events: auto;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 16px;
+            width: 240px;
+        }
+
+        .control-row { margin-bottom: 18px; }
+        .control-row:last-child { margin-bottom: 0; }
+        .control-row label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            margin-bottom: 8px;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            appearance: none;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .brand-footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.5rem;
+            opacity: 0.3;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        #interaction-msg {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <canvas id="mainCanvas"></canvas>
+
+        <div class="hud hud-header">
+            <h1>NEURO-V10</h1>
+            <p>Simulación Biofísica de Alta Fidelidad</p>
+        </div>
+
+        <div class="hud hud-stats">
+            <div class="stat-box">
+                <div class="stat-label">Actividad</div>
+                <div id="stat-freq" class="stat-value">0.0 Hz</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">V_Membrane</div>
+                <div id="stat-vm" class="stat-value">-70 mV</div>
+            </div>
+        </div>
+
+        <div class="hud hud-oscilloscope">
+            <div class="osc-title">Potencial de Acción (HH Model)</div>
+            <div class="osc-canvas-wrap">
+                <canvas id="oscCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-row">
+                <label>CONDUCTANCIA Na+ <span id="val-gna">120</span></label>
+                <input type="range" id="param-gna" min="0" max="150" value="120">
+            </div>
+            <div class="control-row">
+                <label>CONDUCTANCIA K+ <span id="val-gk">36</span></label>
+                <input type="range" id="param-gk" min="0" max="50" value="36">
+            </div>
+            <div class="control-row">
+                <label>VELOCIDAD AXONAL <span id="val-speed">100%</span></label>
+                <input type="range" id="param-speed" min="10" max="300" value="100">
+            </div>
+        </div>
+
+        <div id="interaction-msg">HAZ CLIC PARA ESTIMULAR LA RED</div>
+
+        <div class="brand-footer">CÁTEDRA DE PSICOBIOLOGÍA | DR. JUAN MOISÉS DE LA SERNA</div>
+    </div>
+
+    <script>
+        /**
+         * Neuro-V10 Engine
+         * Implements Hodgkin-Huxley model for biological realism
+         * with cinematic visualization.
+         */
+
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const oscCanvas = document.getElementById('oscCanvas');
+        const oscCtx = oscCanvas.getContext('2d');
+        const container = document.getElementById('app-container');
+
+        let width, height;
+        let neurons = [];
+        let ripples = [];
+        let pulses = [];
+        let mouse = { x: -1000, y: -1000, active: false };
+        let globalTime = 0;
+        let spikeHistory = [];
+        let vmHistory = Array(100).fill(-70);
+
+        let config = {
+            gNa: 120,
+            gK: 36,
+            axonSpeed: 0.015,
+            colors: {
+                pyr: '#ff9d00',
+                inter: '#a05cff',
+                accent: '#00f2ff',
+                bg: '#02060c'
+            }
+        };
+
+        class Ripple {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.r = 0; this.life = 1.0; this.color = color;
+            }
+            update() { this.r += 3; this.life -= 0.02; return this.life > 0; }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+                ctx.strokeStyle = this.color;
+                ctx.globalAlpha = this.life * 0.4;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        class Pulse {
+            constructor(source, target, color) {
+                this.source = source;
+                this.target = target;
+                this.progress = 0;
+                this.color = color;
+                this.speed = config.axonSpeed * (0.9 + Math.random() * 0.2);
+                this.curveSign = Math.random() > 0.5 ? 1 : -1;
+            }
+            getPoint(t) {
+                const x = (1 - t) * this.source.x + t * this.target.x;
+                const y = (1 - t) * this.source.y + t * this.target.y;
+                const dx = this.target.x - this.source.x;
+                const dy = this.target.y - this.source.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                const curveFactor = (1 - t) * t * 4;
+                const offset = dist * 0.15 * this.curveSign;
+                return { x: x + (-dy / dist) * offset * curveFactor, y: y + (dx / dist) * offset * curveFactor };
+            }
+            update() {
+                this.progress += this.speed;
+                if(this.progress >= 1) {
+                    this.target.inject(this.source.type === 'pyr' ? 15 : -12);
+                    return false;
+                }
+                return true;
+            }
+            draw() {
+                const p = this.getPoint(this.progress);
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = "#fff";
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+                ctx.fill();
+
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for(let i=0; i<10; i++) {
+                    const t = Math.max(0, this.progress - (i/100));
+                    const pt = this.getPoint(t);
+                    if(i===0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+                }
+                ctx.strokeStyle = this.color;
+                ctx.globalAlpha = 0.5;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        class Neuron {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random()-0.5)*0.2;
+                this.vy = (Math.random()-0.5)*0.2;
+                this.type = Math.random() > 0.7 ? 'inter' : 'pyr';
+                this.color = this.type === 'pyr' ? config.colors.pyr : config.colors.inter;
+
+                // Hodgkin-Huxley State
+                this.Vm = -70.0;
+                this.m = 0.05; this.h = 0.6; this.n = 0.32;
+                this.ENa = 50; this.EK = -77; this.EL = -54.4;
+                this.gL = 0.3;
+
+                this.synapses = [];
+                this.lastSpike = -100;
+                this.isFiring = false;
+            }
+
+            update(dt) {
+                // Physics
+                this.x += this.vx; this.y += this.vy;
+                this.vx *= 0.98; this.vy *= 0.98;
+                if(this.x < 50 || this.x > width-50) this.vx *= -1;
+                if(this.y < 50 || this.y > height-50) this.vy *= -1;
+
+                // Mouse interaction
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx*dx+dy*dy);
+                if(dist < 200) {
+                    const f = (200-dist)*0.0001;
+                    this.vx += dx*f; this.vy += dy*f;
+                    this.vx += dy*f*0.5; this.vy -= dx*f*0.5; // Vortex
+                }
+
+                // Hodgkin-Huxley Integration
+                const v = this.Vm;
+                const alphaM = 0.1 * (v + 40.0) / (1.0 - Math.exp(-(v + 40.0) / 10.0));
+                const betaM = 4.0 * Math.exp(-(v + 65.0) / 18.0);
+                const alphaH = 0.07 * Math.exp(-(v + 65.0) / 20.0);
+                const betaH = 1.0 / (1.0 + Math.exp(-(v + 35.0) / 10.0));
+                const alphaN = 0.01 * (v + 55.0) / (1.0 - Math.exp(-(v + 55.0) / 10.0));
+                const betaN = 0.125 * Math.exp(-(v + 65.0) / 80.0);
+
+                this.m += (alphaM * (1.0 - this.m) - betaM * this.m) * dt;
+                this.h += (alphaH * (1.0 - this.h) - betaH * this.h) * dt;
+                this.n += (alphaN * (1.0 - this.n) - betaN * this.n) * dt;
+
+                const iNa = config.gNa * Math.pow(this.m, 3) * this.h * (v - this.ENa);
+                const iK = config.gK * Math.pow(this.n, 4) * (v - this.EK);
+                const iL = this.gL * (v - this.EL);
+                const iExt = Math.random() > 0.995 ? 15 : 0; // Spontaneous input
+
+                this.Vm -= (iNa + iK + iL - iExt) * dt;
+
+                // Spike detection
+                if(this.Vm > 10 && !this.isFiring) {
+                    this.spike();
+                    this.isFiring = true;
+                }
+                if(this.Vm < -60) this.isFiring = false;
+            }
+
+            inject(val) { this.Vm += val; }
+
+            spike() {
+                this.lastSpike = globalTime;
+                spikeHistory.push(globalTime);
+                ripples.push(new Ripple(this.x, this.y, this.color));
+                this.synapses.forEach(s => {
+                    setTimeout(() => {
+                        pulses.push(new Pulse(this, s.target, this.color));
+                    }, Math.random() * 50);
+                });
+            }
+
+            draw() {
+                const glow = Math.max(0, 1 - (globalTime - this.lastSpike)/20);
+                ctx.save();
+                ctx.shadowBlur = 5 + glow * 20;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = glow > 0.5 ? '#fff' : this.color;
+                ctx.beginPath();
+                if(this.type === 'pyr') {
+                    ctx.moveTo(this.x, this.y-8); ctx.lineTo(this.x+7, this.y+5); ctx.lineTo(this.x-7, this.y+5); ctx.closePath();
+                } else {
+                    ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+                }
+                ctx.fill();
+                ctx.restore();
+
+                // Connections
+                ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+                ctx.beginPath();
+                this.synapses.forEach(s => {
+                    ctx.moveTo(this.x, this.y); ctx.lineTo(s.target.x, s.target.y);
+                });
+                ctx.stroke();
+            }
+        }
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            oscCanvas.width = oscCanvas.offsetWidth;
+            oscCanvas.height = oscCanvas.offsetHeight;
+
+            neurons = [];
+            for(let i=0; i<20; i++) neurons.push(new Neuron(Math.random()*width, Math.random()*height));
+
+            neurons.forEach(n => {
+                for(let i=0; i<2; i++) {
+                    const target = neurons[Math.floor(Math.random()*neurons.length)];
+                    if(target !== n) n.synapses.push({ target });
+                }
+            });
+        }
+
+        function animate() {
+            globalTime++;
+            ctx.fillStyle = config.colors.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            ripples = ripples.filter(r => { r.draw(); return r.update(); });
+            pulses = pulses.filter(p => { p.draw(); return p.update(); });
+
+            neurons.forEach(n => {
+                n.update(0.15);
+                n.draw();
+            });
+
+            // Update UI
+            const master = neurons[0];
+            vmHistory.push(master.Vm);
+            vmHistory.shift();
+            document.getElementById('stat-vm').innerText = Math.round(master.Vm) + " mV";
+
+            if(globalTime % 30 === 0) {
+                const limit = globalTime - 120;
+                spikeHistory = spikeHistory.filter(t => t > limit);
+                document.getElementById('stat-freq').innerText = (spikeHistory.length / 2).toFixed(1) + " Hz";
+            }
+
+            drawOscilloscope();
+            requestAnimationFrame(animate);
+        }
+
+        function drawOscilloscope() {
+            oscCtx.clearRect(0, 0, oscCanvas.width, oscCanvas.height);
+            oscCtx.strokeStyle = config.colors.accent;
+            oscCtx.lineWidth = 2;
+            oscCtx.beginPath();
+            const step = oscCanvas.width / vmHistory.length;
+            vmHistory.forEach((v, i) => {
+                const y = oscCanvas.height/2 - (v + 30) * 0.8;
+                if(i === 0) oscCtx.moveTo(0, y); else oscCtx.lineTo(i * step, y);
+            });
+            oscCtx.stroke();
+        }
+
+        container.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+        container.addEventListener('mousedown', e => {
+            neurons.forEach(n => {
+                const d = Math.sqrt((n.x-e.clientX)**2+(n.y-e.clientY)**2);
+                if(d < 150) n.inject(25);
+            });
+            ripples.push(new Ripple(e.clientX, e.clientY, config.colors.accent));
+        });
+
+        document.getElementById('param-gna').addEventListener('input', e => {
+            config.gNa = parseInt(e.target.value);
+            document.getElementById('val-gna').innerText = e.target.value;
+        });
+        document.getElementById('param-gk').addEventListener('input', e => {
+            config.gK = parseInt(e.target.value);
+            document.getElementById('val-gk').innerText = e.target.value;
+        });
+        document.getElementById('param-speed').addEventListener('input', e => {
+            config.axonSpeed = e.target.value / 6000;
+            document.getElementById('val-speed').innerText = e.target.value + "%";
+        });
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+    </script>
+</body>
+</html>
