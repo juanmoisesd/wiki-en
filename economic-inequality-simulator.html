@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Desigualdad Económica | Laboratorio de Economía Emergente</title>
-    <!-- SEO y Metadatos Académicos -->
-    <meta name="description" content="Simulación interactiva de la evolución de la riqueza y la desigualdad económica basada en agentes.">
-    <meta name="author" content="Juan Moisés de la Serna Tuya">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Laboratorio de Economía Emergente | Simulación de Desigualdad</title>
+    <!--
+        Simulador de Desigualdad Económica y Distribución de la Riqueza
+        Autor: Dr. Juan Moisés de la Serna
+        Tecnologías: HTML5, CSS3, JavaScript ES6+ (Sin librerías externas)
+    -->
     <style>
         :root {
             --primary: #0066cc;
-            --primary-glow: rgba(0, 102, 204, 0.15);
+            --primary-glow: rgba(0, 102, 204, 0.2);
             --secondary: #6e5494;
             --accent: #00d1b2;
             --text: #2c3e50;
@@ -29,12 +28,12 @@
             --radius: 12px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-            /* Colores Desigualdad */
-            --poverty: #e74c3c;
-            --low-income: #e67e22;
-            --middle-class: #f1c40f;
-            --high-income: #2ecc71;
-            --wealthy: #3498db;
+            /* Escala de Riqueza */
+            --poverty: #e74c3c;    /* Rojo: Pobreza Extrema */
+            --low-income: #e67e22; /* Naranja: Bajos Ingresos */
+            --middle-class: #f1c40f;/* Amarillo: Clase Media */
+            --high-income: #2ecc71; /* Verde: Riqueza Alta */
+            --wealthy: #3498db;     /* Azul: Multimillonarios */
         }
 
         [data-theme="dark"] {
@@ -50,49 +49,51 @@
 
         * { box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             background: var(--bg);
             color: var(--text);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: var(--transition);
+            overflow: hidden;
         }
 
         /* Header */
         .app-header {
             background: var(--nav-bg);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 100;
+            box-shadow: var(--shadow-md);
         }
-        .header-content { display: flex; width: 100%; justify-content: space-between; align-items: center; }
-        .app-header h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.025em; }
-        .header-stats { display: flex; gap: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
-        .header-actions { display: flex; gap: 0.75rem; }
+        .header-brand h1 { margin: 0; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.025em; }
+        .header-stats { display: flex; gap: 1.5rem; font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: bold; }
+        .header-actions { display: flex; gap: 0.5rem; }
 
-        /* Layout */
+        /* Layout Principal */
         .app-layout {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
+
+        /* Escenario de Simulación */
         .simulation-view {
             flex: 1;
-            background: var(--bg-alt);
+            background: #000; /* Fondo oscuro para que resalten los colores */
             position: relative;
             overflow: hidden;
-            cursor: crosshair;
         }
         canvas { display: block; }
         #simCanvas { width: 100%; height: 100%; }
 
+        /* Panel Lateral */
         .sidebar {
-            width: 350px;
+            width: 380px;
             background: var(--bg);
             border-left: 1px solid var(--border);
             display: flex;
@@ -101,82 +102,78 @@
             z-index: 50;
         }
 
-        /* Tabs */
-        .tabs { display: flex; border-bottom: 1px solid var(--border); }
+        .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg-alt); }
         .tab-btn {
             flex: 1;
-            padding: 1rem;
+            padding: 0.75rem;
             border: none;
             background: none;
             color: var(--text-muted);
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.8rem;
             transition: var(--transition);
         }
-        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-
-        .tab-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
-        .hidden { display: none !important; }
-
-        /* Controles */
-        .control-group { margin-bottom: 1.5rem; }
-        .control-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; }
-        .control-group input[type="range"] { width: 100%; accent-color: var(--primary); }
-        .control-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
-
-        /* Stats */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: var(--bg-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .stat-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
-
-        .mini-charts canvas {
+        .tab-btn.active {
+            color: var(--primary);
             background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            width: 100%;
-            height: 150px;
+            border-bottom: 2px solid var(--primary);
         }
 
-        /* Buttons */
+        .tab-content { flex: 1; overflow-y: auto; padding: 1.2rem; }
+        .hidden { display: none !important; }
+
+        /* Componentes de Interfaz */
+        .control-group { margin-bottom: 1.2rem; }
+        .control-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.75rem; color: var(--text); }
+        .control-group input[type="range"] { width: 100%; accent-color: var(--primary); }
+        .control-info { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .stat-card { background: var(--bg-alt); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); }
+        .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+        .stat-value { font-size: 0.95rem; font-weight: 800; color: var(--primary); font-family: 'Courier New', monospace; }
+
+        .mini-charts { display: flex; flex-direction: column; gap: 1rem; }
+        .chart-box { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; }
+        .chart-box canvas { width: 100%; height: 120px; background: white; }
+
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
             border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             transition: var(--transition);
         }
         .btn-primary { background: var(--primary); color: white; border: none; }
-        .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+        .btn-accent { background: var(--accent); color: white; border: none; }
+        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-        .btn-small { padding: 0.25rem 0.5rem; font-size: 0.7rem; }
-
-        /* Detail Card */
-        .detail-card {
+        /* Tarjeta de Detalle del Agente */
+        .agent-card {
             position: absolute;
             top: 20px;
-            right: 20px;
-            width: 280px;
+            left: 20px;
+            width: 320px;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 1.5rem;
+            padding: 1.2rem;
             box-shadow: var(--shadow-lg);
             z-index: 10;
+            font-size: 0.8rem;
         }
-        [data-theme="dark"] .detail-card { background: rgba(30, 41, 59, 0.9); }
 
         /* Modal */
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -188,808 +185,883 @@
             border-radius: var(--radius);
             max-width: 800px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
         }
         .close-modal { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; cursor: pointer; }
 
-        .sidebar-footer { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; justify-content: center; }
+        .sidebar-footer { padding: 0.75rem; border-top: 1px solid var(--border); display: flex; gap: 0.4rem; justify-content: center; background: var(--bg-alt); }
 
-        /* Comparison Mode */
+        /* Modo Comparación */
         .split-view { display: flex; width: 100%; height: 100%; }
-        .split-pane { flex: 1; position: relative; border-right: 1px solid var(--border); }
+        .split-pane { flex: 1; position: relative; border-right: 1px solid #333; }
+        .pane-label { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; pointer-events: none; }
 
-        /* Mobile Adjustments */
-        @media (max-width: 900px) {
-            .app-layout { flex-direction: column; }
-            .sidebar { width: 100%; height: 40%; }
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .sidebar { width: 300px; }
         }
     </style>
 </head>
 <body>
-    <header class="app-header">
-        <div class="header-content">
-            <h1>Simulador de Desigualdad Económica</h1>
-            <div class="header-stats">
-                <span id="global-timer">Mes: 0</span>
-                <span id="global-gini">Gini: 0.00</span>
-            </div>
-            <div class="header-actions">
-                <button id="btn-compare" class="btn">Comparar Economías</button>
-                <button id="btn-edu" class="btn btn-primary">Explicar la Desigualdad</button>
-            </div>
-        </div>
-    </header>
 
-    <main class="app-layout">
-        <div id="simulation-container" class="simulation-view">
-            <div id="single-view" style="width:100%; height:100%;">
-                <canvas id="simCanvas"></canvas>
+<header class="app-header">
+    <div class="header-brand">
+        <h1>Simulador de Desigualdad Emergente</h1>
+    </div>
+    <div class="header-stats">
+        <span>MES: <span id="val-month">0</span></span>
+        <span>AÑO: <span id="val-year">0</span></span>
+        <span>GINI: <span id="val-gini-head">0.000</span></span>
+    </div>
+    <div class="header-actions">
+        <button id="btn-compare" class="btn">Modo Comparación</button>
+        <button id="btn-edu" class="btn btn-primary">Didáctica</button>
+    </div>
+</header>
+
+<main class="app-layout">
+    <div id="simulation-viewport" class="simulation-view">
+        <div id="single-pane" style="width:100%; height:100%;">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+        <div id="split-pane" class="split-view hidden">
+            <div class="split-pane">
+                <span class="pane-label">SOCIEDAD A (Base)</span>
+                <canvas id="canvasA"></canvas>
             </div>
-            <div id="comparison-view" class="split-view hidden">
-                <div class="split-pane">
-                    <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); color:white; padding:2px 8px; border-radius:4px; font-size:0.7rem;">Sdad. A (Actual)</div>
-                    <canvas id="simCanvasA"></canvas>
-                </div>
-                <div class="split-pane">
-                    <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); color:white; padding:2px 8px; border-radius:4px; font-size:0.7rem;">Sdad. B (Libre Mercado)</div>
-                    <canvas id="simCanvasB"></canvas>
-                </div>
-            </div>
-            <div id="agent-detail-card" class="detail-card hidden">
-                <!-- Se llenará dinámicamente al hacer clic en un agente -->
+            <div class="split-pane">
+                <span class="pane-label">SOCIEDAD B (Alternativa)</span>
+                <canvas id="canvasB"></canvas>
             </div>
         </div>
 
-        <aside class="sidebar">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="controls">Controles</button>
-                <button class="tab-btn" data-tab="stats">Estadísticas</button>
-            </div>
-
-            <section id="tab-controls" class="tab-content">
-                <div class="control-group">
-                    <label>Evento Económico</label>
-                    <select id="event-selector" class="btn" style="width:100%; text-align:left; margin-bottom: 1rem;">
-                        <option value="none">Ninguno</option>
-                        <option value="boom">Auge Económico</option>
-                        <option value="crisis">Crisis Financiera</option>
-                        <option value="pandemic">Pandemia</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label>Población</label>
-                    <input type="range" id="param-population" min="100" max="5000" value="1000">
-                    <div class="control-info"><span id="val-population">1000</span></div>
-                </div>
-                <div class="control-group">
-                    <label>Velocidad Simulación</label>
-                    <input type="range" id="param-speed" min="1" max="100" value="10">
-                </div>
-                <div class="control-group">
-                    <label>Impuestos Progresivos (%)</label>
-                    <input type="range" id="param-tax" min="0" max="90" value="20">
-                    <div class="control-info"><span id="val-tax">20%</span></div>
-                </div>
-                <div class="control-group">
-                    <label>Redistribución / Educación</label>
-                    <input type="range" id="param-redist" min="0" max="100" value="30">
-                    <div class="control-info"><span id="val-redist">30%</span></div>
-                </div>
-                <div class="control-group">
-                    <label>Efecto Mateo (Ricos más ricos)</label>
-                    <input type="range" id="param-mateo" min="0" max="100" value="50">
-                    <div class="control-info"><span id="val-mateo">Moderado</span></div>
-                </div>
-                <div class="control-group">
-                    <label>Herencia (%)</label>
-                    <input type="range" id="param-inheritance" min="0" max="100" value="100">
-                    <div class="control-info"><span id="val-inheritance">100%</span></div>
-                </div>
-                <div class="control-group">
-                    <label>Volatilidad Mercado</label>
-                    <input type="range" id="param-volatility" min="0" max="100" value="20">
-                </div>
-                <button id="btn-reset" class="btn btn-primary" style="width: 100%;">Reiniciar Simulación</button>
-            </section>
-
-            <section id="tab-stats" class="tab-content hidden">
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Gini</div>
-                        <div id="stat-gini" class="stat-value">0.00</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">PIB Total</div>
-                        <div id="stat-pib" class="stat-value">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pobreza</div>
-                        <div id="stat-poverty" class="stat-value">0%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Millonarios</div>
-                        <div id="stat-rich" class="stat-value">0</div>
-                    </div>
-                </div>
-                <div class="mini-charts">
-                    <label class="stat-label">Curva de Lorenz</label>
-                    <canvas id="lorenzCanvas"></canvas>
-                    <label class="stat-label">Histórico Gini</label>
-                    <canvas id="giniHistoryCanvas"></canvas>
-                    <label class="stat-label">Distribución Riqueza</label>
-                    <canvas id="wealthDistCanvas"></canvas>
-                </div>
-                <div id="stats-detailed" style="font-size: 0.8rem; color: var(--text-muted);">
-                    <!-- Top 1%, 10%, etc -->
-                </div>
-            </section>
-
-            <footer class="sidebar-footer">
-                <button id="export-csv" class="btn-small">CSV</button>
-                <button id="export-json" class="btn-small">JSON</button>
-                <button id="export-png" class="btn-small">PNG</button>
-            </footer>
-        </aside>
-    </main>
-
-    <!-- Modal Educativo -->
-    <div id="edu-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="edu-text"></div>
+        <div id="agent-detail" class="agent-card hidden">
+            <button style="float:right; border:none; background:none; cursor:pointer;" onclick="this.parentElement.classList.add('hidden')">&times;</button>
+            <div id="agent-info"></div>
+            <canvas id="agentHistoryCanvas" style="width:100%; height:80px; margin-top:10px; border:1px solid #ddd;"></canvas>
         </div>
     </div>
 
-    <script>
-        /**
-         * Simulador de Desigualdad Económica
-         * Autor: Juan Moisés de la Serna Tuya
-         *
-         * Este script implementa una simulación basada en agentes donde la desigualdad
-         * emerge de las interacciones económicas individuales.
-         */
+    <aside class="sidebar">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="params">Parámetros</button>
+            <button class="tab-btn" data-tab="analytics">Estadísticas</button>
+            <button class="tab-btn" data-tab="mobility">Movilidad</button>
+        </div>
 
-        // --- CONFIGURACIÓN Y CONSTANTES ---
-        const CONFIG = {
-            maxWealth: 1000000,
-            baseIncome: 1000,
-            avgConsumptionRate: 0.7,
-            retirementAge: 65,
-            maxAge: 85,
-            povertyLine: 500
-        };
+        <section id="tab-params" class="tab-content">
+            <div class="control-group">
+                <label>Población</label>
+                <input type="range" id="param-n" min="500" max="5000" value="1000" step="100">
+                <div class="control-info"><span id="lbl-n">1000</span> agentes</div>
+            </div>
+            <div class="control-group">
+                <label>Velocidad</label>
+                <input type="range" id="param-speed" min="1" max="100" value="20">
+            </div>
+            <hr>
+            <div class="control-group">
+                <label>Efecto Mateo (Concentración)</label>
+                <input type="range" id="param-mateo" min="0" max="100" value="50">
+                <div class="control-info"><span>Igualitario</span><span>Concentrado</span></div>
+            </div>
+            <div class="control-group">
+                <label>Impuesto Progresivo (%)</label>
+                <input type="range" id="param-tax" min="0" max="90" value="20">
+                <div class="control-info"><span id="lbl-tax">20%</span></div>
+            </div>
+            <div class="control-group">
+                <label>Inversión Social (Redistribución)</label>
+                <input type="range" id="param-redist" min="0" max="100" value="30">
+                <div class="control-info"><span id="lbl-redist">30%</span></div>
+            </div>
+            <div class="control-group">
+                <label>Impuesto Herencia (%)</label>
+                <input type="range" id="param-inheritance-tax" min="0" max="100" value="10">
+                <div class="control-info"><span id="lbl-inheritance-tax">10%</span></div>
+            </div>
+            <hr>
+            <div class="control-group">
+                <label>Inflación / Volatilidad</label>
+                <input type="range" id="param-volatility" min="0" max="100" value="20">
+            </div>
+            <div class="control-group">
+                <label>Movilidad Social (Oportunidades)</label>
+                <input type="range" id="param-mobility" min="0" max="100" value="50">
+            </div>
 
-        // --- MODELO DE AGENTE ---
-        class Individual {
-            constructor(id, initialWealth = 1000, parent = null) {
-                this.id = id;
-                this.age = parent ? 0 : Math.floor(Math.random() * 45) + 18;
-                this.wealth = initialWealth;
-                this.education = parent ? Math.max(0, Math.min(1, parent.education + (Math.random() - 0.5) * 0.2)) : Math.random();
-                this.productivity = 0.5 + Math.random() * 0.5;
-                this.professionMultiplier = parent ? Math.max(0.5, parent.professionMultiplier * (0.8 + Math.random() * 0.4)) : (0.5 + Math.random() * 2);
-                this.isRetired = false;
-                this.history = [];
+            <div class="control-group">
+                <label>Eventos Mundiales</label>
+                <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                    <button class="btn btn-small" onclick="triggerEvent('crisis')">Crisis</button>
+                    <button class="btn btn-small" onclick="triggerEvent('boom')">Auge</button>
+                    <button class="btn btn-small" onclick="triggerEvent('pandemic')">Pandemia</button>
+                    <button class="btn btn-small" onclick="triggerEvent('tech')">Salto Tech</button>
+                </div>
+            </div>
 
-                // Atributos adicionales requeridos
-                this.savingsRate = 0.1 + Math.random() * 0.3;
-                this.riskTolerance = Math.random();
-                this.income = 0;
-                this.inheritanceReceived = initialWealth > 2000 ? initialWealth : 0;
+            <button id="btn-reset" class="btn btn-primary" style="width:100%; margin-top:1rem;">Reiniciar Simulación</button>
+        </section>
 
-                // Atributos visuales
-                this.x = Math.random();
-                this.y = Math.random();
-                this.targetX = this.x;
-                this.targetY = this.y;
-                this.color = "";
+        <section id="tab-analytics" class="tab-content hidden">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Gini</div>
+                    <div id="stat-gini" class="stat-value">0.000</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">PIB Total</div>
+                    <div id="stat-gdp" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pobreza</div>
+                    <div id="stat-poverty" class="stat-value">0.0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Millonarios</div>
+                    <div id="stat-millionaires" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Multimillonarios</div>
+                    <div id="stat-billionaires" class="stat-value">0</div>
+                </div>
+            </div>
+
+            <div class="mini-charts">
+                <div class="chart-box">
+                    <label class="stat-label">Curva de Lorenz</label>
+                    <canvas id="chartLorenz"></canvas>
+                </div>
+                <div class="chart-box">
+                    <label class="stat-label">Histograma Riqueza (Log)</label>
+                    <canvas id="chartHist"></canvas>
+                </div>
+                <div class="chart-box">
+                    <label class="stat-label">Histórico Gini</label>
+                    <canvas id="chartGiniHistory"></canvas>
+                </div>
+                <div id="detailed-wealth" style="font-size:0.7rem; color:var(--text-muted);">
+                    <!-- Top buckets -->
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-mobility" class="tab-content hidden">
+            <div class="chart-box">
+                <label class="stat-label">Pirámide de Riqueza</label>
+                <canvas id="chartPyramid"></canvas>
+            </div>
+            <div class="chart-box" style="margin-top:1rem;">
+                <label class="stat-label">Matriz de Movilidad Intergeneracional</label>
+                <canvas id="chartMobility"></canvas>
+                <div style="font-size:0.6rem; margin-top:5px; color:var(--text-muted);">
+                    Filas: Clase origen (padres). Columnas: Clase destino (hijos).
+                </div>
+            </div>
+        </section>
+
+        <footer class="sidebar-footer">
+            <button class="btn btn-small" id="export-csv">CSV</button>
+            <button class="btn btn-small" id="export-json">JSON</button>
+            <button class="btn btn-small" id="load-json">LOAD</button>
+            <button class="btn btn-small" id="export-png">PNG</button>
+            <input type="file" id="file-input" style="display:none" accept=".json">
+        </footer>
+    </aside>
+</main>
+
+<!-- Modal Didáctico -->
+<div id="edu-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-modal" id="close-edu">&times;</span>
+        <div id="edu-body">
+            <h2 style="color:var(--primary); margin-top:0;">Laboratorio de Economía Emergente</h2>
+            <p>Este simulador basado en agentes (ABM) modela una economía donde la desigualdad no es impuesta, sino que <strong>emerge</strong> de las interacciones individuales y las reglas del sistema.</p>
+
+            <h3>Conceptos Clave:</h3>
+            <ul>
+                <li><strong>Coeficiente de Gini:</strong> Medida de desigualdad entre 0 (igualdad total) y 1 (un individuo posee todo).</li>
+                <li><strong>Curva de Lorenz:</strong> Representación gráfica de la distribución acumulada de la riqueza.</li>
+                <li><strong>Efecto Mateo:</strong> "El rico se hace más rico". El capital genera más capital a través de inversiones y retornos que no están disponibles para quienes viven al día.</li>
+                <li><strong>Movilidad Social:</strong> La capacidad de un individuo para cambiar de clase económica independientemente de su origen.</li>
+                <li><strong>Redistribución:</strong> Cómo el estado utiliza los impuestos para financiar servicios públicos (salud, educación) que actúan como niveladores de oportunidades.</li>
+            </ul>
+
+            <h3>Cómo experimentar:</h3>
+            <p>Intenta reducir el impuesto progresivo y aumentar el Efecto Mateo. Verás cómo la clase media desaparece y la riqueza se concentra en el Top 1% (el círculo azul se vuelve gigante). Luego, activa una crisis y observa quién sobrevive.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * LÓGICA DE SIMULACIÓN - LABORATIORIO DE ECONOMÍA
+     */
+
+    const CONFIG = {
+        baseIncome: 1000,
+        minCons: 600,
+        retirementAge: 65,
+        maxAge: 90,
+        povertyLine: 800,
+        classes: [
+            { name: "Pobreza Extrema", min: 0, max: 1000, color: "#e74c3c" },
+            { name: "Bajos Ingresos", min: 1000, max: 5000, color: "#e67e22" },
+            { name: "Clase Media", min: 5000, max: 50000, color: "#f1c40f" },
+            { name: "Clase Alta", min: 50000, max: 500000, color: "#2ecc71" },
+            { name: "Riqueza Extrema", min: 500000, max: Infinity, color: "#3498db" }
+        ]
+    };
+
+    class Agent {
+        constructor(id, wealth = 2000, parent = null) {
+            this.id = id;
+            this.age = parent ? 0 : 18 + Math.random() * 45;
+            this.wealth = wealth;
+            this.financialCapital = wealth * 0.7;
+            this.realEstateCapital = wealth * 0.3;
+
+            // Atributos de Identidad
+            this.education = parent ? Math.max(0, Math.min(1, parent.education + (Math.random() - 0.5) * 0.2)) : Math.random();
+            this.productivity = 0.5 + Math.random() * 1.5;
+            this.riskLevel = Math.random();
+            this.professionMultiplier = 0.8 + Math.random() * 2;
+
+            // Dinámica
+            this.income = 0;
+            this.salary = 0;
+            this.consumption = 0;
+            this.savingsRate = 0.05 + Math.random() * 0.4;
+            this.taxPaid = 0;
+            this.inheritanceReceived = parent ? wealth : 0;
+            this.isUnemployed = false;
+
+            // Seguimiento
+            this.history = [];
+            this.originQuintile = parent ? parent.currentQuintile : null;
+            this.currentQuintile = 0;
+
+            // Visual
+            this.x = Math.random();
+            this.y = Math.random();
+            this.tx = this.x;
+            this.ty = this.y;
+            this.size = 2;
+        }
+
+        step(world, taxesToDistribute = 0) {
+            if (this.age > CONFIG.maxAge) {
+                this.die(world);
+                return;
             }
 
-            step(economy) {
-                if (this.age > CONFIG.maxAge) {
-                    this.die(economy);
-                    return;
-                }
+            this.age += 1/12; // Un mes
+            const isRetired = this.age >= CONFIG.retirementAge;
 
-                this.age += 1/12; // Un mes
-                if (this.age >= CONFIG.retirementAge) this.isRetired = true;
+            // 1. Mercado Laboral
+            if (!isRetired) {
+                if (Math.random() < 0.02) this.isUnemployed = !this.isUnemployed;
 
-                // 1. Ingresos
-                let income = 0;
-                if (!this.isRetired) {
-                    // Ingreso basado en educación, productividad y suerte
-                    income = CONFIG.baseIncome * this.professionMultiplier * (0.5 + this.education) * this.productivity;
-                    income *= (0.9 + Math.random() * 0.2); // Pequeña variabilidad
+                if (!this.isUnemployed) {
+                    this.salary = CONFIG.baseIncome * this.professionMultiplier * (0.5 + this.education) * this.productivity;
+                    this.salary *= (1 + (Math.random() - 0.5) * 0.1); // Suerte
+                    this.salary *= (world.params.globalProd || 1);
                 } else {
-                    // Pensión (simplificada como % del ahorro previo o transferencia estatal)
-                    income = CONFIG.baseIncome * 0.4;
+                    this.salary = CONFIG.baseIncome * 0.2; // Subsidio básico
                 }
-                this.income = income; // Fix: Update property for stats/export
-
-                // 2. Rentabilidad de Inversiones (Efecto Mateo)
-                const investmentRate = economy.params.mateo / 1000; // Factor de capitalización
-                this.investmentGain = this.wealth * investmentRate * (1 + (Math.random() - 0.5) * (economy.params.volatility / 50));
-
-                // 3. Impuestos (Progresivos)
-                let tax = 0;
-                const taxRate = economy.params.tax / 100;
-                if (income > CONFIG.baseIncome * 2) {
-                    tax = (income - CONFIG.baseIncome * 2) * taxRate;
-                }
-
-                // 4. Consumo
-                const consumption = Math.min(this.wealth + income, CONFIG.baseIncome * 0.8 + (income * CONFIG.avgConsumptionRate));
-
-                // 5. Actualizar Patrimonio
-                this.wealth += income + this.investmentGain - tax - consumption;
-                if (this.wealth < 0) this.wealth = 0;
-
-                // Guardar historia cada año
-                if (Math.floor(this.age * 12) % 12 === 0) {
-                    this.history.push({ age: Math.floor(this.age), wealth: this.wealth });
-                }
-
-                // Redistribución (Educación/Subsidios)
-                const subsidy = (economy.totalTaxes / economy.population.length) * (economy.params.redist / 100);
-                this.wealth += subsidy;
-
-                // 6. Recaudar Impuestos para el próximo mes
-                economy.collectedTaxes += tax;
-
-                // Movimiento visual suave
-                if (Math.random() < 0.05) {
-                    this.targetX = Math.random();
-                    this.targetY = Math.random();
-                }
-                this.x += (this.targetX - this.x) * 0.01;
-                this.y += (this.targetY - this.y) * 0.01;
-            }
-
-            die(economy) {
-                // Herencia
-                const inheritance = this.wealth * (economy.params.inheritance / 100);
-                const taxOnInheritance = this.wealth - inheritance;
-                economy.collectedTaxes += taxOnInheritance;
-
-                // Repartir herencia a un nuevo individuo (simulando descendencia)
-                const index = economy.population.indexOf(this);
-                if (index > -1) {
-                    economy.population[index] = new Individual(this.id, inheritance, this);
-                }
-            }
-        }
-
-        // --- SISTEMA ECONÓMICO ---
-        class Economy {
-            constructor() {
-                this.population = [];
-                this.month = 0;
-                this.totalTaxes = 0;
-                this.collectedTaxes = 0;
-                this.params = {
-                    population: 1000,
-                    tax: 20,
-                    redist: 30,
-                    mateo: 50,
-                    inheritance: 100,
-                    volatility: 20,
-                    speed: 10
-                };
-                this.giniHistory = [];
-                this.init();
-            }
-
-            init() {
-                this.population = [];
-                this.month = 0;
-                this.giniHistory = [];
-                for (let i = 0; i < this.params.population; i++) {
-                    this.population.push(new Individual(i, 1000 + Math.random() * 2000));
-                }
-            }
-
-            updateParamsFromUI() {
-                this.params.population = parseInt(document.getElementById('param-population').value);
-                this.params.tax = parseInt(document.getElementById('param-tax').value);
-                this.params.redist = parseInt(document.getElementById('param-redist').value);
-                this.params.mateo = parseInt(document.getElementById('param-mateo').value);
-                this.params.inheritance = parseInt(document.getElementById('param-inheritance').value);
-                this.params.volatility = parseInt(document.getElementById('param-volatility').value);
-                this.params.speed = parseInt(document.getElementById('param-speed').value);
-
-                document.getElementById('val-population').innerText = this.params.population;
-                document.getElementById('val-tax').innerText = this.params.tax + "%";
-                document.getElementById('val-redist').innerText = this.params.redist + "%";
-                document.getElementById('val-inheritance').innerText = this.params.inheritance + "%";
-
-                const mateoLabel = this.params.mateo < 30 ? "Bajo" : this.params.mateo < 70 ? "Moderado" : "Extremo";
-                document.getElementById('val-mateo').innerText = mateoLabel;
-            }
-
-            step() {
-                // La redistribución usa los impuestos recaudados en el ciclo ANTERIOR
-                this.totalTaxes = this.collectedTaxes || 0;
-                this.collectedTaxes = 0;
-
-                // Aplicar Eventos
-                if (activeEvent !== 'none') {
-                    eventTicks++;
-                    if (activeEvent === 'crisis') this.params.volatility = 80;
-                    if (activeEvent === 'boom') this.params.mateo = 90;
-                    if (eventTicks > 24) {
-                        activeEvent = 'none';
-                        eventTicks = 0;
-                        document.getElementById('event-selector').value = 'none';
-                        this.updateParamsFromUI();
-                    }
-                }
-
-                this.population.forEach(agent => agent.step(this));
-                this.month++;
-
-                if (this.month % 12 === 0) {
-                    this.calculateGini();
-                }
-            }
-
-            calculateGini() {
-                const wealths = this.population.map(a => a.wealth).sort((a, b) => a - b);
-                const n = wealths.length;
-                if (n === 0) return 0;
-
-                let sumNum = 0;
-                let sumDen = 0;
-                for (let i = 0; i < n; i++) {
-                    sumNum += (i + 1) * wealths[i];
-                    sumDen += wealths[i];
-                }
-
-                const gini = (sumDen === 0) ? 0 : (2 * sumNum) / (n * sumDen) - (n + 1) / n;
-                this.giniHistory.push(gini);
-                if (this.giniHistory.length > 100) this.giniHistory.shift();
-                return gini;
-            }
-
-            getStats() {
-                const wealths = this.population.map(a => a.wealth).sort((a, b) => a - b);
-                const totalWealth = wealths.reduce((a, b) => a + b, 0);
-                const avgWealth = totalWealth / wealths.length;
-                const povertyCount = wealths.filter(w => w < CONFIG.povertyLine).length;
-                const richCount = wealths.filter(w => w > 100000).length;
-
-                return {
-                    totalWealth,
-                    avgWealth,
-                    povertyRate: (povertyCount / wealths.length) * 100,
-                    richCount,
-                    gini: this.giniHistory[this.giniHistory.length - 1] || 0
-                };
-            }
-        }
-
-        // Instancias
-        let economy = new Economy();
-        let economyB = null;
-        let isComparing = false;
-        let activeEvent = 'none';
-        let eventTicks = 0;
-
-        // --- UI Y ANIMACIÓN ---
-        const canvas = document.getElementById('simCanvas');
-        const canvasA = document.getElementById('simCanvasA');
-        const canvasB = document.getElementById('simCanvasB');
-        const ctx = canvas.getContext('2d');
-        const ctxA = canvasA.getContext('2d');
-        const ctxB = canvasB.getContext('2d');
-
-        function resize() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-            if (isComparing) {
-                canvasA.width = canvasA.parentElement.clientWidth;
-                canvasA.height = canvasA.parentElement.clientHeight;
-                canvasB.width = canvasB.parentElement.clientWidth;
-                canvasB.height = canvasB.parentElement.clientHeight;
-            }
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        function drawAgent(c, agent, canW, canH) {
-            const size = Math.sqrt(agent.wealth) * 0.1 + 2;
-            const x = agent.x * canW;
-            const y = agent.y * canH;
-
-            // Transición continua de color
-            let r, g, b;
-            if (agent.wealth < 500) { // Pobreza: Rojo a Naranja
-                const t = agent.wealth / 500;
-                r = 231 + (230 - 231) * t;
-                g = 76 + (126 - 76) * t;
-                b = 60 + (34 - 60) * t;
-            } else if (agent.wealth < 2000) { // Naranja a Amarillo
-                const t = (agent.wealth - 500) / 1500;
-                r = 230 + (241 - 230) * t;
-                g = 126 + (196 - 126) * t;
-                b = 34 + (15 - 34) * t;
-            } else if (agent.wealth < 10000) { // Amarillo a Verde
-                const t = (agent.wealth - 2000) / 8000;
-                r = 241 + (46 - 241) * t;
-                g = 196 + (204 - 196) * t;
-                b = 15 + (113 - 15) * t;
-            } else if (agent.wealth < 50000) { // Verde a Azul
-                const t = (agent.wealth - 10000) / 40000;
-                r = 46 + (52 - 46) * t;
-                g = 204 + (152 - 204) * t;
-                b = 113 + (219 - 113) * t;
-            } else { // Azul (Multimillonarios)
-                r = 52; g = 152; b = 219;
-            }
-
-            c.fillStyle = `rgb(${r},${g},${b})`;
-            c.beginPath();
-            c.arc(x, y, Math.min(size, 30), 0, Math.PI * 2);
-            c.fill();
-        }
-
-        function draw() {
-            if (!isComparing) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                economy.population.forEach(agent => drawAgent(ctx, agent, canvas.width, canvas.height));
-                for(let i=0; i<Math.floor(economy.params.speed / 10) + 1; i++) economy.step();
             } else {
-                ctxA.clearRect(0, 0, canvasA.width, canvasA.height);
-                ctxB.clearRect(0, 0, canvasB.width, canvasB.height);
-                economy.population.forEach(agent => drawAgent(ctxA, agent, canvasA.width, canvasA.height));
-                economyB.population.forEach(agent => drawAgent(ctxB, agent, canvasB.width, canvasB.height));
-                for(let i=0; i<Math.floor(economy.params.speed / 10) + 1; i++) {
-                    economy.step();
-                    economyB.step();
+                this.salary = CONFIG.baseIncome * 0.5; // Pensión
+                this.isUnemployed = false;
+            }
+
+            // 2. Retornos de Capital (Efecto Mateo)
+            const mateoFactor = world.params.mateo / 50;
+            const finReturn = this.financialCapital * (0.005 * mateoFactor) * (0.8 + this.riskLevel * 0.4);
+            const realReturn = this.realEstateCapital * 0.003 * (1 + world.params.housingBubble);
+
+            this.income = this.salary + finReturn + realReturn;
+
+            // 3. Impuestos y Gastos
+            const taxRate = world.params.tax / 100;
+            this.taxPaid = (this.income > CONFIG.baseIncome ? (this.income - CONFIG.baseIncome) * taxRate : 0);
+            this.taxPaid += this.wealth * 0.001; // Impuesto patrimonio leve
+
+            const need = CONFIG.minCons * (1 + world.params.inflation);
+            const luxury = Math.max(0, (this.income - need) * (1 - this.savingsRate));
+            this.consumption = need + luxury;
+
+            // 4. Actualización de Riqueza
+            const net = this.income - this.taxPaid - this.consumption;
+
+            // Inversión del ahorro
+            if (net > 0) {
+                const toRealEstate = net * (this.riskLevel > 0.5 ? 0.2 : 0.6);
+                this.realEstateCapital += toRealEstate;
+                this.financialCapital += (net - toRealEstate);
+            } else {
+                this.financialCapital += net;
+                if (this.financialCapital < 0) {
+                    this.realEstateCapital += this.financialCapital;
+                    this.financialCapital = 0;
                 }
             }
 
-            updateUI();
-            requestAnimationFrame(draw);
+            this.wealth = this.financialCapital + this.realEstateCapital;
+            if (this.wealth < 0) { this.wealth = 0; this.financialCapital = 0; this.realEstateCapital = 0; }
+
+            // Redistribución Directa (Servicios públicos / Educación)
+            const bonus = (taxesToDistribute / world.agents.length) * (world.params.redist / 100);
+            this.wealth += bonus;
+            this.financialCapital += bonus;
+
+            // Registro
+            if (world.month % 12 === 0) {
+                this.history.push(this.wealth);
+                if (this.history.length > 30) this.history.shift();
+            }
+
+            // Visual
+            if (Math.random() < 0.01) { this.tx = Math.random(); this.ty = Math.random(); }
+            this.x += (this.tx - this.x) * 0.01;
+            this.y += (this.ty - this.y) * 0.01;
+            this.size = Math.sqrt(this.wealth) * 0.15 + 1;
         }
 
-        function updateUI() {
-            document.getElementById('global-timer').innerText = `Año: ${Math.floor(economy.month / 12)} Mes: ${economy.month % 12}`;
-            const stats = economy.getStats();
-            document.getElementById('global-gini').innerText = `Gini: ${stats.gini.toFixed(3)}`;
+        die(world) {
+            const taxRate = world.params.inheritanceTax / 100;
+            const inheritance = this.wealth * (1 - taxRate);
+            world.collectedTaxes += (this.wealth - inheritance);
 
-            if (document.getElementById('tab-stats').classList.contains('hidden') === false) {
-                document.getElementById('stat-gini').innerText = stats.gini.toFixed(3);
-                document.getElementById('stat-pib').innerText = Math.floor(stats.totalWealth).toLocaleString();
-                document.getElementById('stat-poverty').innerText = stats.povertyRate.toFixed(1) + "%";
-                document.getElementById('stat-rich').innerText = stats.richCount;
-
-                drawLorenzCurve();
-                drawGiniHistory();
-                drawWealthDistribution();
-                updateDetailedStats(stats);
+            // Reemplazo por descendiente
+            const index = world.agents.indexOf(this);
+            if (index !== -1) {
+                const child = new Agent(this.id, inheritance, this);
+                // Registrar movilidad
+                if (this.originQuintile !== null) {
+                    world.mobilityData[this.originQuintile][this.currentQuintile]++;
+                }
+                world.agents[index] = child;
             }
         }
+    }
 
-        function updateDetailedStats(stats) {
-            const wealths = economy.population.map(a => a.wealth).sort((a, b) => b - a); // Mayor a menor
-            const total = stats.totalWealth || 1;
-
-            const top1 = (wealths.slice(0, Math.ceil(wealths.length * 0.01)).reduce((a,b)=>a+b, 0) / total * 100);
-            const top5 = (wealths.slice(0, Math.ceil(wealths.length * 0.05)).reduce((a,b)=>a+b, 0) / total * 100);
-            const top10 = (wealths.slice(0, Math.ceil(wealths.length * 0.1)).reduce((a,b)=>a+b, 0) / total * 100);
-            const top20 = (wealths.slice(0, Math.ceil(wealths.length * 0.2)).reduce((a,b)=>a+b, 0) / total * 100);
-            const bottom40 = (wealths.slice(Math.floor(wealths.length * 0.6)).reduce((a,b)=>a+b, 0) / total * 100);
-            const bottom50 = (wealths.slice(Math.floor(wealths.length * 0.5)).reduce((a,b)=>a+b, 0) / total * 100);
-
-            const palmaIndex = (bottom40 > 0) ? (top10 / bottom40).toFixed(2) : "∞";
-
-            document.getElementById('stats-detailed').innerHTML = `
-                <p>Concentración de la Riqueza:</p>
-                <ul style="list-style:none; padding:0; font-family: 'JetBrains Mono', monospace;">
-                    <li>Top 1%: <strong>${top1.toFixed(1)}%</strong></li>
-                    <li>Top 5%: <strong>${top5.toFixed(1)}%</strong></li>
-                    <li>Top 10%: <strong>${top10.toFixed(1)}%</strong></li>
-                    <li>Top 20%: <strong>${top20.toFixed(1)}%</strong></li>
-                    <li>Bottom 50%: <strong>${bottom50.toFixed(1)}%</strong></li>
-                </ul>
-                <div style="margin-top:0.5rem; border-top: 1px solid var(--border); padding-top:0.5rem;">
-                    <p>Índice de Palma: <strong>${palmaIndex}</strong></p>
-                    <p>Mediana: <strong>$${Math.floor(wealths[Math.floor(wealths.length/2)] || 0).toLocaleString()}</strong></p>
-                </div>
-            `;
-        }
-
-        function drawLorenzCurve() {
-            const lCanvas = document.getElementById('lorenzCanvas');
-            const lCtx = lCanvas.getContext('2d');
-            if (lCanvas.width !== lCanvas.clientWidth) {
-                lCanvas.width = lCanvas.clientWidth;
-                lCanvas.height = lCanvas.clientHeight;
-            }
-            lCtx.clearRect(0, 0, lCanvas.width, lCanvas.height);
-
-            const wealths = economy.population.map(a => a.wealth).sort((a, b) => a - b);
-            const totalWealth = wealths.reduce((a, b) => a + b, 0);
-            const n = wealths.length;
-
-            lCtx.strokeStyle = '#ccc';
-            lCtx.setLineDash([5, 5]);
-            lCtx.beginPath();
-            lCtx.moveTo(0, lCanvas.height);
-            lCtx.lineTo(lCanvas.width, 0);
-            lCtx.stroke();
-            lCtx.setLineDash([]);
-
-            lCtx.strokeStyle = '#0066cc';
-            lCtx.lineWidth = 2;
-            lCtx.beginPath();
-            lCtx.moveTo(0, lCanvas.height);
-
-            let cumulativeWealth = 0;
-            for (let i = 0; i < n; i++) {
-                cumulativeWealth += wealths[i];
-                const x = (i / n) * lCanvas.width;
-                const y = lCanvas.height - (cumulativeWealth / (totalWealth || 1)) * lCanvas.height;
-                lCtx.lineTo(x, y);
-            }
-            lCtx.stroke();
-        }
-
-        function drawGiniHistory() {
-            const gCanvas = document.getElementById('giniHistoryCanvas');
-            const gCtx = gCanvas.getContext('2d');
-            if (gCanvas.width !== gCanvas.clientWidth) {
-                gCanvas.width = gCanvas.clientWidth;
-                gCanvas.height = gCanvas.clientHeight;
-            }
-            gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-
-            const history = economy.giniHistory;
-            if (history.length < 2) return;
-
-            gCtx.strokeStyle = '#00d1b2';
-            gCtx.lineWidth = 2;
-            gCtx.beginPath();
-            for (let i = 0; i < history.length; i++) {
-                const x = (i / (history.length - 1)) * gCanvas.width;
-                const y = gCanvas.height - (history[i] * gCanvas.height);
-                if (i === 0) gCtx.moveTo(x, y);
-                else gCtx.lineTo(x, y);
-            }
-            gCtx.stroke();
-        }
-
-        function drawWealthDistribution() {
-            const wCanvas = document.getElementById('wealthDistCanvas');
-            const wCtx = wCanvas.getContext('2d');
-            if (wCanvas.width !== wCanvas.clientWidth) {
-                wCanvas.width = wCanvas.clientWidth;
-                wCanvas.height = wCanvas.clientHeight;
-            }
-            wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
-
-            const wealths = economy.population.map(a => a.wealth);
-            const bins = 20;
-            const maxWealth = Math.max(...wealths, 10000);
-            const histogram = new Array(bins).fill(0);
-
-            wealths.forEach(w => {
-                const bin = Math.min(bins - 1, Math.floor((w / maxWealth) * bins));
-                histogram[bin]++;
-            });
-
-            const maxBin = Math.max(...histogram);
-            const binWidth = wCanvas.width / bins;
-
-            wCtx.fillStyle = 'var(--secondary)';
-            histogram.forEach((count, i) => {
-                const h = (count / (maxBin || 1)) * wCanvas.height;
-                wCtx.fillRect(i * binWidth, wCanvas.height - h, binWidth - 1, h);
-            });
-        }
-
-        // Iniciar
-        economy.updateParamsFromUI();
-        draw();
-
-        // Event Listeners para Tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-                btn.classList.add('active');
-                document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
-            });
-        });
-
-        document.getElementById('btn-reset').addEventListener('click', () => {
-            economy = new Economy();
-            if (isComparing) {
-                economyB = new Economy();
-                economyB.params.tax = 0;
-                economyB.params.redist = 0;
-                economyB.params.inheritance = 100;
-                economyB.init();
-            }
-            economy.updateParamsFromUI();
-        });
-
-        document.getElementById('btn-compare').addEventListener('click', () => {
-            isComparing = !isComparing;
-            const single = document.getElementById('single-view');
-            const comp = document.getElementById('comparison-view');
-
-            if (isComparing) {
-                single.classList.add('hidden');
-                comp.classList.remove('hidden');
-                document.getElementById('btn-compare').innerText = "Vista Única";
-                economyB = new Economy();
-                // Configuración "Libre Mercado" para el B
-                economyB.params.tax = 0;
-                economyB.params.redist = 0;
-                economyB.params.inheritance = 100;
-                economyB.params.mateo = 80;
-                economyB.init();
-            } else {
-                single.classList.remove('hidden');
-                comp.classList.add('hidden');
-                document.getElementById('btn-compare').innerText = "Comparar Economías";
-            }
-            resize();
-        });
-
-        // Actualizar parámetros en tiempo real
-        document.querySelectorAll('input[type="range"]').forEach(input => {
-            input.addEventListener('input', () => economy.updateParamsFromUI());
-        });
-
-        document.getElementById('event-selector').addEventListener('change', (e) => {
-            activeEvent = e.target.value;
-            eventTicks = 0;
-        });
-
-        // Didáctica
-        const eduModal = document.getElementById('edu-modal');
-        const eduText = document.getElementById('edu-text');
-
-        document.getElementById('btn-edu').addEventListener('click', () => {
-            eduModal.classList.remove('hidden');
-            eduText.innerHTML = `
-                <h2 style="color:var(--primary)">Guía: Comprendiendo la Desigualdad</h2>
-                <p>Este simulador muestra cómo pequeñas reglas de interacción generan grandes estructuras sociales.</p>
-
-                <h3>1. El Coeficiente de Gini</h3>
-                <p>Es una medida de desigualdad que va de 0 a 1.
-                <strong>0</strong> significa igualdad perfecta (todos tienen lo mismo) y
-                <strong>1</strong> significa desigualdad máxima (una persona tiene todo).</p>
-
-                <h3>2. El Efecto Mateo</h3>
-                <p>"Porque al que tiene, le será dado, y tendrá más; pero al que no tiene, aun lo que tiene le será quitado".
-                En economía, esto significa que el capital genera más capital. Los ricos pueden invertir y diversificar, mientras que los pobres consumen todo su ingreso en necesidades básicas.</p>
-
-                <h3>3. La Curva de Lorenz</h3>
-                <p>Representa la distribución acumulada de la riqueza. Cuanto más se aleja de la diagonal (línea de igualdad), mayor es la concentración de la riqueza en pocas manos.</p>
-
-                <h3>4. Redistribución y Herencia</h3>
-                <p>Los impuestos progresivos y la inversión en educación actúan como niveladores, permitiendo mayor movilidad social. Por otro lado, la herencia sin impuestos tiende a perpetuar la desigualdad a lo largo de las generaciones.</p>
-
-                <div style="margin-top:2rem; padding:1rem; background:var(--bg-alt); border-radius:8px;">
-                    <strong>Consejo:</strong> Usa el "Modo Comparación" para ver qué pasa si eliminas los impuestos y aumentas el efecto Mateo.
-                </div>
-            `;
-        });
-
-        document.querySelector('.close-modal').addEventListener('click', () => {
-            eduModal.classList.add('hidden');
-        });
-
-        // Exportación
-        document.getElementById('export-csv').addEventListener('click', () => {
-            let csv = "ID,Edad,Patrimonio,Educacion,Ingreso\n";
-            economy.population.forEach(a => {
-                csv += `${a.id},${Math.floor(a.age)},${a.wealth.toFixed(2)},${a.education.toFixed(2)},${a.income.toFixed(2)}\n`;
-            });
-            download(csv, "simulacion_datos.csv", "text/csv");
-        });
-
-        document.getElementById('export-json').addEventListener('click', () => {
-            const data = {
-                mes: economy.month,
-                gini: economy.giniHistory,
-                params: economy.params,
-                poblacion: economy.population.map(a => ({ id: a.id, w: a.wealth }))
+    class World {
+        constructor() {
+            this.agents = [];
+            this.month = 0;
+            this.collectedTaxes = 0;
+            this.lastGini = 0;
+            this.giniHistory = [];
+            this.params = {
+                n: 1000,
+                speed: 20,
+                mateo: 50,
+                tax: 20,
+                redist: 30,
+                inheritanceTax: 10,
+                inflation: 0,
+                volatility: 20,
+                housingBubble: 0,
+                globalProd: 1.0,
+                mobility: 50
             };
-            download(JSON.stringify(data, null, 2), "simulacion_estado.json", "application/json");
-        });
-
-        document.getElementById('export-png').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = 'simulacion_captura.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
-
-        function download(content, fileName, contentType) {
-            const a = document.createElement("a");
-            const file = new Blob([content], { type: contentType });
-            a.href = URL.createObjectURL(file);
-            a.download = fileName;
-            a.click();
+            this.mobilityData = Array(5).fill(0).map(() => Array(5).fill(0));
+            this.init();
         }
 
-        // Interacción con agentes
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = (e.clientX - rect.left) / canvas.width;
-            const clickY = (e.clientY - rect.top) / canvas.height;
-
-            let closest = null;
-            let minDist = 0.05;
-
-            economy.population.forEach(agent => {
-                const dx = agent.x - clickX;
-                const dy = agent.y - clickY;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < minDist) {
-                    minDist = dist;
-                    closest = agent;
-                }
-            });
-
-            if (closest) showAgentDetail(closest);
-            else document.getElementById('agent-detail-card').classList.add('hidden');
-        });
-
-        function showAgentDetail(agent) {
-            const card = document.getElementById('agent-detail-card');
-            card.classList.remove('hidden');
-
-            let socialClass = 'Pobreza';
-            if (agent.wealth > 50000) socialClass = 'Rico';
-            else if (agent.wealth > 10000) socialClass = 'Clase Alta';
-            else if (agent.wealth > 2000) socialClass = 'Clase Media';
-
-            const profession = agent.professionMultiplier > 1.5 ? "Especialista" : agent.professionMultiplier > 0.8 ? "Técnico" : "Operario";
-
-            card.innerHTML = `
-                <h3 style="margin-top:0; font-size: 1.1rem;">Individuo #${agent.id}</h3>
-                <div style="font-size: 0.85rem; line-height: 1.4;">
-                    <p><strong>Profesión:</strong> ${profession}</p>
-                    <p><strong>Edad:</strong> ${Math.floor(agent.age)} años</p>
-                    <p><strong>Patrimonio:</strong> $${Math.floor(agent.wealth).toLocaleString()}</p>
-                    <p><strong>Ingresos:</strong> $${Math.floor(agent.income).toLocaleString()}/mes</p>
-                    <p><strong>Clase Social:</strong> ${socialClass}</p>
-                    <p><strong>Educación:</strong> ${(agent.education * 100).toFixed(0)}%</p>
-                </div>
-                <hr style="margin: 1rem 0; border: 0; border-top: 1px solid var(--border);">
-                <label class="stat-label">Historial de Riqueza</label>
-                <canvas id="agentHistoryCanvas" style="width:100%; height:80px; margin-top:0.5rem;"></canvas>
-            `;
-
-            // Dibujar mini-gráfico de historia
-            const hCanvas = document.getElementById('agentHistoryCanvas');
-            const hCtx = hCanvas.getContext('2d');
-            hCanvas.width = hCanvas.clientWidth;
-            hCanvas.height = hCanvas.clientHeight;
-
-            const history = agent.history.map(h => h.wealth);
-            if (history.length > 1) {
-                const maxH = Math.max(...history) || 1;
-                hCtx.strokeStyle = 'var(--primary)';
-                hCtx.lineWidth = 2;
-                hCtx.beginPath();
-                for (let i = 0; i < history.length; i++) {
-                    const x = (i / (history.length - 1)) * hCanvas.width;
-                    const y = hCanvas.height - (history[i] / maxH) * hCanvas.height;
-                    if (i === 0) hCtx.moveTo(x, y);
-                    else hCtx.lineTo(x, y);
-                }
-                hCtx.stroke();
+        init() {
+            this.agents = [];
+            this.month = 0;
+            this.giniHistory = [];
+            for (let i = 0; i < this.params.n; i++) {
+                this.agents.push(new Agent(i, 1000 + Math.random() * 5000));
             }
         }
 
-    </script>
+        step() {
+            this.month++;
+            const currentMonthTaxes = this.collectedTaxes;
+            this.collectedTaxes = 0;
+
+            this.agents.forEach(a => a.step(this, currentMonthTaxes));
+            this.collectedTaxes += this.agents.reduce((sum, a) => sum + a.taxPaid, 0);
+
+            if (this.month % 12 === 0) {
+                this.calculateGini();
+                this.updateQuintiles();
+            }
+        }
+
+        calculateGini() {
+            const w = this.agents.map(a => a.wealth).sort((a,b) => a-b);
+            const n = w.length;
+            let sumDist = 0;
+            let totalWealth = 0;
+            for(let i=0; i<n; i++) {
+                sumDist += (i + 1) * w[i];
+                totalWealth += w[i];
+            }
+            const gini = (totalWealth > 0) ? (2 * sumDist) / (n * totalWealth) - (n + 1) / n : 0;
+            this.lastGini = gini;
+            this.giniHistory.push(gini);
+            if (this.giniHistory.length > 100) this.giniHistory.shift();
+        }
+
+        updateQuintiles() {
+            const sorted = [...this.agents].sort((a,b) => a.wealth - b.wealth);
+            const qSize = Math.floor(sorted.length / 5);
+            sorted.forEach((a, i) => {
+                a.currentQuintile = Math.min(4, Math.floor(i / qSize));
+            });
+        }
+    }
+
+    // --- MOTOR DE UI Y RENDERIZADO ---
+
+    let worldA = new World();
+    let worldB = null;
+    let isComparing = false;
+    let currentTab = 'params';
+
+    const mainCanvas = document.getElementById('mainCanvas');
+    const ctxMain = mainCanvas.getContext('2d');
+
+    function resize() {
+        mainCanvas.width = mainCanvas.parentElement.clientWidth;
+        mainCanvas.height = mainCanvas.parentElement.clientHeight;
+        if (isComparing) {
+            document.getElementById('canvasA').width = document.getElementById('canvasA').parentElement.clientWidth;
+            document.getElementById('canvasA').height = document.getElementById('canvasA').parentElement.clientHeight;
+            document.getElementById('canvasB').width = document.getElementById('canvasB').parentElement.clientWidth;
+            document.getElementById('canvasB').height = document.getElementById('canvasB').parentElement.clientHeight;
+        }
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function triggerEvent(type) {
+        if (type === 'crisis') { worldA.params.globalProd = 0.7; worldA.params.volatility = 80; }
+        if (type === 'boom') { worldA.params.globalProd = 1.4; worldA.params.mateo = 80; }
+        if (type === 'pandemic') { worldA.params.globalProd = 0.5; worldA.params.inflation = 0.15; }
+        if (type === 'tech') { worldA.params.globalProd = 2.0; worldA.params.mobility = 90; }
+
+        setTimeout(() => {
+            worldA.params.globalProd = 1.0;
+            worldA.params.volatility = 20;
+            worldA.params.inflation = 0;
+        }, 5000);
+    }
+
+    function getColor(wealth) {
+        if (wealth < 1000) return '#e74c3c';
+        if (wealth < 5000) return '#e67e22';
+        if (wealth < 20000) return '#f1c40f';
+        if (wealth < 100000) return '#2ecc71';
+        return '#3498db';
+    }
+
+    function render(ctx, world) {
+        const w = ctx.canvas.width;
+        const h = ctx.canvas.height;
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+
+        // Heatmap (Opcional, muy leve)
+        world.agents.filter(a => a.wealth > 100000).forEach(a => {
+            ctx.fillStyle = 'rgba(52, 152, 219, 0.05)';
+            ctx.beginPath();
+            ctx.arc(a.x * w, a.y * h, 30, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        // Agentes
+        world.agents.forEach(a => {
+            ctx.fillStyle = getColor(a.wealth);
+            ctx.beginPath();
+            ctx.arc(a.x * w, a.y * h, Math.min(a.size, 20), 0, Math.PI * 2);
+            ctx.fill();
+            if (a.wealth > 1000000) {
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+    }
+
+    function loop() {
+        const steps = Math.ceil(worldA.params.speed / 10);
+        for(let i=0; i<steps; i++) {
+            worldA.step();
+            if (isComparing) worldB.step();
+        }
+
+        if (!isComparing) {
+            render(ctxMain, worldA);
+        } else {
+            render(document.getElementById('canvasA').getContext('2d'), worldA);
+            render(document.getElementById('canvasB').getContext('2d'), worldB);
+        }
+
+        updateStats();
+        requestAnimationFrame(loop);
+    }
+
+    function updateStats() {
+        document.getElementById('val-month').innerText = worldA.month % 12;
+        document.getElementById('val-year').innerText = Math.floor(worldA.month / 12);
+        document.getElementById('val-gini-head').innerText = worldA.lastGini.toFixed(3);
+
+        if (currentTab === 'analytics') {
+            const w = worldA.agents.map(a => a.wealth).sort((a,b) => b-a);
+            const total = w.reduce((s,v) => s+v, 0);
+            document.getElementById('stat-gini').innerText = worldA.lastGini.toFixed(3);
+            document.getElementById('stat-gdp').innerText = Math.floor(total).toLocaleString();
+            document.getElementById('stat-poverty').innerText = ((w.filter(v => v < CONFIG.povertyLine).length / w.length) * 100).toFixed(1) + "%";
+            document.getElementById('stat-millionaires').innerText = w.filter(v => v >= 100000 && v < 1000000).length;
+            document.getElementById('stat-billionaires').innerText = w.filter(v => v >= 1000000).length;
+
+            drawLorenz(w, total);
+            drawGiniHistory();
+            drawHist(w);
+
+            const top1 = (w.slice(0, Math.ceil(w.length * 0.01)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const top5 = (w.slice(0, Math.ceil(w.length * 0.05)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const top10 = (w.slice(0, Math.ceil(w.length * 0.1)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const top20 = (w.slice(0, Math.ceil(w.length * 0.2)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const bottom50 = (w.slice(Math.floor(w.length * 0.5)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const bottom40 = (w.slice(Math.floor(w.length * 0.6)).reduce((s,v)=>s+v,0) / total * 100).toFixed(1);
+            const palma = (bottom40 > 0) ? (top10 / bottom40).toFixed(2) : "∞";
+
+            document.getElementById('detailed-wealth').innerHTML = `
+                <p>Concentración Riqueza:</p>
+                <b>Top 1%: ${top1}%</b> | Top 5%: ${top5}%<br>
+                Top 10%: ${top10}% | Top 20%: ${top20}%<br>
+                Bottom 50%: ${bottom50}%<br>
+                <b>Índice de Palma: ${palma}</b><br>
+                Mediana: $${Math.floor(w[Math.floor(w.length/2)] || 0).toLocaleString()}
+            `;
+        } else if (currentTab === 'mobility') {
+            drawPyramid();
+            drawMobility();
+        }
+    }
+
+    function drawLorenz(w, total) {
+        const c = document.getElementById('chartLorenz');
+        const ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+        ctx.clearRect(0,0,c.width, c.height);
+
+        // Diagonal
+        ctx.strokeStyle = '#ccc'; ctx.setLineDash([5,5]);
+        ctx.beginPath(); ctx.moveTo(0, c.height); ctx.lineTo(c.width, 0); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Curva
+        const sorted = [...w].reverse();
+        ctx.strokeStyle = 'var(--primary)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, c.height);
+        let acc = 0;
+        for(let i=0; i<sorted.length; i++) {
+            acc += sorted[i];
+            const x = (i / sorted.length) * c.width;
+            const y = c.height - (acc / total) * c.height;
+            ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+
+    function drawGiniHistory() {
+        const c = document.getElementById('chartGiniHistory');
+        const ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+        ctx.clearRect(0,0,c.width, c.height);
+
+        ctx.strokeStyle = 'var(--accent)'; ctx.lineWidth = 2;
+        ctx.beginPath();
+        const hist = worldA.giniHistory;
+        for(let i=0; i<hist.length; i++) {
+            const x = (i / 100) * c.width;
+            const y = c.height - (hist[i] * c.height);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+
+    function drawHist(w) {
+        const c = document.getElementById('chartHist');
+        const ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+        ctx.clearRect(0,0,c.width, c.height);
+
+        const bins = 20;
+        const logData = w.map(v => Math.log10(v + 1));
+        const maxLog = Math.max(...logData, 6);
+        const freq = Array(bins).fill(0);
+        logData.forEach(v => {
+            const b = Math.min(bins - 1, Math.floor((v / maxLog) * bins));
+            freq[b]++;
+        });
+
+        const maxF = Math.max(...freq, 1);
+        const bw = c.width / bins;
+        ctx.fillStyle = 'var(--secondary)';
+        freq.forEach((f, i) => {
+            const h = (f / maxF) * c.height;
+            ctx.fillRect(i * bw, c.height - h, bw - 1, h);
+        });
+    }
+
+    function drawPyramid() {
+        const c = document.getElementById('chartPyramid');
+        const ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+        ctx.clearRect(0,0,c.width, c.height);
+
+        const tiers = [...CONFIG.classes].reverse();
+        const counts = tiers.map(t => worldA.agents.filter(a => a.wealth >= t.min && a.wealth < t.max).length);
+        const maxC = Math.max(...counts, 1);
+        const th = c.height / tiers.length;
+
+        tiers.forEach((t, i) => {
+            const w = (counts[i] / maxC) * c.width * 0.8;
+            ctx.fillStyle = t.color;
+            ctx.fillRect((c.width - w) / 2, i * th + 2, w, th - 4);
+            ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.font = '9px sans-serif';
+            ctx.fillText(t.name + ": " + counts[i], 5, i * th + th/2 + 3);
+        });
+    }
+
+    function drawMobility() {
+        const c = document.getElementById('chartMobility');
+        const ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+
+        const cell = Math.min(c.width, c.height) / 5;
+        const data = worldA.mobilityData;
+        let maxVal = 0;
+        data.forEach(row => row.forEach(v => maxVal = Math.max(maxVal, v)));
+
+        for(let i=0; i<5; i++) {
+            for(let j=0; j<5; j++) {
+                const val = data[i][j];
+                const intensity = maxVal > 0 ? val / maxVal : 0;
+                ctx.fillStyle = `rgba(0, 102, 204, ${0.1 + intensity * 0.9})`;
+                ctx.fillRect(j * cell, i * cell, cell - 1, cell - 1);
+                ctx.fillStyle = intensity > 0.5 ? 'white' : 'black';
+                ctx.font = '8px sans-serif';
+                ctx.fillText(val, j*cell + cell/2 - 5, i*cell + cell/2 + 3);
+            }
+        }
+    }
+
+    // --- INTERACCIÓN ---
+
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            b.classList.add('active');
+            document.getElementById('tab-' + b.dataset.tab).classList.remove('hidden');
+            currentTab = b.dataset.tab;
+        });
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+        worldA = new World();
+        updateParams();
+        worldA.init();
+        if (isComparing) {
+            worldB = new World();
+            updateParams();
+            worldB.init();
+        }
+    });
+
+    document.getElementById('btn-compare').addEventListener('click', () => {
+        isComparing = !isComparing;
+        document.getElementById('single-pane').classList.toggle('hidden');
+        document.getElementById('split-pane').classList.toggle('hidden');
+        document.getElementById('btn-compare').innerText = isComparing ? "Vista Única" : "Modo Comparación";
+        if (isComparing) {
+            worldB = new World();
+            // Sociedad B más desigual
+            worldB.params = {...worldA.params, tax: 0, mateo: 90, redist: 5};
+            worldB.init();
+        }
+        resize();
+    });
+
+    function updateParams() {
+        const n = parseInt(document.getElementById('param-n').value);
+        worldA.params.n = n;
+        worldA.params.speed = parseInt(document.getElementById('param-speed').value);
+        worldA.params.mateo = parseInt(document.getElementById('param-mateo').value);
+        worldA.params.tax = parseInt(document.getElementById('param-tax').value);
+        worldA.params.redist = parseInt(document.getElementById('param-redist').value);
+        worldA.params.inheritanceTax = parseInt(document.getElementById('param-inheritance-tax').value);
+        worldA.params.volatility = parseInt(document.getElementById('param-volatility').value);
+        worldA.params.mobility = parseInt(document.getElementById('param-mobility').value);
+
+        document.getElementById('lbl-n').innerText = n;
+        document.getElementById('lbl-tax').innerText = worldA.params.tax + "%";
+        document.getElementById('lbl-redist').innerText = worldA.params.redist + "%";
+        document.getElementById('lbl-inheritance-tax').innerText = worldA.params.inheritanceTax + "%";
+    }
+
+    document.querySelectorAll('input').forEach(i => i.addEventListener('input', updateParams));
+
+    // Click en Agente
+    mainCanvas.addEventListener('click', (e) => {
+        const r = mainCanvas.getBoundingClientRect();
+        const mx = (e.clientX - r.left) / mainCanvas.width;
+        const my = (e.clientY - r.top) / mainCanvas.height;
+
+        let best = null;
+        let minDist = 0.05;
+        worldA.agents.forEach(a => {
+            const d = Math.sqrt((a.x - mx)**2 + (a.y - my)**2);
+            if (d < minDist) { minDist = d; best = a; }
+        });
+
+        if (best) showAgent(best);
+    });
+
+    function showAgent(a) {
+        const d = document.getElementById('agent-detail');
+        d.classList.remove('hidden');
+        const prof = a.professionMultiplier > 1.8 ? "Especialista" : a.professionMultiplier > 1.2 ? "Técnico" : "Operario";
+        document.getElementById('agent-info').innerHTML = `
+            <h3 style="margin:0 0 10px 0;">Individuo #${a.id}</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                <span>Edad: ${Math.floor(a.age)}</span>
+                <span>Profesión: ${prof}</span>
+                <span>Patrimonio: $${Math.floor(a.wealth).toLocaleString()}</span>
+                <span>Ingreso: $${Math.floor(a.income).toLocaleString()}</span>
+                <span>Salario: $${Math.floor(a.salary).toLocaleString()}</span>
+                <span>Educación: ${(a.education * 100).toFixed(0)}%</span>
+                <span>Ahorro: ${(a.savingsRate * 100).toFixed(0)}%</span>
+                <span>Herencia: $${Math.floor(a.inheritanceReceived).toLocaleString()}</span>
+                <span>Impuestos: $${Math.floor(a.taxPaid).toLocaleString()}</span>
+                <span>Riesgo: ${(a.riskLevel * 100).toFixed(0)}%</span>
+            </div>
+        `;
+
+        const ac = document.getElementById('agentHistoryCanvas');
+        const actx = ac.getContext('2d');
+        ac.width = ac.clientWidth; ac.height = ac.clientHeight;
+        actx.clearRect(0,0,ac.width, ac.height);
+        actx.strokeStyle = 'var(--primary)'; actx.lineWidth = 2;
+        actx.beginPath();
+        const maxH = Math.max(...a.history, 1);
+        a.history.forEach((v, i) => {
+            const x = (i / 30) * ac.width;
+            const y = ac.height - (v / maxH) * ac.height;
+            if (i === 0) actx.moveTo(x, y); else actx.lineTo(x, y);
+        });
+        actx.stroke();
+    }
+
+    // Modal Didáctico
+    document.getElementById('btn-edu').onclick = () => document.getElementById('edu-modal').classList.remove('hidden');
+    document.getElementById('close-edu').onclick = () => document.getElementById('edu-modal').classList.add('hidden');
+
+    // Exportación
+    document.getElementById('export-csv').onclick = () => {
+        let csv = "ID,Edad,Patrimonio,Ingresos,Educacion,Impuestos\n";
+        worldA.agents.forEach(a => {
+            csv += `${a.id},${a.age.toFixed(1)},${a.wealth.toFixed(2)},${a.income.toFixed(2)},${a.education.toFixed(2)},${a.taxPaid.toFixed(2)}\n`;
+        });
+        const blob = new Blob([csv], {type: 'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url; link.download = 'simulacion.csv'; link.click();
+    };
+
+    document.getElementById('export-json').onclick = () => {
+        const data = {
+            month: worldA.month,
+            gini: worldA.lastGini,
+            params: worldA.params,
+            agents: worldA.agents.map(a => ({
+                id: a.id,
+                wealth: a.wealth,
+                financialCapital: a.financialCapital,
+                realEstateCapital: a.realEstateCapital,
+                age: a.age,
+                education: a.education,
+                professionMultiplier: a.professionMultiplier,
+                riskLevel: a.riskLevel,
+                savingsRate: a.savingsRate
+            }))
+        };
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url; link.download = 'simulacion.json'; link.click();
+    };
+
+    document.getElementById('load-json').onclick = () => {
+        document.getElementById('file-input').click();
+    };
+
+    document.getElementById('file-input').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.params) {
+                    worldA.params = {...worldA.params, ...data.params};
+                    // Actualizar inputs
+                    document.getElementById('param-n').value = worldA.params.n;
+                    document.getElementById('param-speed').value = worldA.params.speed;
+                    document.getElementById('param-mateo').value = worldA.params.mateo;
+                    document.getElementById('param-tax').value = worldA.params.tax;
+                    document.getElementById('param-redist').value = worldA.params.redist;
+                    document.getElementById('param-inheritance-tax').value = worldA.params.inheritanceTax;
+                    document.getElementById('param-volatility').value = worldA.params.volatility;
+                    document.getElementById('param-mobility').value = worldA.params.mobility;
+                    updateParams();
+                }
+                if (data.agents) {
+                    worldA.agents = data.agents.map(d => {
+                        const a = new Agent(d.id, d.wealth);
+                        a.financialCapital = d.financialCapital || (d.wealth * 0.7);
+                        a.realEstateCapital = d.realEstateCapital || (d.wealth * 0.3);
+                        a.age = d.age || 20;
+                        a.education = d.education || Math.random();
+                        a.professionMultiplier = d.professionMultiplier || (0.8 + Math.random() * 2);
+                        a.riskLevel = d.riskLevel || Math.random();
+                        a.savingsRate = d.savingsRate || (0.05 + Math.random() * 0.4);
+                        return a;
+                    });
+                    worldA.month = data.month || 0;
+                    worldA.giniHistory = [];
+                }
+                alert("Simulación cargada con éxito");
+            } catch (err) {
+                alert("Error al cargar el archivo JSON");
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    document.getElementById('export-png').onclick = () => {
+        const link = document.createElement('a');
+        link.download = 'captura_simulacion.png';
+        link.href = mainCanvas.toDataURL();
+        link.click();
+    };
+
+    // Inicio
+    updateParams();
+    loop();
+
+</script>
 </body>
 </html>
