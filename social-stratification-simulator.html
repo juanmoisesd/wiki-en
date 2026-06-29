@@ -3,601 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Estratificación Social Pro | Juan Moisés de la Serna</title>
+    <title>Social Stratification Analytics Pro | Dr. Juan Moisés de la Serna</title>
     <style>
         :root {
-            --primary: #0366d6;
-            --primary-glow: rgba(3, 102, 214, 0.3);
-            --bg: #ffffff;
-            --bg-alt: #f6f8fa;
-            --text: #24292e;
-            --text-muted: #586069;
-            --border: #e1e4e8;
-            --accent: #28a745;
-            --danger: #d73a49;
-            --sidebar-width: 350px;
-            --header-height: 60px;
-            --stats-height: 80px;
+            --primary: #003366;
+            --primary-glow: rgba(0, 51, 102, 0.3);
+            --accent: #d4af37;
+            --bg: #0b0e14;
+            --card-bg: rgba(23, 28, 36, 0.98);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #e0e0e0;
+            --text-muted: #8899a6;
+            --sidebar-width: 380px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        [data-theme="dark"] {
-            --primary: #58a6ff;
-            --primary-glow: rgba(88, 166, 255, 0.3);
-            --bg: #0d1117;
-            --bg-alt: #161b22;
-            --text: #c9d1d9;
-            --text-muted: #8b949e;
-            --border: #30363d;
+        [data-theme="light"] {
+            --bg: #f4f7f9;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --border: rgba(0, 0, 0, 0.1);
+            --text: #1a1f23;
+            --text-muted: #586069;
+            --primary: #0366d6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
             color: var(--text);
+            height: 100vh;
             overflow: hidden;
             display: grid;
-            grid-template-areas:
-                "header header"
-                "main sidebar"
-                "stats sidebar";
             grid-template-columns: 1fr var(--sidebar-width);
-            grid-template-rows: var(--header-height) 1fr var(--stats-height);
-            height: 100vh;
+            grid-template-areas: "header sidebar" "main sidebar" "footer sidebar";
         }
 
         header {
             grid-area: header;
-            background: var(--bg-alt);
-            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 1.5rem;
             justify-content: space-between;
-            z-index: 100;
+            padding: 0 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
         }
 
-        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+        .brand { font-size: 1.2rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+        .brand span { color: var(--text-muted); font-weight: 300; }
 
-        main { grid-area: main; position: relative; background: #000; overflow: hidden; perspective: 1000px; }
+        main { grid-area: main; position: relative; background: #000; overflow: hidden; cursor: crosshair; }
+        #simulationCanvas { display: block; width: 100%; height: 100%; }
 
-        #simulationCanvas { width: 100%; height: 100%; display: block; }
-
-        aside { grid-area: sidebar; background: var(--bg-alt); border-left: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; z-index: 90; }
-
-        .stats-bar { grid-area: stats; background: var(--bg-alt); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 1.5rem; gap: 2rem; overflow-x: auto; }
-
-        .stat-item { display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-        .stat-value { font-weight: 700; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; }
-
-        .control-group { margin-bottom: 1.5rem; }
-        .control-group h3 { font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--primary); border-bottom: 1px solid var(--border); }
-        .chart-container { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem; }
-        .chart-container label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 5px; }
-
-        label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; }
-        input[type="range"] { width: 100%; margin-bottom: 1rem; }
-
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
-        button { padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; font-weight: 600; transition: var(--transition); }
-        button:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
-
-        #didacticOverlay, #profileOverlay, #reportOverlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto; z-index: 200; display: none;
+        aside {
+            grid-area: sidebar;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            padding: 1.5rem;
+            overflow-y: auto;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.2);
         }
 
-        .close-btn { position: absolute; top: 1rem; right: 1rem; cursor: pointer; font-size: 1.5rem; }
-
-        #recordingIndicator {
-            position: absolute; top: 10px; left: 10px; background: rgba(215, 58, 73, 0.8);
-            color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold;
-            display: none; align-items: center; gap: 5px; z-index: 101;
+        footer {
+            grid-area: footer;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 2.5rem;
+            z-index: 1000;
         }
-        .dot { width: 8px; height: 8px; background: white; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        h3 { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1.5px; margin-bottom: 0.8rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; font-weight: 800; }
+
+        .stat-group { display: flex; flex-direction: column; min-width: 110px; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+        .stat-value { font-size: 1.15rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+
+        .control-panel { background: rgba(128, 128, 128, 0.05); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border); }
+        .control-row { margin-bottom: 1rem; }
+        .control-row label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+        .control-row input[type="range"] { width: 100%; cursor: pointer; height: 4px; accent-color: var(--primary); }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        button {
+            padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg);
+            color: var(--text); font-weight: 700; font-size: 0.7rem; cursor: pointer; transition: var(--transition);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        button:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
+        button.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .chart-box { height: 120px; width: 100%; background: rgba(0,0,0,0.1); border-radius: 10px; padding: 10px; border: 1px solid var(--border); position: relative; }
+        .chart-label { position: absolute; top: 5px; right: 8px; font-size: 0.6rem; color: var(--text-muted); font-weight: 700; }
+
+        #inspector {
+            position: absolute; pointer-events: none; background: var(--card-bg); border: 1px solid var(--primary);
+            padding: 1.2rem; border-radius: 12px; font-size: 0.8rem; box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            display: none; z-index: 2000; min-width: 280px; backdrop-filter: blur(15px);
+            border-left: 5px solid var(--primary);
+        }
+
+        .capital-bar-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; margin-top: 4px; margin-bottom: 8px; overflow: hidden; }
+        .capital-bar { height: 100%; transition: width 0.3s; }
+
+        .comparison-tabs { display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .comparison-tabs button { flex: 1; border: none; background: transparent; padding: 8px; font-size: 0.7rem; font-weight: 800; border-radius: 6px; }
+        .comparison-tabs button.sel { background: var(--primary); color: white; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92);
+            display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(10px);
+        }
+        .modal { background: var(--card-bg); width: 90%; max-width: 950px; max-height: 85vh; border-radius: 20px; padding: 3rem; overflow-y: auto; border: 1px solid var(--border); position: relative; box-shadow: 0 25px 100px rgba(0,0,0,0.8); }
+        .close { position: absolute; top: 1.5rem; right: 1.5rem; cursor: pointer; font-size: 2rem; opacity: 0.5; transition: 0.3s; }
+        .close:hover { opacity: 1; transform: rotate(90deg); }
+
+        .kpi-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 5px; background: var(--primary); color: white; }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
 <header>
-    <div class="brand">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-        SIMULADOR ESTRATIFICACIÓN v10
-    </div>
-    <div class="header-controls">
+    <div class="brand">SOCIETY ANALYTICS <span>PRO</span> <span class="kpi-badge">OECD EDITION</span></div>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="openModal('theory')">Mesa de Teoría</button>
+        <button id="cmpBtn" onclick="toggleComparison()">Comparar Escenarios</button>
         <button onclick="toggleTheme()">🌓</button>
-        <button onclick="toggleComparison()">⚖️ Comparar</button>
-        <button onclick="showDidactic()">📖 Teoría</button>
-        <button onclick="generateReport()">📋 Informe</button>
-        <button class="btn-primary" onclick="togglePlay()">⏸ Pausar</button>
+        <button id="playBtn" class="active" onclick="togglePlay()">⏸ PAUSA</button>
     </div>
 </header>
 
-<main id="simulationContainer">
-    <div id="recordingIndicator"><div class="dot"></div> REC</div>
+<main id="viewport">
     <canvas id="simulationCanvas"></canvas>
+    <div id="inspector"></div>
 </main>
 
 <aside>
-    <div class="control-panel">
-        <div class="control-group">
-            <h3>Población y Velocidad</h3>
-            <label>Individuos: <span id="val_population">2000</span></label>
-            <input type="range" id="param_population" min="1000" max="10000" step="500" value="2000">
-            <label>Velocidad: <span id="val_speed">1</span></label>
-            <input type="range" id="param_speed" min="0.1" max="5" step="0.1" value="1">
-        </div>
+    <div class="comparison-tabs" id="tabUI" style="display:none">
+        <button id="tA" class="sel" onclick="selectSim('A')">SOCIEDAD A (Control)</button>
+        <button id="tB" onclick="selectSim('B')">SOCIEDAD B (Prueba)</button>
+    </div>
 
-        <div class="control-group">
-            <h3>Políticas y Herencia</h3>
-            <label>Impuestos: <span id="val_taxes">0.2</span></label>
-            <input type="range" id="param_taxes" min="0" max="1" step="0.05" value="0.2">
-            <label>Transmisión Herencia: <span id="val_inheritance">0.7</span></label>
-            <input type="range" id="param_inheritance" min="0" max="1" step="0.05" value="0.7">
-            <label>Acceso Educación: <span id="val_edu_access">0.5</span></label>
-            <input type="range" id="param_edu_access" min="0" max="1" step="0.05" value="0.5">
+    <section class="control-panel">
+        <h3>Estructura Demográfica</h3>
+        <div class="control-row">
+            <label>Tamaño Población <span><b id="v_pop">5000</b></span></label>
+            <input type="range" id="p_pop" min="1000" max="10000" step="500" value="5000">
         </div>
+        <div class="control-row">
+            <label>Dinámica Temporal <span><b id="v_speed">2.0</b>x</span></label>
+            <input type="range" id="p_speed" min="0.5" max="10" step="0.5" value="2.0">
+        </div>
+    </section>
 
-        <div class="control-group">
-            <h3>Eventos Sociales</h3>
-            <div class="btn-group">
-                <button onclick="triggerEvent('crisis')">📉 Crisis</button>
-                <button onclick="triggerEvent('reform')">🎓 Reforma</button>
-                <button onclick="triggerEvent('war')">⚔️ Guerra</button>
-                <button onclick="triggerEvent('tech')">🚀 Tech</button>
-            </div>
+    <section class="control-panel">
+        <h3>Determinantes de Estatus</h3>
+        <div class="control-row">
+            <label>Fuerza de la Herencia <span><b id="v_inh">0.7</b></span></label>
+            <input type="range" id="p_inh" min="0" max="1" step="0.05" value="0.7">
         </div>
+        <div class="control-row">
+            <label>Movilidad Educativa <span><b id="v_edu">0.3</b></span></label>
+            <input type="range" id="p_edu" min="0" max="1" step="0.05" value="0.3">
+        </div>
+        <div class="control-row">
+            <label>Presión Fiscal / Gasto <span><b id="v_tax">0.2</b></span></label>
+            <input type="range" id="p_tax" min="0" max="1" step="0.05" value="0.2">
+        </div>
+    </section>
 
-        <div class="control-group">
-            <h3>Análisis Visual</h3>
-            <div class="chart-container">
-                <label>Pirámide Social</label>
-                <svg id="pyramidChart" width="300" height="120"></svg>
-            </div>
-            <div class="chart-container">
-                <label>Desigualdad (Lorenz)</label>
-                <svg id="lorenzChart" width="300" height="120"></svg>
-            </div>
+    <section class="control-panel">
+        <h3>Indicadores Macroeconómicos</h3>
+        <div class="chart-box">
+            <span class="chart-label">Pirámide de Estratos</span>
+            <svg id="svgP" width="100%" height="100%"></svg>
         </div>
+        <div style="margin-top:15px" class="chart-box">
+            <span class="chart-label">Curva de Lorenz (Gini)</span>
+            <svg id="svgL" width="100%" height="100%"></svg>
+        </div>
+    </section>
 
-        <div class="control-group">
-            <h3>Exportación Pro</h3>
-            <div class="btn-group">
-                <button onclick="exportData('csv')">CSV</button>
-                <button onclick="exportData('json')">JSON</button>
-                <button onclick="exportData('png')">Captura</button>
-                <button id="recordBtn" onclick="toggleRecording()">Grabar WebM</button>
-            </div>
-        </div>
+    <div class="btn-group">
+        <button onclick="shock('crisis')">Crisis</button>
+        <button onclick="shock('boom')">Auge</button>
+        <button id="recBtn" onclick="startRecording()">📹 REC</button>
+        <button onclick="capturePNG()">PNG</button>
+    </div>
+    <div class="btn-group" style="margin-top: 5px;">
+        <button onclick="exportCSV()">CSV</button>
+        <button onclick="exportJSON()">JSON</button>
+        <button onclick="generateReport()">REP</button>
     </div>
 </aside>
 
-<div class="stats-bar">
-    <div class="stat-item"><span class="stat-label">Año</span><span class="stat-value" id="stat_year">2024</span></div>
-    <div class="stat-item"><span class="stat-label">Gini</span><span class="stat-value" id="stat_gini">0.32</span></div>
-    <div class="stat-item"><span class="stat-label">Clase Media</span><span class="stat-value" id="stat_middle">60%</span></div>
-    <div class="stat-item"><span class="stat-label">Población</span><span class="stat-value" id="stat_pop">2000</span></div>
-</div>
+<footer>
+    <div class="stat-group"><span class="stat-label">Año Fiscal</span><span class="stat-value" id="s_year">2024</span></div>
+    <div class="stat-group"><span class="stat-label">Coeficiente Gini</span><span class="stat-value" id="s_gini">0.000</span></div>
+    <div class="stat-group"><span class="stat-label">Movilidad Social</span><span class="stat-value" id="s_mob">0%</span></div>
+    <div class="stat-group"><span class="stat-label">Población Activa</span><span class="stat-value" id="s_pop">5000</span></div>
+</footer>
 
-<div id="didacticOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="didacticContent"></div></div>
-<div id="profileOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="profileContent"></div></div>
-<div id="reportOverlay"><span class="close-btn" onclick="closeOverlays()">&times;</span><div id="reportContent"></div></div>
+<div id="m_theory" class="modal-overlay">
+    <div class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h1 style="color:var(--primary); border-bottom: 4px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; letter-spacing: -1px;">Fundamentos de Estratificación Social</h1>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px; font-size: 0.95rem; line-height: 1.6;">
+            <div>
+                <h3 style="color:var(--accent); border:none; padding:0; margin-bottom:10px;">La Perspectiva de Bourdieu</h3>
+                <p>Esta simulación integra el concepto de <b>Capitales Relacionales</b>. Los individuos no solo heredan dinero (Capital Económico), sino también hábitos, educación (Capital Cultural) y redes de influencia (Capital Social). La desigualdad se reproduce cuando estos capitales se concentran en estratos cerrados.</p>
+                <h3 style="color:var(--accent); border:none; padding:0; margin-top:25px; margin-bottom:10px;">Max Weber: Clase, Estatus y Poder</h3>
+                <p>A diferencia del modelo binario de Marx, Weber propuso una estratificación multidimensional. El <i>Status Index</i> visualizado aquí combina la riqueza patrimonial con el prestigio educativo y la capacidad de influencia social.</p>
+            </div>
+            <div>
+                <h3 style="color:var(--accent); border:none; padding:0; margin-bottom:10px;">Dinámica de Clase</h3>
+                <p>Las clases sociales en el simulador son emergentes. No hay límites rígidos; los individuos ascienden o descienden basándose en su capacidad de ahorro, acceso a educación de élite y la fuerza de su red social.</p>
+                <div style="margin-top: 30px; padding: 1.5rem; background: rgba(0,0,0,0.1); border-radius: 12px; border-left: 5px solid var(--primary);">
+                    <h4 style="font-size:0.8rem; margin-bottom:5px;">Métricas de Calidad OECD:</h4>
+                    <ul style="padding-left: 20px; font-size: 0.85rem;">
+                        <li><b>Gini:</b> Cuantifica la disparidad en la distribución del patrimonio.</li>
+                        <li><b>Movilidad:</b> Porcentaje de individuos que cambian de estrato respecto a sus padres.</li>
+                        <li><b>Herencia:</b> Factor de inercia social que limita la meritocracia.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     /**
-     * SIMULADOR DE ESTRATIFICACIÓN SOCIAL - NÚCLEO
+     * SOCIETY ANALYTICS PRO v10.2
+     * Final Optimization: Sociology + Networks + Performance
      */
-    class Individual {
-        constructor(id, options = {}) {
-            this.id = id;
-            this.age = options.age || Math.floor(Math.random() * 50) + 15;
-            this.sex = options.sex || (Math.random() > 0.5 ? 'M' : 'F');
 
-            // Bourdieu Capitals
-            this.culturalCapital = options.culturalCapital || Math.random();
-            this.economicCapital = options.economicCapital || Math.random();
-            this.socialCapital = options.socialCapital || Math.random();
+    const STRATA = [
+        { id: 'alta', name: 'Elite / Clase Alta', min: 0.8, color: '#FFD700' },
+        { id: 'media_alta', name: 'Clase Media-Alta', min: 0.6, color: '#0366d6' },
+        { id: 'media', name: 'Clase Media Consol.', min: 0.4, color: '#2ea44f' },
+        { id: 'media_baja', name: 'Clase Media-Baja', min: 0.2, color: '#f9c513' },
+        { id: 'baja', name: 'Precarizado / Clase Baja', min: 0, color: '#cf222e' }
+    ];
 
-            this.education = options.education || Math.random();
-            this.wealth = this.economicCapital * 100000;
-            this.income = 0;
-            this.prestige = (this.culturalCapital + this.education) / 2;
-            this.power = options.power || (this.wealth > 150000 ? Math.random() : Math.random() * 0.2);
-            this.influence = (this.socialCapital + this.power) / 2;
+    class Agent {
+        constructor(id, sim, parent = null) {
+            this.id = id; this.sim = sim; this.age = parent ? 0 : Math.random()*60 + 18;
+            this.isAlive = true; this.parent = parent;
+            const h = parent ? sim.cfg.inh : 0;
+            // Triada de Bourdieu
+            this.ec = parent ? parent.ec*h + Math.random()*(1-h) : Math.random();
+            this.cu = parent ? parent.cu*h*0.8 + Math.random()*(1-h) : Math.random();
+            this.so = parent ? parent.so*h*0.7 + Math.random()*(1-h) : Math.random();
+            this.edu = parent ? Math.min(1, parent.edu*h + sim.cfg.edu*Math.random()) : Math.random();
+            this.wealth = parent ? parent.wealth*h*0.5 : Math.random()*5000;
 
-            this.originClass = options.originClass || 'Baja';
-            this.currentClass = 'Baja';
-            this.isAlive = true;
-            this.parentId = options.parentId || null;
+            this.prestige = 0;
+            this.influence = 0;
+            this.satisfaction = 0.5;
+            this.history = [];
 
-            // Visual tridimensional (simulado)
-            this.x = Math.random();
-            this.z = Math.random(); // Profundidad
-            this.y = 0.5;
-            this.targetY = 0.5;
-
-            this.mobilityTimer = 0;
-            this.mobilityDirection = 'up';
+            this.x = Math.random(); this.z = Math.random();
+            this.status = 0; this.sx = 0; this.sy = 0;
+            this.mobilityArrow = 0;
+            this.profession = "...";
+            this.contacts = [];
         }
+        update(dt, speed) {
+            this.age += dt * speed;
+            const cfg = this.sim.cfg;
+            const networkBonus = this.contacts.reduce((acc, c) => acc + (c.status > this.status ? 0.05 : 0), 0);
 
-        getStatus(w) {
-            return (this.education * w.edu + (this.wealth/1000000) * w.wealth + this.culturalCapital * w.cult + this.socialCapital * w.soc) / (w.edu + w.wealth + w.cult + w.soc);
-        }
+            const income = (12000 + this.edu*45000 + this.ec*40000 + (this.so + networkBonus)*25000) * (0.8 + Math.random()*0.4);
+            const taxes = income * cfg.tax;
+            const basic = 10000;
+            const lifestyle = (income - basic) * 0.5;
 
-        update(dt, society) {
-            if (!this.isAlive) return;
-            this.age += dt * society.params.speed;
+            const oldWealth = this.wealth;
+            this.wealth += (income - taxes - basic - lifestyle) * dt * speed;
+            this.wealth = Math.max(0, this.wealth);
+            this.ec = Math.min(1, Math.log10(this.wealth + 1) / 5.5);
 
-            if (Math.random() < Math.pow(this.age / 100, 5) * dt * 0.5) {
-                this.isAlive = false;
-                society.onIndividualDeath(this);
-                return;
+            const oldStatus = this.status;
+            this.status = (this.ec*0.35 + this.edu*0.25 + this.cu*0.2 + this.so*0.2);
+            this.prestige = (this.status * 0.7 + this.cu * 0.3);
+            this.influence = (this.so * 0.6 + this.wealth / 100000 * 0.4);
+
+            if (Math.abs(this.status - oldStatus) > 0.005) {
+                this.mobilityArrow = this.status > oldStatus ? 1 : -1;
+                this.satisfaction = Math.min(1, this.satisfaction + (this.status - oldStatus)*2);
+            } else {
+                this.mobilityArrow = 0;
+                this.satisfaction = Math.max(0, this.satisfaction - 0.01 * dt * speed);
             }
 
-            // Economía
-            const base = 12000;
-            const bonus = (this.education * 40000) + (this.socialCapital * 20000) + (this.power * 50000);
-            this.income = (base + bonus) * (0.9 + Math.random() * 0.2);
+            if (Math.floor(this.sim.year) % 2 === 0 && (!this.history.length || this.history[this.history.length-1].y !== Math.floor(this.sim.year))) {
+                this.history.push({y: Math.floor(this.sim.year), s: this.status, w: this.wealth});
+                if (this.history.length > 20) this.history.shift();
+            }
 
-            const tax = this.income * society.params.taxes;
-            const cost = base * 0.8 + (this.income - base) * 0.4;
-            this.wealth += (this.income - tax - cost) * dt * society.params.speed;
-            if (this.wealth < 0) this.wealth = 0;
+            if (this.profession === "...") this.profession = this.getProf();
+            if (Math.random() < Math.pow(this.age/100, 6)*0.5*dt*speed) this.isAlive = false;
+        }
+        getProf() {
+            const p = ["Operario", "Artesano", "Empleado", "Docente", "Profesional", "Analista", "Consultor", "Gerente", "Director", "CEO", "Filántropo"];
+            return p[Math.min(p.length-1, Math.floor(this.status * p.length))];
         }
     }
 
-    class Society {
-        constructor(popSize) {
-            this.year = 2024;
-            this.population = [];
-            this.params = { population: popSize, speed: 1.0, taxes: 0.2, inheritance: 0.7, edu_access: 0.5, w_edu: 0.4, w_wealth: 0.4, w_cult: 0.1, w_soc: 0.1 };
-            this.metrics = { gini: 0, middle: 0 };
-            this.history = [];
+    class Simulation {
+        constructor(id) {
+            this.id = id; this.agents = []; this.year = 2024;
+            this.cfg = { pop: 5000, inh: 0.7, edu: 0.3, tax: 0.2, speed: 2.0 };
+            this.timeline = [];
             this.init();
         }
-
-        init() {
-            this.population = Array.from({length: this.params.population}, (_, i) => new Individual(i));
-        }
-
-        onIndividualDeath(ind) {
-            // Reproducción intergeneracional
-            const inheritance = ind.wealth * this.params.inheritance;
-            const child = new Individual(Date.now() + Math.random(), {
-                age: 0,
-                parentId: ind.id,
-                culturalCapital: ind.culturalCapital * (0.7 + Math.random() * 0.3),
-                socialCapital: ind.socialCapital * (0.6 + Math.random() * 0.4),
-                economicCapital: inheritance / 100000,
-                education: this.params.edu_access * Math.random(),
-                originClass: ind.currentClass
-            });
-            child.wealth = inheritance;
-
-            const idx = this.population.indexOf(ind);
-            if (idx > -1) this.population[idx] = child;
-        }
-
-        update(dt) {
-            this.year += dt * this.params.speed;
-            const weights = { edu: this.params.w_edu, wealth: this.params.w_wealth, cult: this.params.w_cult, soc: this.params.w_soc };
-
-            this.population.forEach(ind => {
-                ind.update(dt, this);
-                const status = ind.getStatus(weights);
-                ind.targetY = 0.95 - (status * 0.9);
-
-                const old = ind.currentClass;
-                if (status > 0.8) ind.currentClass = 'Alta';
-                else if (status > 0.6) ind.currentClass = 'Media Alta';
-                else if (status > 0.4) ind.currentClass = 'Media';
-                else if (status > 0.2) ind.currentClass = 'Media Baja';
-                else ind.currentClass = 'Baja';
-
-                if (old !== ind.currentClass && this.year > 2025) {
-                    ind.mobilityTimer = 1.5;
-                    ind.mobilityDirection = status > (ind.lastStatus || 0) ? 'up' : 'down';
+        init() { this.agents = Array.from({length: this.cfg.pop}, (_, i) => new Agent(i, this)); this.refreshNetworks(); }
+        refreshNetworks() {
+            const sorted = [...this.agents].sort((a,b) => a.status - b.status);
+            for(let i=0; i<sorted.length; i++) {
+                sorted[i].contacts = [];
+                const range = 5;
+                for(let j=1; j<=range; j++) {
+                    if(i+j < sorted.length && Math.random() > 0.3) sorted[i].contacts.push(sorted[i+j]);
+                    if(i-j >= 0 && Math.random() > 0.3) sorted[i].contacts.push(sorted[i-j]);
                 }
-                ind.lastStatus = status;
-            });
+            }
         }
+        step(dt) {
+            this.year += dt * this.cfg.speed;
+            if (this.agents.length !== this.cfg.pop) {
+                if (this.agents.length < this.cfg.pop) {
+                    while(this.agents.length < this.cfg.pop) this.agents.push(new Agent(Math.random(), this));
+                } else this.agents = this.agents.slice(0, this.cfg.pop);
+                this.refreshNetworks();
+            }
+            let birth = false;
+            for (let i = 0; i < this.agents.length; i++) {
+                const a = this.agents[i]; a.update(dt, this.cfg.speed);
+                if (!a.isAlive) { this.agents[i] = new Agent(Math.random(), this, a); birth = true; }
+            }
+            if (birth || Math.floor(this.year) % 5 === 0) this.refreshNetworks();
 
+            if (Math.floor(this.year) !== Math.floor(this.year - dt*this.cfg.speed)) {
+                this.timeline.push({
+                    year: Math.floor(this.year),
+                    gini: this.getGini(),
+                    avgWealth: this.agents.reduce((acc, a) => acc + a.wealth, 0) / this.agents.length
+                });
+                if (this.timeline.length > 100) this.timeline.shift();
+            }
+        }
         getGini() {
-            const w = this.population.map(p => p.wealth).sort((a, b) => a - b);
-            const n = w.length;
-            let sumW = 0, cumW = 0;
-            for(let i=0; i<n; i++) { sumW += w[i]; cumW += (i+1)*w[i]; }
-            return sumW > 0 ? (2 * cumW) / (n * sumW) - (n + 1) / n : 0;
+            const w = this.agents.map(a => a.wealth).sort((a,b) => a-b);
+            const n = w.length; let s = 0, ws = 0;
+            for(let i=0; i<n; i++) { s += w[i]; ws += (i+1)*w[i]; }
+            return s === 0 ? 0 : (2*ws)/(n*s) - (n+1)/n;
         }
     }
 
-    class Engine {
-        constructor() {
-            this.canvas = document.getElementById('simulationCanvas');
-            this.ctx = this.canvas.getContext('2d');
-            this.society = new Society(2000);
-            this.societyB = null;
-            this.isComparison = false;
-            this.isPlaying = true;
-            this.lastTime = 0;
-            this.throttle = 0;
-            this.recorder = null;
-            this.chunks = [];
+    const canvas = document.getElementById('simulationCanvas');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    let sprites = {};
 
-            window.addEventListener('resize', () => this.resize());
-            this.resize();
-            this.loop(0);
-        }
-
-        resize() {
-            this.canvas.width = this.canvas.parentElement.clientWidth;
-            this.canvas.height = this.canvas.parentElement.clientHeight;
-        }
-
-        loop(t) {
-            const dt = (t - this.lastTime) / 1000;
-            this.lastTime = t;
-
-            if (this.isPlaying && dt < 0.1) {
-                this.society.update(dt);
-                if (this.isComparison && this.societyB) this.societyB.update(dt);
-
-                this.throttle += dt;
-                if (this.throttle > 0.5) {
-                    this.updateStats();
-                    this.throttle = 0;
-                }
-            }
-
-            this.draw();
-            requestAnimationFrame(t => this.loop(t));
-        }
-
-        draw() {
-            const { ctx, canvas, society, societyB, isComparison } = this;
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (isComparison && societyB) {
-                this.drawSociety(society, 0, 0, canvas.width / 2, canvas.height, isDark, "Actual");
-                this.drawSociety(societyB, canvas.width / 2, 0, canvas.width / 2, canvas.height, isDark, "Contraste");
-            } else {
-                this.drawSociety(society, 0, 0, canvas.width, canvas.height, isDark, "");
-            }
-        }
-
-        drawSociety(soc, ox, oy, w, h, isDark, label) {
-            const { ctx } = this;
-            ctx.save();
-            ctx.translate(ox, oy);
-
-            // BG Strata
-            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)';
-            for(let i=0; i<5; i++) {
-                if(i%2===0) ctx.fillRect(0, i*0.2*h, w, 0.2*h);
-            }
-
-            // Agents
-            const sorted = soc.population.slice().sort((a,b) => a.z - b.z); // Depth sort
-            sorted.forEach(p => {
-                p.y += (p.targetY - p.y) * 0.1;
-                const perspective = 0.5 + p.z * 0.5;
-                const screenX = (0.1 + p.x * 0.8) * w;
-                const screenY = p.y * h;
-                const r = (1 + Math.sqrt(p.wealth)/150) * perspective;
-
-                ctx.beginPath();
-                ctx.arc(screenX, screenY, r, 0, Math.PI*2);
-                const hue = 200 + p.education * 60;
-                const lit = 30 + p.prestige * 50;
-                ctx.fillStyle = `hsla(${hue}, 70%, ${lit}%, ${perspective})`;
-
-                if (p.power > 0.8) {
-                    ctx.shadowBlur = 10 * perspective;
-                    ctx.shadowColor = `hsla(${hue}, 100%, 70%, 0.6)`;
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-                ctx.fill();
-
-                if (p.mobilityTimer > 0) {
-                    this.drawArrow(ctx, screenX, screenY, p.mobilityDirection, p.mobilityTimer);
-                    p.mobilityTimer -= 0.016;
-                }
+    function createSprites() {
+        const eduColors = ['#cf222e', '#f9c513', '#2ea44f', '#0366d6', '#8a63d2'];
+        eduColors.forEach((color, idx) => {
+            sprites[idx] = [2, 4, 8, 14].map(size => {
+                const c = document.createElement('canvas'); c.width = size*4; c.height = size*4;
+                const x = c.getContext('2d');
+                const g = x.createRadialGradient(size*2, size*2, 0, size*2, size*2, size*2);
+                g.addColorStop(0, color); g.addColorStop(0.5, color); g.addColorStop(1, 'transparent');
+                x.fillStyle = g; x.beginPath(); x.arc(size*2, size*2, size*2, 0, Math.PI*2); x.fill();
+                return c;
             });
+        });
+    }
 
-            if(label) {
-                ctx.fillStyle = isDark ? '#fff' : '#000';
-                ctx.font = 'bold 12px Inter';
-                ctx.fillText(label, 10, 20);
+    function render(sims, isComp) {
+        ctx.fillStyle = '#0b0e14'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (isComp) {
+            drawSoc(sims[0], 0, canvas.width/2, "SOCIEDAD A");
+            drawSoc(sims[1], canvas.width/2, canvas.width/2, "SOCIEDAD B");
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.setLineDash([8, 8]);
+            ctx.beginPath(); ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height); ctx.stroke(); ctx.setLineDash([]);
+        } else drawSoc(sims[0], 0, canvas.width, "");
+    }
+
+    function drawSoc(sim, ox, w, label) {
+        const t = Date.now() * 0.00015; const cx = ox + w/2; const cy = canvas.height/2;
+        STRATA.forEach(s => {
+            ctx.strokeStyle = `rgba(255,255,255,${0.03 + (1-s.min)*0.06})`;
+            drawIso(cx, cy + (1-s.min-0.5)*canvas.height*0.8, w*0.7, w*0.35, t);
+        });
+
+        const dList = sim.agents.map(a => {
+            const x3 = (a.x-0.5)*w*0.7; const z3 = (a.z-0.5)*w*0.35;
+            const rx = x3*Math.cos(t) - z3*Math.sin(t); const rz = x3*Math.sin(t) + z3*Math.cos(t);
+            const p = 1 / (1 + rz*0.0008);
+            a.sx = cx + rx*p; a.sy = cy + (1-a.status-0.5)*canvas.height*0.8*p;
+            return { a, rz, p };
+        }).sort((a,b) => a.rz - b.rz);
+
+        dList.forEach(d => {
+            const eduIdx = Math.min(4, Math.floor(d.a.edu * 5));
+            const sz = Math.min(3, Math.floor(d.a.ec*4));
+            const img = sprites[eduIdx][sz]; const sw = img.width*d.p;
+
+            ctx.globalAlpha = 0.5 + d.a.prestige * 0.5;
+
+            if (d.a === hover) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
+                d.a.contacts.forEach(c => {
+                    ctx.beginPath(); ctx.moveTo(d.a.sx, d.a.sy); ctx.lineTo(c.sx, c.sy); ctx.stroke();
+                });
             }
-            ctx.restore();
-        }
 
-        drawArrow(ctx, x, y, dir, alpha) {
-            ctx.save();
-            ctx.globalAlpha = Math.min(1, alpha);
-            ctx.strokeStyle = dir === 'up' ? '#28a745' : '#d73a49';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x, dir === 'up' ? y-15 : y+15);
-            ctx.stroke();
-            ctx.restore();
-        }
+            ctx.drawImage(img, d.a.sx - sw/2, d.a.sy - sw/2, sw, sw);
 
-        updateStats() {
-            const s = this.society;
-            document.getElementById('stat_year').innerText = Math.floor(s.year);
-            const gini = s.getGini();
-            document.getElementById('stat_gini').innerText = gini.toFixed(3);
-            const middle = (s.population.filter(p => p.currentClass.startsWith('Media')).length / s.population.length) * 100;
-            document.getElementById('stat_middle').innerText = middle.toFixed(1) + '%';
-            document.getElementById('stat_pop').innerText = s.population.length;
+            if (d.a.influence > 0.7) {
+                ctx.strokeStyle = `rgba(255,215,0,${(d.a.influence-0.7)*3})`;
+                ctx.lineWidth = 2 * d.p; ctx.beginPath(); ctx.arc(d.a.sx, d.a.sy, sw/2 + 2, 0, Math.PI*2); ctx.stroke();
+            }
 
-            this.drawCharts(s, gini);
-        }
-
-        drawCharts(s, gini) {
-            // Pyramid
-            const svgP = document.getElementById('pyramidChart');
-            const counts = { Alta:0, 'Media Alta':0, Media:0, 'Media Baja':0, Baja:0 };
-            s.population.forEach(p => counts[p.currentClass]++);
-            const max = Math.max(...Object.values(counts));
-            const cls = ['Alta', 'Media Alta', 'Media', 'Media Baja', 'Baja'];
-            svgP.innerHTML = cls.map((c, i) => {
-                const bw = (counts[c]/max) * 200;
-                return `<rect x="${(300-bw)/2}" y="${i*22+5}" width="${bw}" height="18" fill="var(--primary)" fill-opacity="${0.2+i*0.15}"/>
-                        <text x="5" y="${i*22+18}" font-size="9" fill="currentColor">${c}</text>`;
-            }).join('');
-
-            // Lorenz
-            const svgL = document.getElementById('lorenzChart');
-            const w = s.population.map(p => p.wealth).sort((a,b) => a-b);
-            const total = w.reduce((a,b)=>a+b, 0);
-            let path = "M 0 120", cum = 0;
-            w.forEach((v, i) => {
-                cum += v;
-                path += ` L ${(i/w.length)*300} ${120 - (cum/total)*120}`;
-            });
-            svgL.innerHTML = `<line x1="0" y1="120" x2="300" y2="0" stroke="#ccc" stroke-dasharray="3"/><path d="${path}" fill="none" stroke="var(--primary)" stroke-width="2"/>`;
-        }
+            if (d.a.mobilityArrow !== 0) {
+                ctx.fillStyle = d.a.mobilityArrow > 0 ? '#2ea44f' : '#cf222e';
+                ctx.font = `bold ${10*d.p}px Inter`; ctx.fillText(d.a.mobilityArrow > 0 ? '↑' : '↓', d.a.sx + sw/2 + 2, d.a.sy);
+            }
+            ctx.globalAlpha = 1;
+        });
+        if (label) { ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font = '800 11px Inter'; ctx.textAlign = 'center'; ctx.fillText(label, cx, 30); }
     }
 
-    const engine = new Engine();
-
-    function togglePlay() {
-        engine.isPlaying = !engine.isPlaying;
-        document.querySelector('.header-controls .btn-primary').innerText = engine.isPlaying ? '⏸ Pausar' : '▶ Reanudar';
-    }
-
-    function toggleTheme() {
-        const b = document.body;
-        b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-    }
-
-    function toggleComparison() {
-        engine.isComparison = !engine.isComparison;
-        if (engine.isComparison && !engine.societyB) {
-            engine.societyB = new Society(engine.society.params.population);
-            engine.societyB.params.inheritance = 1.0;
-            engine.societyB.params.edu_access = 0.1;
+    function drawIso(x, y, w, h, a) {
+        ctx.beginPath();
+        for(let i=0; i<5; i++) {
+            const ang = (i*Math.PI/2) + a;
+            const px = x + (i%2==0 ? w/2 : h/2)*Math.cos(ang);
+            const py = y + (i%2==0 ? w/2 : h/2)*0.5*Math.sin(ang);
+            if(i==0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
         }
+        ctx.stroke();
     }
 
-    function showDidactic() {
-        const content = document.getElementById('didacticContent');
-        content.innerHTML = `<h2>Fundamentos de Estratificación</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1rem;">
-                <div><h4>Capitales de Bourdieu</h4><p><b>Económico:</b> Dinero y activos.<br><b>Cultural:</b> Conocimiento y títulos.<br><b>Social:</b> Redes y contactos.</p></div>
-                <div><h4>Movilidad</h4><p>Cambio de posición en la jerarquía. La <b>reproducción social</b> ocurre cuando el origen predice el destino.</p></div>
-            </div>`;
-        document.getElementById('didacticOverlay').style.display = 'block';
+    let simA = new Simulation('A'), simB = new Simulation('B'), active = simA, isPlay = true, isComp = false, hover = null;
+
+    function loop() {
+        if (isPlay) { simA.step(0.016); if (isComp) simB.step(0.016); }
+        render([simA, simB], isComp); updateUI(); requestAnimationFrame(loop);
     }
 
+    function updateUI() {
+        document.getElementById('s_year').innerText = Math.floor(simA.year);
+        document.getElementById('s_gini').innerText = active.getGini().toFixed(3);
+        document.getElementById('s_pop').innerText = active.agents.length;
+        const mob = active.agents.filter(a => a.parent && Math.abs(a.status - a.parent.status) > 0.15).length / (active.agents.filter(a=>a.parent).length||1);
+        document.getElementById('s_mob').innerText = (mob*100).toFixed(0) + '%';
+        drawCharts();
+    }
+
+    function drawCharts() {
+        const svgP = document.getElementById('svgP');
+        const counts = STRATA.map(s => active.agents.filter(a => a.status >= s.min && a.status < (STRATA[STRATA.indexOf(s)-1]?.min || 1.1)).length);
+        const max = Math.max(...counts, 1);
+        svgP.innerHTML = STRATA.map((s, i) => `<rect x="${50-(counts[i]/max)*42}%" y="${i*20}%" width="${(counts[i]/max)*84}%" height="15%" fill="${s.color}" rx="3" fill-opacity="0.9"/>`).join('');
+
+        const svgL = document.getElementById('svgL');
+        const w = active.agents.map(a => a.wealth).sort((a,b)=>a-b);
+        const total = w.reduce((a,b)=>a+b, 0)||1;
+        let pts = "0,100"; let cum = 0; const step = Math.max(1, Math.floor(w.length/25));
+        for(let i=0; i<w.length; i+=step) { cum += w.slice(i, i+step).reduce((a,b)=>a+b, 0); pts += ` ${(i/w.length)*100},${100 - (cum/total)*100}`; }
+        pts += " 100,0";
+        svgL.innerHTML = `<polyline points="${pts}" fill="none" stroke="var(--primary)" stroke-width="3" vector-effect="non-scaling-stroke"/><line x1="0" y1="100" x2="100" y2="0" stroke="rgba(255,255,255,0.1)" stroke-dasharray="2"/>`;
+    }
+
+    canvas.addEventListener('mousemove', e => {
+        const r = canvas.getBoundingClientRect(); const mx = e.clientX - r.left; const my = e.clientY - r.top;
+        let best = null, dMin = 18;
+        const check = (s) => s.agents.forEach(a => { const d = Math.hypot(mx - a.sx, my - a.sy); if (d < dMin) { dMin = d; best = a; } });
+        if (isComp) { if (mx < canvas.width/2) check(simA); else check(simB); } else check(simA);
+        hover = best;
+        const ins = document.getElementById('inspector');
+        if (best) {
+            ins.style.display = 'block'; ins.style.left = (e.clientX + 20) + 'px'; ins.style.top = (e.clientY + 20) + 'px';
+            ins.innerHTML = `
+                <div style="font-weight:900; color:var(--accent); margin-bottom:8px; border-bottom:1px solid var(--border); font-size: 0.9rem;">${best.profession.toUpperCase()} #${Math.floor(best.id*1000)%9999}</div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:8px;">
+                    <div><small>ESTATUS</small><br><b>${(best.status*100).toFixed(1)}%</b></div>
+                    <div><small>PRESTIGIO</small><br><b>${(best.prestige*100).toFixed(1)}%</b></div>
+                    <div><small>INFLUENCIA</small><br><b>${(best.influence*100).toFixed(1)}%</b></div>
+                    <div><small>SATISFACCIÓN</small><br><b>${(best.satisfaction*100).toFixed(0)}%</b></div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between;"><small>CAPITAL ECONÓMICO</small><small>$${Math.floor(best.wealth).toLocaleString()}</small></div>
+                    <div class="capital-bar-container"><div class="capital-bar" style="width:${best.ec*100}%; background:#2ea44f;"></div></div>
+                    <div style="display:flex; justify-content:space-between;"><small>CAPITAL CULTURAL</small><small>${(best.cu*100).toFixed(0)}%</small></div>
+                    <div class="capital-bar-container"><div class="capital-bar" style="width:${best.cu*100}%; background:#0366d6;"></div></div>
+                    <div style="display:flex; justify-content:space-between;"><small>CAPITAL SOCIAL</small><small>${(best.so*100).toFixed(0)}%</small></div>
+                    <div class="capital-bar-container"><div class="capital-bar" style="width:${best.so*100}%; background:#f9c513;"></div></div>
+                </div>
+                <div style="margin-top:10px; font-size:0.6rem; opacity:0.8; border-top:1px solid var(--border); padding-top:5px;">
+                    <b>Linaje:</b> ${best.parent ? 'Generación ' + (best.history.length) : 'Fundador'}<br>
+                    <b>Historial:</b> ${best.history.map(h => Math.floor(h.s*100)).join('→')}%
+                </div>
+            `;
+        } else ins.style.display = 'none';
+    });
+
+    let mediaRecorder; let recordedChunks = [];
+    function togglePlay() { isPlay = !isPlay; document.getElementById('playBtn').innerText = isPlay ? '⏸ PAUSA' : '▶ INICIAR'; document.getElementById('playBtn').classList.toggle('active', isPlay); }
+    function toggleComparison() { isComp = !isComp; document.getElementById('cmpBtn').classList.toggle('active', isComp); document.getElementById('tabUI').style.display = isComp ? 'flex' : 'none'; if (!isComp) selectSim('A'); }
+    function selectSim(id) { active = (id === 'A') ? simA : simB; document.getElementById('tA').classList.toggle('sel', id === 'A'); document.getElementById('tB').classList.toggle('sel', id === 'B'); syncInputs(); }
+    function syncInputs() { const c = active.cfg; ['pop', 'speed', 'inh', 'edu', 'tax'].forEach(k => { document.getElementById('p_'+k).value = c[k]; document.getElementById('v_'+k).innerText = c[k]; }); }
+    ['pop', 'speed', 'inh', 'edu', 'tax'].forEach(k => { document.getElementById('p_'+k).addEventListener('input', e => { const v = parseFloat(e.target.value); active.cfg[k] = v; document.getElementById('v_'+k).innerText = v; }); });
+    function shock(type) { (isComp ? [simA, simB] : [simA]).forEach(s => s.agents.forEach(a => a.wealth *= (type=='crisis'? 0.6 : 1.7))); }
+    function openModal(id) { document.getElementById('m_'+id).style.display = 'flex'; }
+    function closeModal() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+    function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+    function exportCSV() { let csv = "ID,Status,Prestige,Wealth,Culture,Social,Education\n"; active.agents.forEach(a => csv += `${a.id},${a.status},${a.prestige},${a.wealth},${a.cu},${a.so},${a.edu}\n`); download(csv, 'sociedad.csv', 'text/csv'); }
+    function exportJSON() { const data = JSON.stringify({cfg: active.cfg, timeline: active.timeline, year: active.year}); download(data, 'simulacion.json', 'application/json'); }
+    function download(content, name, type) { const b = new Blob([content], {type}); const u = URL.createObjectURL(b); const l = document.createElement('a'); l.href = u; l.download = name; l.click(); }
+    function capturePNG() { const l = document.createElement('a'); l.href = canvas.toDataURL(); l.download='sociedad.png'; l.click(); }
+    function startRecording() {
+        recordedChunks = []; const stream = canvas.captureStream(30);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = () => { const b = new Blob(recordedChunks, { type: 'video/webm' }); const u = URL.createObjectURL(b); const l = document.createElement('a'); l.href = u; l.download = 'simulacion.webm'; l.click(); };
+        mediaRecorder.start(); document.getElementById('recBtn').innerText = '⏹ STOP'; document.getElementById('recBtn').onclick = stopRecording;
+    }
+    function stopRecording() { mediaRecorder.stop(); document.getElementById('recBtn').innerText = '📹 REC'; document.getElementById('recBtn').onclick = startRecording; }
     function generateReport() {
-        const s = engine.society;
-        const report = document.getElementById('reportContent');
-        const avgWealth = s.population.reduce((a,b)=>a+b.wealth,0)/s.population.length;
-        report.innerHTML = `<h2>Informe de Estado Social (Año ${Math.floor(s.year)})</h2>
-            <p>Coeficiente Gini: <b>${s.getGini().toFixed(4)}</b></p>
-            <p>Patrimonio Medio: <b>$${Math.floor(avgWealth).toLocaleString()}</b></p>
-            <p>Distribución de Clase: ${JSON.stringify(s.population.reduce((acc,p)=>{acc[p.currentClass]=(acc[p.currentClass]||0)+1; return acc;},{}))}</p>`;
-        document.getElementById('reportOverlay').style.display = 'block';
+        const report = `
+            <html><head><title>Informe de Estratificación</title><style>body{font-family:sans-serif;padding:40px;}table{width:100%;border-collapse:collapse;}td,th{border:1px solid #ddd;padding:8px;}</style></head>
+            <body><h1>Informe de Sociedad - Año ${Math.floor(active.year)}</h1>
+            <p>Gini: ${active.getGini().toFixed(3)}</p>
+            <table><tr><th>Métrica</th><th>Valor</th></tr>
+            <tr><td>Población</td><td>${active.agents.length}</td></tr>
+            <tr><td>Riqueza Total</td><td>$${Math.floor(active.agents.reduce((acc,a)=>acc+a.wealth,0)).toLocaleString()}</td></tr>
+            </table></body></html>
+        `;
+        download(report, 'informe.html', 'text/html');
     }
-
-    function closeOverlays() {
-        ['didacticOverlay', 'profileOverlay', 'reportOverlay'].forEach(id => document.getElementById(id).style.display='none');
-    }
-
-    function triggerEvent(e) {
-        const s = engine.society;
-        if(e==='crisis') { s.population.forEach(p=>p.wealth *= 0.7); alert("¡Crack Bursátil!"); }
-        if(e==='reform') { s.params.edu_access = 0.9; alert("Universidad Gratuita"); }
-        if(e==='tech') { s.population.forEach(p=>p.education += 0.2); alert("Revolución IA"); }
-        if(e==='war') { s.population = s.population.filter(()=>Math.random()>0.1); alert("Movilización General"); }
-    }
-
-    function exportData(fmt) {
-        const s = engine.society;
-        if(fmt==='csv') {
-            let c = "ID,Clase,Patrimonio,Educacion\n" + s.population.map(p=>`${p.id},${p.currentClass},${p.wealth},${p.education}`).join('\n');
-            download(c, 'data.csv', 'text/csv');
-        } else if(fmt==='json') {
-            download(JSON.stringify({year: s.year, params: s.params, pop: s.population}), 'sim.json', 'application/json');
-        } else if(fmt==='png') {
-            const a = document.createElement('a'); a.href = engine.canvas.toDataURL(); a.download = 'snapshot.png'; a.click();
-        }
-    }
-
-    function download(content, name, type) {
-        const b = new Blob([content], {type});
-        const url = URL.createObjectURL(b);
-        const a = document.createElement('a'); a.href = url; a.download = name; a.click();
-    }
-
-    function toggleRecording() {
-        const btn = document.getElementById('recordBtn');
-        const indicator = document.getElementById('recordingIndicator');
-        if (!engine.recorder) {
-            engine.chunks = [];
-            const stream = engine.canvas.captureStream(30);
-            engine.recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-            engine.recorder.ondataavailable = e => engine.chunks.push(e.data);
-            engine.recorder.onstop = () => {
-                const blob = new Blob(engine.chunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url; a.download = 'simulacion.webm'; a.click();
-            };
-            engine.recorder.start();
-            btn.innerText = "Detener Grabación";
-            indicator.style.display = 'flex';
-        } else {
-            engine.recorder.stop();
-            engine.recorder = null;
-            btn.innerText = "Grabar WebM";
-            indicator.style.display = 'none';
-        }
-    }
-
-    // Interacción
-    engine.canvas.addEventListener('click', e => {
-        const rect = engine.canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left) / engine.canvas.width;
-        const my = (e.clientY - rect.top) / engine.canvas.height;
-        let best = null, dMin = 0.05;
-        engine.society.population.forEach(p => {
-            const d = Math.sqrt((p.x - mx)**2 + (p.y - my)**2);
-            if(d < dMin) { dMin = d; best = p; }
-        });
-        if(best) {
-            const pc = document.getElementById('profileContent');
-            pc.innerHTML = `<h3>Perfil del Ciudadano</h3>
-                <p>ID: ${best.id}</p><p>Clase: ${best.currentClass} (Origen: ${best.originClass})</p>
-                <p>Patrimonio: $${Math.floor(best.wealth).toLocaleString()}</p>
-                <p>Padre ID: ${best.parentId || 'Fundador'}</p>
-                <div style="margin-top:10px; height:4px; width:100%; background:#eee;"><div style="height:100%; width:${best.education*100}%; background:var(--primary);"></div></div>
-                <small>Nivel Educativo: ${Math.floor(best.education*100)}%</small>`;
-            document.getElementById('profileOverlay').style.display='block';
-        }
-    });
-
-    document.querySelectorAll('input[type="range"]').forEach(i => {
-        i.addEventListener('input', e => {
-            const k = e.target.id.replace('param_', '');
-            const v = parseFloat(e.target.value);
-            document.getElementById('val_'+k).innerText = v;
-            if(engine.society.params.hasOwnProperty(k)) engine.society.params[k] = v;
-        });
-    });
+    window.addEventListener('resize', () => { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; createSprites(); });
+    window.dispatchEvent(new Event('resize'));
+    createSprites(); loop();
 </script>
 </body>
 </html>
