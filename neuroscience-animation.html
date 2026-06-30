@@ -3,510 +3,478 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuro-V10 | Simulación Biofísica de Alta Fidelidad</title>
+    <title>Neural Experience v11 | El Cosmos de la Conciencia</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;600&family=JetBrains+Mono:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700&family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
 
         :root {
-            --accent: #00f2ff;
-            --accent-glow: rgba(0, 242, 255, 0.4);
-            --bg: #02060c;
-            --panel: rgba(10, 15, 25, 0.75);
-            --text: #e0e6ed;
-            --pyramidal: #ff9d00;
-            --interneuron: #a05cff;
+            --c-bg: #03040a;
+            --c-accent: #00d2ff;
+            --c-accent-alt: #7000ff;
+            --c-text: #f0f4f8;
+            --f-main: 'Plus Jakarta Sans', sans-serif;
+            --f-accent: 'Playfair Display', serif;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--c-bg);
+            color: var(--c-text);
+            font-family: var(--f-main);
             overflow: hidden;
             user-select: none;
         }
 
-        #app-container {
+        #experience-layer {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 50% 50%, #050a12 0%, #02060c 100%);
+            width: 100vw; height: 100vh;
+            overflow: hidden;
         }
 
         canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            filter: contrast(1.1) brightness(1.1);
+            position: absolute; top: 0; left: 0;
+            mix-blend-mode: screen;
         }
 
-        /* UI Elements */
+        /* Cinematic Background */
+        .bg-gradient {
+            position: absolute; width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 50% 50%, #0a0d25 0%, transparent 70%),
+                radial-gradient(circle at 80% 20%, #050714 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, #080a1f 0%, transparent 50%);
+            z-index: -2;
+        }
+
+        .brain-silhouette {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vh; height: 80vh;
+            background: url('https://raw.githubusercontent.com/juanmoisesd/juanmoisesd.github.io/main/assets/images/research-logo.svg') no-repeat center center;
+            background-size: contain;
+            opacity: 0.03;
+            filter: blur(2px) invert(1);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* HUD Overlay */
         .hud {
             position: absolute;
+            padding: 40px;
             pointer-events: none;
             z-index: 10;
         }
 
-        .hud-header {
-            top: 40px;
-            left: 40px;
-        }
+        .hud-top-left { top: 0; left: 0; }
+        .hud-bottom-right { bottom: 0; right: 0; text-align: right; }
 
-        .hud-header h1 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.4rem;
-            letter-spacing: 8px;
+        .title-block h1 {
+            font-family: var(--f-accent);
+            font-size: 3rem;
             margin: 0;
-            color: var(--accent);
-            text-shadow: 0 0 20px var(--accent-glow);
+            font-style: italic;
+            background: linear-gradient(to right, #fff, var(--c-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
 
-        .hud-header p {
+        .title-block p {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            opacity: 0.4;
+            margin-top: 10px;
+        }
+
+        /* Interactive Elements */
+        .thought-ui {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            pointer-events: auto;
+        }
+
+        .btn-mode {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: #fff;
             font-size: 0.7rem;
             letter-spacing: 2px;
-            opacity: 0.6;
-            margin-top: 8px;
             text-transform: uppercase;
-        }
-
-        /* Stats Panel */
-        .hud-stats {
-            bottom: 40px;
-            left: 40px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-box {
-            background: var(--panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 242, 255, 0.15);
-            padding: 15px 20px;
-            border-radius: 12px;
-            min-width: 110px;
-        }
-
-        .stat-label { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--accent); }
-
-        /* Oscilloscope */
-        .hud-oscilloscope {
-            bottom: 40px;
-            right: 40px;
-            background: var(--panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 16px;
-            width: 280px;
-        }
-
-        .osc-title { font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; margin-bottom: 10px; text-transform: uppercase; }
-        .osc-canvas-wrap { height: 80px; background: rgba(0,0,0,0.4); border-radius: 8px; overflow: hidden; position: relative; }
-        #oscCanvas { width: 100%; height: 100%; }
-
-        /* Controls */
-        .controls {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            pointer-events: auto;
-            background: var(--panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 25px;
-            border-radius: 16px;
-            width: 240px;
-        }
-
-        .control-row { margin-bottom: 18px; }
-        .control-row:last-child { margin-bottom: 0; }
-        .control-row label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.65rem;
-            margin-bottom: 8px;
-            opacity: 0.7;
-            letter-spacing: 1px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            appearance: none;
-            outline: none;
-            border-radius: 2px;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            background: var(--accent);
-            border-radius: 50%;
             cursor: pointer;
-            border: 2px solid #fff;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(10px);
         }
 
-        .brand-footer {
+        .btn-mode:hover {
+            background: var(--c-accent);
+            border-color: var(--c-accent);
+            color: var(--c-bg);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-mode.active {
+            background: var(--c-accent-alt);
+            border-color: var(--c-accent-alt);
+            box-shadow: 0 0 30px rgba(112, 0, 255, 0.4);
+        }
+
+        /* Stats display */
+        .stats-hud {
+            font-family: var(--f-main);
+            font-size: 0.6rem;
+            opacity: 0.3;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .stats-hud span { color: var(--c-accent); margin-right: 15px; }
+
+        #interaction-guide {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             width: 100%;
             text-align: center;
-            font-size: 0.5rem;
-            opacity: 0.3;
+            font-size: 0.6rem;
+            opacity: 0.2;
             letter-spacing: 3px;
             text-transform: uppercase;
         }
 
-        #interaction-msg {
-            position: absolute;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.65rem;
-            letter-spacing: 4px;
-            opacity: 0.4;
-            pointer-events: none;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title-block h1 { font-size: 1.8rem; }
+            .hud { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
+    <div id="experience-layer">
+        <div class="bg-gradient"></div>
+        <div class="brain-silhouette"></div>
+
         <canvas id="mainCanvas"></canvas>
+        <canvas id="bloomCanvas"></canvas>
 
-        <div class="hud hud-header">
-            <h1>NEURO-V10</h1>
-            <p>Simulación Biofísica de Alta Fidelidad</p>
-        </div>
-
-        <div class="hud hud-stats">
-            <div class="stat-box">
-                <div class="stat-label">Actividad</div>
-                <div id="stat-freq" class="stat-value">0.0 Hz</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">V_Membrane</div>
-                <div id="stat-vm" class="stat-value">-70 mV</div>
+        <div class="hud hud-top-left">
+            <div class="title-block">
+                <h1>Neural Nexus</h1>
+                <p>Exploración Sináptica Inmersiva</p>
             </div>
         </div>
 
-        <div class="hud hud-oscilloscope">
-            <div class="osc-title">Potencial de Acción (HH Model)</div>
-            <div class="osc-canvas-wrap">
-                <canvas id="oscCanvas"></canvas>
+        <div class="hud hud-bottom-right">
+            <div class="stats-hud">
+                SYNS: <span id="stat-nodes">0</span>
+                COGN: <span id="stat-activity">0%</span>
+            </div>
+            <div style="font-family: var(--f-accent); font-style: italic; opacity: 0.5;">
+                Dr. Juan Moisés de la Serna
             </div>
         </div>
 
-        <div class="controls">
-            <div class="control-row">
-                <label>CONDUCTANCIA Na+ <span id="val-gna">120</span></label>
-                <input type="range" id="param-gna" min="0" max="150" value="120">
-            </div>
-            <div class="control-row">
-                <label>CONDUCTANCIA K+ <span id="val-gk">36</span></label>
-                <input type="range" id="param-gk" min="0" max="50" value="36">
-            </div>
-            <div class="control-row">
-                <label>VELOCIDAD AXONAL <span id="val-speed">100%</span></label>
-                <input type="range" id="param-speed" min="10" max="300" value="100">
-            </div>
+        <div class="thought-ui">
+            <button class="btn-mode" id="btn-stimulate">Liberar Pulso de Pensamiento</button>
         </div>
 
-        <div id="interaction-msg">HAZ CLIC PARA ESTIMULAR LA RED</div>
-
-        <div class="brand-footer">CÁTEDRA DE PSICOBIOLOGÍA | DR. JUAN MOISÉS DE LA SERNA</div>
+        <div id="interaction-guide">Navega por la red con el ratón · Haz clic para crear conciencia</div>
     </div>
 
     <script>
         /**
-         * Neuro-V10 Engine
-         * Implements Hodgkin-Huxley model for biological realism
-         * with cinematic visualization.
+         * Neural Experience v11 - Cinematic Engine
+         * Focus: Aesthetics, Motion, and Emotional Impact
          */
 
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
-        const oscCanvas = document.getElementById('oscCanvas');
-        const oscCtx = oscCanvas.getContext('2d');
-        const container = document.getElementById('app-container');
+        const bloomCanvas = document.getElementById('bloomCanvas');
+        const btx = bloomCanvas.getContext('2d');
 
         let width, height;
-        let neurons = [];
-        let ripples = [];
+        let nodes = [];
         let pulses = [];
-        let mouse = { x: -1000, y: -1000, active: false };
-        let globalTime = 0;
-        let spikeHistory = [];
-        let vmHistory = Array(100).fill(-70);
+        let mouse = { x: -1000, y: -1000, down: false };
+        let frameCount = 0;
+        let currentMode = 'nebula';
 
-        let config = {
-            gNa: 120,
-            gK: 36,
-            axonSpeed: 0.015,
+        const config = {
+            nodeCount: 65,
+            connectionDist: 180,
+            repulsion: 1.2,
             colors: {
-                pyr: '#ff9d00',
-                inter: '#a05cff',
-                accent: '#00f2ff',
-                bg: '#02060c'
+                primary: '#00d2ff',
+                secondary: '#7000ff',
+                pulse: '#ffffff',
+                bg: '#03040a'
             }
         };
 
-        class Ripple {
-            constructor(x, y, color) {
-                this.x = x; this.y = y; this.r = 0; this.life = 1.0; this.color = color;
+        class Node {
+            constructor(x, y) {
+                this.x = x || Math.random() * width;
+                this.y = y || Math.random() * height;
+                this.originX = this.x;
+                this.originY = this.y;
+
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = (Math.random() - 0.5) * 0.4;
+
+                this.radius = 1 + Math.random() * 2;
+                this.color = Math.random() > 0.5 ? config.colors.primary : config.colors.secondary;
+                this.glow = 5 + Math.random() * 10;
+
+                this.noiseOffset = Math.random() * 1000;
+                this.activity = 0;
+                this.connections = [];
             }
-            update() { this.r += 3; this.life -= 0.02; return this.life > 0; }
+
+            update() {
+                // Organic Floating Motion (Brownian-ish)
+                this.vx += (Math.random() - 0.5) * 0.05;
+                this.vy += (Math.random() - 0.5) * 0.05;
+
+                // Mouse Interaction
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (dist < 200) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (200 - dist) / 200;
+
+                    // Interaction: Repel or Vortex
+                    this.vx -= Math.cos(angle) * force * 0.2;
+                    this.vy -= Math.sin(angle) * force * 0.2;
+
+                    this.activity = Math.max(this.activity, force);
+                }
+
+                // Smooth activity decay
+                this.activity *= 0.96;
+
+                // Physics Apply
+                this.vx *= 0.97;
+                this.vy *= 0.97;
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Screen Wrap with fade
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
             draw() {
+                const alpha = 0.3 + this.activity * 0.7;
+
+                ctx.save();
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-                ctx.strokeStyle = this.color;
-                ctx.globalAlpha = this.life * 0.4;
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                ctx.arc(this.x, this.y, this.radius + this.activity * 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = alpha;
+                ctx.fill();
+
+                // Inner core
+                if (this.activity > 0.1) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                }
+                ctx.restore();
             }
         }
 
         class Pulse {
-            constructor(source, target, color) {
+            constructor(source, target) {
                 this.source = source;
                 this.target = target;
                 this.progress = 0;
-                this.color = color;
-                this.speed = config.axonSpeed * (0.9 + Math.random() * 0.2);
-                this.curveSign = Math.random() > 0.5 ? 1 : -1;
+                this.speed = 0.01 + Math.random() * 0.02;
+                this.id = Math.random();
             }
-            getPoint(t) {
-                const x = (1 - t) * this.source.x + t * this.target.x;
-                const y = (1 - t) * this.source.y + t * this.target.y;
-                const dx = this.target.x - this.source.x;
-                const dy = this.target.y - this.source.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                const curveFactor = (1 - t) * t * 4;
-                const offset = dist * 0.15 * this.curveSign;
-                return { x: x + (-dy / dist) * offset * curveFactor, y: y + (dx / dist) * offset * curveFactor };
-            }
+
             update() {
                 this.progress += this.speed;
-                if(this.progress >= 1) {
-                    this.target.inject(this.source.type === 'pyr' ? 15 : -12);
+                if (this.progress >= 1) {
+                    this.target.activity = 1.0;
                     return false;
                 }
                 return true;
             }
-            draw() {
-                const p = this.getPoint(this.progress);
-                ctx.save();
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = "#fff";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
-                ctx.fill();
-
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                for(let i=0; i<10; i++) {
-                    const t = Math.max(0, this.progress - (i/100));
-                    const pt = this.getPoint(t);
-                    if(i===0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
-                }
-                ctx.strokeStyle = this.color;
-                ctx.globalAlpha = 0.5;
-                ctx.stroke();
-                ctx.restore();
-            }
-        }
-
-        class Neuron {
-            constructor(x, y) {
-                this.x = x; this.y = y;
-                this.vx = (Math.random()-0.5)*0.2;
-                this.vy = (Math.random()-0.5)*0.2;
-                this.type = Math.random() > 0.7 ? 'inter' : 'pyr';
-                this.color = this.type === 'pyr' ? config.colors.pyr : config.colors.inter;
-
-                // Hodgkin-Huxley State
-                this.Vm = -70.0;
-                this.m = 0.05; this.h = 0.6; this.n = 0.32;
-                this.ENa = 50; this.EK = -77; this.EL = -54.4;
-                this.gL = 0.3;
-
-                this.synapses = [];
-                this.lastSpike = -100;
-                this.isFiring = false;
-            }
-
-            update(dt) {
-                // Physics
-                this.x += this.vx; this.y += this.vy;
-                this.vx *= 0.98; this.vy *= 0.98;
-                if(this.x < 50 || this.x > width-50) this.vx *= -1;
-                if(this.y < 50 || this.y > height-50) this.vy *= -1;
-
-                // Mouse interaction
-                const dx = mouse.x - this.x;
-                const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx*dx+dy*dy);
-                if(dist < 200) {
-                    const f = (200-dist)*0.0001;
-                    this.vx += dx*f; this.vy += dy*f;
-                    this.vx += dy*f*0.5; this.vy -= dx*f*0.5; // Vortex
-                }
-
-                // Hodgkin-Huxley Integration
-                const v = this.Vm;
-                const alphaM = 0.1 * (v + 40.0) / (1.0 - Math.exp(-(v + 40.0) / 10.0));
-                const betaM = 4.0 * Math.exp(-(v + 65.0) / 18.0);
-                const alphaH = 0.07 * Math.exp(-(v + 65.0) / 20.0);
-                const betaH = 1.0 / (1.0 + Math.exp(-(v + 35.0) / 10.0));
-                const alphaN = 0.01 * (v + 55.0) / (1.0 - Math.exp(-(v + 55.0) / 10.0));
-                const betaN = 0.125 * Math.exp(-(v + 65.0) / 80.0);
-
-                this.m += (alphaM * (1.0 - this.m) - betaM * this.m) * dt;
-                this.h += (alphaH * (1.0 - this.h) - betaH * this.h) * dt;
-                this.n += (alphaN * (1.0 - this.n) - betaN * this.n) * dt;
-
-                const iNa = config.gNa * Math.pow(this.m, 3) * this.h * (v - this.ENa);
-                const iK = config.gK * Math.pow(this.n, 4) * (v - this.EK);
-                const iL = this.gL * (v - this.EL);
-                const iExt = Math.random() > 0.995 ? 15 : 0; // Spontaneous input
-
-                this.Vm -= (iNa + iK + iL - iExt) * dt;
-
-                // Spike detection
-                if(this.Vm > 10 && !this.isFiring) {
-                    this.spike();
-                    this.isFiring = true;
-                }
-                if(this.Vm < -60) this.isFiring = false;
-            }
-
-            inject(val) { this.Vm += val; }
-
-            spike() {
-                this.lastSpike = globalTime;
-                spikeHistory.push(globalTime);
-                ripples.push(new Ripple(this.x, this.y, this.color));
-                this.synapses.forEach(s => {
-                    setTimeout(() => {
-                        pulses.push(new Pulse(this, s.target, this.color));
-                    }, Math.random() * 50);
-                });
-            }
 
             draw() {
-                const glow = Math.max(0, 1 - (globalTime - this.lastSpike)/20);
-                ctx.save();
-                ctx.shadowBlur = 5 + glow * 20;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = glow > 0.5 ? '#fff' : this.color;
-                ctx.beginPath();
-                if(this.type === 'pyr') {
-                    ctx.moveTo(this.x, this.y-8); ctx.lineTo(this.x+7, this.y+5); ctx.lineTo(this.x-7, this.y+5); ctx.closePath();
-                } else {
-                    ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
-                }
-                ctx.fill();
-                ctx.restore();
+                const x = this.source.x + (this.target.x - this.source.x) * this.progress;
+                const y = this.source.y + (this.target.y - this.source.y) * this.progress;
 
-                // Connections
-                ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-                ctx.beginPath();
-                this.synapses.forEach(s => {
-                    ctx.moveTo(this.x, this.y); ctx.lineTo(s.target.x, s.target.y);
-                });
-                ctx.stroke();
+                const alpha = Math.sin(this.progress * Math.PI);
+
+                btx.save();
+                btx.shadowBlur = 15;
+                btx.shadowColor = config.colors.primary;
+                btx.fillStyle = '#fff';
+                btx.globalAlpha = alpha;
+                btx.beginPath();
+                btx.arc(x, y, 1.5, 0, Math.PI * 2);
+                btx.fill();
+                btx.restore();
             }
         }
 
         function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            oscCanvas.width = oscCanvas.offsetWidth;
-            oscCanvas.height = oscCanvas.offsetHeight;
+            width = canvas.width = bloomCanvas.width = window.innerWidth;
+            height = canvas.height = bloomCanvas.height = window.innerHeight;
 
-            neurons = [];
-            for(let i=0; i<20; i++) neurons.push(new Neuron(Math.random()*width, Math.random()*height));
+            nodes = [];
+            for (let i = 0; i < config.nodeCount; i++) {
+                nodes.push(new Node());
+            }
 
-            neurons.forEach(n => {
-                for(let i=0; i<2; i++) {
-                    const target = neurons[Math.floor(Math.random()*neurons.length)];
-                    if(target !== n) n.synapses.push({ target });
+            // Build Initial Structure
+            updateConnections();
+
+            document.getElementById('stat-nodes').innerText = nodes.length;
+        }
+
+        function updateConnections() {
+            nodes.forEach(n => {
+                n.connections = [];
+                nodes.forEach(m => {
+                    if (n === m) return;
+                    const d = Math.sqrt((n.x-m.x)**2 + (n.y-m.y)**2);
+                    if (d < config.connectionDist) {
+                        n.connections.push(m);
+                    }
+                });
+            });
+        }
+
+        function drawConnections() {
+            ctx.save();
+            ctx.lineWidth = 0.6;
+            for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                for (let j = 0; j < n.connections.length; j++) {
+                    const m = n.connections[j];
+                    const dist = Math.sqrt((n.x-m.x)**2 + (n.y-m.y)**2);
+                    const alpha = Math.max(0, (1 - dist / config.connectionDist) * 0.15);
+
+                    const grad = ctx.createLinearGradient(n.x, n.y, m.x, m.y);
+                    grad.addColorStop(0, n.color);
+                    grad.addColorStop(1, m.color);
+
+                    ctx.strokeStyle = grad;
+                    ctx.globalAlpha = alpha + (n.activity + m.activity) * 0.2;
+                    ctx.beginPath();
+                    ctx.moveTo(n.x, n.y);
+                    ctx.lineTo(m.x, m.y);
+                    ctx.stroke();
+                }
+            }
+            ctx.restore();
+        }
+
+        function triggerGlobalPulse() {
+            const startNode = nodes[Math.floor(Math.random() * nodes.length)];
+            startNode.activity = 1.0;
+
+            nodes.forEach(n => {
+                if (Math.random() > 0.9) {
+                    const target = n.connections[Math.floor(Math.random() * n.connections.length)];
+                    if (target) pulses.push(new Pulse(n, target));
                 }
             });
         }
 
         function animate() {
-            globalTime++;
-            ctx.fillStyle = config.colors.bg;
-            ctx.fillRect(0, 0, width, height);
+            frameCount++;
+            ctx.clearRect(0, 0, width, height);
+            btx.clearRect(0, 0, width, height);
 
-            ripples = ripples.filter(r => { r.draw(); return r.update(); });
-            pulses = pulses.filter(p => { p.draw(); return p.update(); });
+            // Dynamic activity calculation for HUD
+            let totalActivity = 0;
 
-            neurons.forEach(n => {
-                n.update(0.15);
-                n.draw();
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+                totalActivity += node.activity;
             });
 
-            // Update UI
-            const master = neurons[0];
-            vmHistory.push(master.Vm);
-            vmHistory.shift();
-            document.getElementById('stat-vm').innerText = Math.round(master.Vm) + " mV";
+            drawConnections();
 
-            if(globalTime % 30 === 0) {
-                const limit = globalTime - 120;
-                spikeHistory = spikeHistory.filter(t => t > limit);
-                document.getElementById('stat-freq').innerText = (spikeHistory.length / 2).toFixed(1) + " Hz";
+            pulses = pulses.filter(p => {
+                p.draw();
+                return p.update();
+            });
+
+            // HUD Activity Update
+            if (frameCount % 10 === 0) {
+                const actPct = Math.min(100, Math.round((totalActivity / nodes.length) * 400));
+                document.getElementById('stat-activity').innerText = actPct + "%";
             }
 
-            drawOscilloscope();
+            // Occasional Spontaneous Activity
+            if (frameCount % 60 === 0 && Math.random() > 0.7) {
+                const n = nodes[Math.floor(Math.random() * nodes.length)];
+                if (n && n.connections.length > 0) {
+                    pulses.push(new Pulse(n, n.connections[0]));
+                }
+            }
+
+            // Periodic connection re-evaluation for dynamic structure
+            if (frameCount % 120 === 0) updateConnections();
+
             requestAnimationFrame(animate);
         }
 
-        function drawOscilloscope() {
-            oscCtx.clearRect(0, 0, oscCanvas.width, oscCanvas.height);
-            oscCtx.strokeStyle = config.colors.accent;
-            oscCtx.lineWidth = 2;
-            oscCtx.beginPath();
-            const step = oscCanvas.width / vmHistory.length;
-            vmHistory.forEach((v, i) => {
-                const y = oscCanvas.height/2 - (v + 30) * 0.8;
-                if(i === 0) oscCtx.moveTo(0, y); else oscCtx.lineTo(i * step, y);
-            });
-            oscCtx.stroke();
-        }
-
-        container.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
-        container.addEventListener('mousedown', e => {
-            neurons.forEach(n => {
-                const d = Math.sqrt((n.x-e.clientX)**2+(n.y-e.clientY)**2);
-                if(d < 150) n.inject(25);
-            });
-            ripples.push(new Ripple(e.clientX, e.clientY, config.colors.accent));
+        // Interaction
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         });
 
-        document.getElementById('param-gna').addEventListener('input', e => {
-            config.gNa = parseInt(e.target.value);
-            document.getElementById('val-gna').innerText = e.target.value;
+        window.addEventListener('mousedown', (e) => {
+            const clickNode = new Node(e.clientX, e.clientY);
+            clickNode.activity = 1.0;
+            nodes.push(clickNode);
+            if (nodes.length > 120) nodes.shift();
+
+            updateConnections();
+
+            // Send pulses from nearby nodes
+            nodes.forEach(n => {
+                const d = Math.sqrt((n.x-e.clientX)**2 + (n.y-e.clientY)**2);
+                if (d < 150) {
+                    pulses.push(new Pulse(n, clickNode));
+                }
+            });
         });
-        document.getElementById('param-gk').addEventListener('input', e => {
-            config.gK = parseInt(e.target.value);
-            document.getElementById('val-gk').innerText = e.target.value;
-        });
-        document.getElementById('param-speed').addEventListener('input', e => {
-            config.axonSpeed = e.target.value / 6000;
-            document.getElementById('val-speed').innerText = e.target.value + "%";
+
+        document.getElementById('btn-stimulate').addEventListener('click', (e) => {
+            e.stopPropagation();
+            triggerGlobalPulse();
+
+            const btn = e.target;
+            btn.innerText = "Pensamiento Liberado";
+            btn.classList.add('active');
+            setTimeout(() => {
+                btn.innerText = "Liberar Pulso de Pensamiento";
+                btn.classList.remove('active');
+            }, 1000);
         });
 
         window.addEventListener('resize', init);
+
         init();
         animate();
     </script>
