@@ -17,6 +17,8 @@
         - Visualización de interacciones P2P (líneas de flujo).
         - Presets de Escenarios (Nórdico, Laissez-Faire, Crisis).
         - Estadísticas de Percentiles (1%, 10%, 50%).
+        - Social Capital & Networking Dynamics.
+        - Longevity & Social Unrest Feedbacks.
     -->
     <style>
         :root {
@@ -28,27 +30,33 @@
             --info: #0ea5e9;
             --bg: #020617;
             --bg-alt: #0b1120;
-            --card: rgba(30, 41, 59, 0.75);
-            --border: rgba(148, 163, 184, 0.15);
+            --card: rgba(15, 23, 42, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
             --text: #f8fafc;
             --text-muted: #94a3b8;
-            --radius: 20px;
+            --radius: 24px;
             --font-main: 'Inter', -apple-system, system-ui, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-            /* Escala Cromática de Riqueza */
-            --c-poverty: #ef4444;
-            --c-low: #f97316;
-            --c-middle: #eab308;
-            --c-high: #22c55e;
-            --c-elite: #3b82f6;
-            --c-billion: #a855f7;
+            /* Escala Cromática de Riqueza - Palette 10.0 */
+            --c-poverty: #ff4b2b;
+            --c-low: #ffb347;
+            --c-middle: #fceabb;
+            --c-high: #00d2ff;
+            --c-elite: #3a7bd5;
+            --c-billion: #9d50bb;
+
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         body {
             font-family: var(--font-main);
-            background: var(--bg);
+            background: radial-gradient(circle at top right, #0f172a, #020617);
             color: var(--text);
             height: 100vh;
             display: flex;
@@ -58,14 +66,14 @@
         }
 
         header {
-            height: 72px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
+            height: 80px;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(30px) saturate(150%);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 2rem;
+            padding: 0 3rem;
             z-index: 1200;
         }
         .logo-box { display: flex; align-items: center; gap: 14px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; font-size: 1rem; cursor: default; }
@@ -83,23 +91,33 @@
         .tier-marker { position: absolute; right: 25px; font-size: 0.6rem; font-weight: 950; color: rgba(255,255,255,0.06); text-transform: uppercase; letter-spacing: 5px; width: 100%; text-align: right; border-top: 1px solid rgba(255,255,255,0.02); padding-top: 6px; }
 
         .simulation-legend {
-            position: absolute; bottom: 30px; left: 30px;
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); padding: 20px; border-radius: var(--radius);
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: absolute; bottom: 40px; left: 40px;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); padding: 25px; border-radius: var(--radius);
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.7);
             z-index: 500;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+        .simulation-legend:hover { background: rgba(15, 23, 42, 0.8); transform: scale(1.02); }
+        .legend-item {
+            display: flex; align-items: center; gap: 12px; font-size: 0.7rem;
+            font-weight: 800; text-transform: uppercase; color: var(--text-muted);
+            cursor: pointer; transition: 0.3s;
+        }
+        .legend-item:hover { color: #fff; }
+        .legend-item.highlight { color: var(--primary); transform: translateX(5px); }
         .l-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
 
         .sidebar {
-            width: 540px;
-            background: var(--bg-alt);
+            width: 580px;
+            background: rgba(11, 17, 32, 0.9);
+            backdrop-filter: blur(40px);
             display: flex;
             flex-direction: column;
             z-index: 1000;
-            box-shadow: -20px 0 80px rgba(0,0,0,0.9);
+            box-shadow: -40px 0 100px rgba(0,0,0,0.8);
+            border-left: 1px solid var(--border);
         }
         .sidebar-tabs { display: flex; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border); }
         .tab-btn {
@@ -137,19 +155,31 @@
         .mt-4 { margin-top: 1rem; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
-        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; border-left: 4px solid var(--primary); transition: 0.3s; position: relative; overflow: hidden; }
-        .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; letter-spacing: 1.5px; }
-        .stat-value { font-size: 1.3rem; font-weight: 900; font-family: var(--font-mono); margin-top: 8px; color: #fff; }
+        .stat-card {
+            background: var(--card); border: 1px solid var(--glass-border);
+            padding: 22px; border-radius: 24px;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.05); border-color: var(--primary); }
+        .stat-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px;
+            background: var(--primary); transition: 0.4s;
+        }
+        .stat-card:hover::after { width: 100%; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 950; letter-spacing: 2px; }
+        .stat-value { font-size: 1.6rem; font-weight: 950; font-family: var(--font-mono); margin-top: 10px; color: #fff; letter-spacing: -1px; }
 
         .chart-box { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 1.5rem; }
         .chart-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; font-weight: 950; display: block; border-left: 4px solid var(--secondary); padding-left: 12px; }
         .viz-canvas { width: 100%; height: 160px; }
 
         #inspector {
-            position: absolute; top: 30px; left: 30px; width: 450px;
-            background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(40px);
-            border: 2px solid var(--primary); border-radius: 30px; padding: 30px;
-            display: none; box-shadow: 0 50px 150px rgba(0,0,0,0.9); z-index: 2100;
+            position: absolute; top: 50px; left: 50px; width: 480px;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(50px) saturate(180%);
+            border: 1px solid var(--primary); border-radius: 32px; padding: 35px;
+            display: none; box-shadow: 0 60px 180px rgba(0,0,0,1); z-index: 2100;
+            animation: fadeIn 0.4s ease-out;
         }
         .ins-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .ins-header h3 { font-size: 1.1rem; font-weight: 950; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
@@ -240,6 +270,12 @@
                 <div class="ins-row">Impuestos Mes: $<b id="ins-tax">0</b></div>
                 <div class="ins-row">Herencia: $<b id="ins-inh">0</b></div>
                 <div class="ins-row">Ahorro: $<b id="ins-save">0</b></div>
+                <div class="ins-row" style="grid-column: span 2;">Social Capital: <b id="ins-social">0</b></div>
+            </div>
+
+            <div style="margin-top:20px; padding: 15px; background: rgba(99, 102, 241, 0.1); border-radius: 15px; border-left: 4px solid var(--primary);">
+                <span class="chart-label" style="font-size:0.6rem; border:none; padding:0; margin-bottom:5px;">Biografía del Agente</span>
+                <p id="ins-story" style="font-size: 0.75rem; font-style: italic; color: var(--text-muted); line-height: 1.5;">Relato emergente...</p>
             </div>
 
             <div class="ins-portfolio">
@@ -293,7 +329,7 @@
             <div class="s-header">Política Económica</div>
             <div class="control-group">
                 <div class="control-label">Sistema Fiscal</div>
-                <select id="sel-tax-system">
+                <select id="sel-tax-system" onchange="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).params.taxSystem = this.value;">
                     <option value="progressive">Modelo Progresivo (Solidario)</option>
                     <option value="flat">Impuesto Plano (Eficiencia)</option>
                     <option value="none">Sin Impuestos (Laissez-Faire)</option>
@@ -309,7 +345,7 @@
             </div>
             <div class="control-group">
                 <div class="control-label">Modelo de Herencia</div>
-                <select id="sel-inh-system">
+                <select id="sel-inh-system" onchange="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).params.inhSystem = this.value;">
                     <option value="free">Herencia Libre</option>
                     <option value="limited">Herencia Limitada (Cap)</option>
                     <option value="heavy">Alta Tributación (50%+)</option>
@@ -342,18 +378,23 @@
             </div>
 
             <div class="btn-grid">
-                <button class="btn" onclick="world.shock('crash')">Crash Bolsa</button>
-                <button class="btn" onclick="world.shock('bubble')">Burbuja Inmob.</button>
-                <button class="btn" onclick="world.shock('hyper')">Hiperinflación</button>
-                <button class="btn" onclick="world.shock('growth')">Milagro Econ.</button>
-                <button class="btn" onclick="world.shock('pandemic')">Pandemia</button>
-                <button class="btn" onclick="world.shock('tech')">Salto Tech</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('crash')">Crash Bolsa</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('bubble')">Burbuja Inmob.</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('hyper')">Hiperinflación</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('growth')">Milagro Econ.</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('pandemic')">Pandemia</button>
+                <button class="btn" onclick="(isComparing ? (statWorld === 'A' ? worldA : worldB) : world).shock('tech')">Salto Tech</button>
             </div>
 
             <button class="btn btn-danger btn-full mt-4" id="btn-reset-sim">Reset Laboratorio</button>
         </div>
 
         <div class="pane" id="tab-stats">
+            <div id="comp-selector" style="display:none; margin-bottom: 1.5rem; background: var(--primary); padding: 10px; border-radius: 12px; text-align: center; font-size: 0.7rem; font-weight: 950;">
+                MOSTRANDO ESTADÍSTICAS DE:
+                <button class="btn btn-active" id="btn-sel-a" style="padding: 4px 12px; margin-left: 10px;" onclick="switchStatWorld('A')">MUNDO A</button>
+                <button class="btn" id="btn-sel-b" style="padding: 4px 12px;" onclick="switchStatWorld('B')">MUNDO B</button>
+            </div>
             <div class="stat-grid">
                 <div class="stat-card"><div class="stat-label">Gini</div><div class="stat-value" id="st-gini">0.000</div></div>
                 <div class="stat-card"><div class="stat-label">Índice Palma</div><div class="stat-value" id="st-palma">1.00</div></div>
@@ -418,7 +459,18 @@
 <div class="modal-overlay" id="modal-didactic">
     <div class="modal-box">
         <span class="close-modal-btn" id="edu-close-icon">×</span>
-        <h1 style="color:var(--primary); font-size:2.8rem; margin-bottom:1.5rem; text-transform:uppercase;">Didáctica de la Complejidad Económica</h1>
+        <h1 style="color:var(--primary); font-size:2.8rem; margin-bottom:1.5rem; text-transform:uppercase;">Laboratorio de Sociología Económica</h1>
+
+        <div style="background: rgba(99, 102, 241, 0.1); padding: 30px; border-radius: 20px; border: 1px solid var(--primary); margin-bottom: 30px;">
+            <h3 style="color:#fff; margin-bottom: 10px;">Guía de Observación Crítica</h3>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">Para entender la simulación, fíjese en los siguientes fenómenos:</p>
+            <ul style="margin-left: 20px; margin-top: 10px; font-size: 0.9rem; color: var(--accent);">
+                <li><b>Movilidad:</b> ¿Cuántos círculos rojos logran volverse amarillos o verdes con el tiempo?</li>
+                <li><b>Resiliencia:</b> Durante un "Crash Bolsa", ¿qué clase social recupera su tamaño original más rápido?</li>
+                <li><b>Herencia:</b> Desactive la herencia y observe si la élite financiera (azul/púrpura) se mantiene estable o rota cada generación.</li>
+            </ul>
+        </div>
+
         <div style="font-size:1.1rem; line-height:1.8; color:var(--text-muted);">
             <p>En este laboratorio, la economía es un <b>sistema emergente</b>. No hay un gobierno central que decida quién es rico, sino reglas individuales que, multiplicadas por miles, generan estructuras sociales.</p>
 
@@ -451,16 +503,29 @@
      * MOTOR DE SIMULACIÓN V70 - SISTEMAS ADAPTATIVOS COMPLEJOS
      */
 
+    class PRNG {
+        constructor(seed = 12345) { this.m = 4294967296; this.a = 1664525; this.c = 1013904223; this.state = seed; }
+        next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
+        random() { return this.next(); }
+    }
+
     const STRATA_DEFS = [
-        { name: "Pobreza Extrema", min: 0, max: 4000, color: [239, 68, 68] },
-        { name: "Bajos Ingresos", min: 4000, max: 25000, color: [249, 115, 22] },
-        { name: "Clase Media", min: 25000, max: 130000, color: [234, 179, 8] },
-        { name: "Clase Alta", min: 130000, max: 3500000, color: [34, 197, 94] },
-        { name: "Elite Financiera", min: 3500000, max: 100000000, color: [59, 130, 246] },
-        { name: "Billionaires", min: 100000000, max: Infinity, color: [168, 85, 247] }
+        { name: "Pobreza Extrema", min: 0, max: 4000, color: [255, 75, 43], id: 'poverty' },
+        { name: "Bajos Ingresos", min: 4000, max: 25000, color: [255, 179, 71], id: 'low' },
+        { name: "Clase Media", min: 25000, max: 130000, color: [252, 234, 187], id: 'middle' },
+        { name: "Clase Alta", min: 130000, max: 3500000, color: [0, 210, 255], id: 'high' },
+        { name: "Elite Financiera", min: 3500000, max: 100000000, color: [58, 123, 213], id: 'elite' },
+        { name: "Billionaires", min: 100000000, max: Infinity, color: [157, 80, 187], id: 'billion' }
     ];
 
-    // Helper para resolver variables CSS en Canvas
+    const PROFESSIONS = [
+        { name: "Sector Primario/Informal", power: 0.50, vacancies: Infinity },
+        { name: "Servicios/Comercio", power: 1.40, vacancies: 0.50 },
+        { name: "Técnico Especializado", power: 3.30, vacancies: 0.20 },
+        { name: "Gestión/Ingeniería", power: 7.80, vacancies: 0.08 },
+        { name: "Alta Dirección/Inversión", power: 26.5, vacancies: 0.02 }
+    ];
+
     function getThemeColor(varName) {
         return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#ffffff";
     }
@@ -487,21 +552,15 @@
         return `rgb(${last.color.join(',')})`;
     }
 
-    const PROFESSIONS = [
-        { name: "Sector Primario/Informal", power: 0.50 },
-        { name: "Servicios/Comercio", power: 1.40 },
-        { name: "Técnico Especializado", power: 3.30 },
-        { name: "Gestión/Ingeniería", power: 7.80 },
-        { name: "Alta Dirección/Inversión", power: 26.5 }
-    ];
-
     class Agent {
-        constructor(id, wealth = 2500, parent = null) {
+        constructor(id, wealth = 2500, parent = null, rng = Math) {
             this.id = id;
-            this.age = parent ? 18 : (18 + Math.random() * 55);
-            this.education = parent ? Math.max(0, Math.min(1, parent.education + (Math.random()-0.4)*0.25)) : Math.random();
-            this.productivity = 0.5 + Math.random() + (this.education * 1.0);
-            this.riskLevel = Math.random();
+            this.rng = rng;
+            this.age = parent ? 18 : (18 + rng.random() * 55);
+            this.education = parent ? Math.max(0, Math.min(1, parent.education + (rng.random()-0.45)*0.3)) : rng.random();
+            this.productivity = 0.5 + rng.random() + (this.education * 1.2);
+            this.riskLevel = rng.random();
+            this.socialCapital = parent ? parent.socialCapital * 0.5 + rng.random() * 10 : rng.random() * 20;
 
             this.finCap = wealth * 0.45;
             this.realCap = wealth * 0.55;
@@ -514,8 +573,9 @@
 
             this.income = 0; this.salary = 0; this.yield = 0;
             this.consumption = 0; this.lastTax = 0;
-            this.profession = this.assignJob();
+            this.profession = PROFESSIONS[0];
             this.history = [];
+            this.story = this.generateBirthStory(parent);
 
             this.experience = 0; this.tierIdx = 0;
             this.x = Math.random(); this.y = Math.random();
@@ -523,112 +583,10 @@
             this.size = 2; this.color = "#fff";
         }
 
-        assignJob() {
-            const s = this.education * 0.75 + (this.wealth / 1500000) * 0.25;
-            if (s > 0.92) return PROFESSIONS[4];
-            if (s > 0.75) return PROFESSIONS[3];
-            if (s > 0.55) return PROFESSIONS[2];
-            if (s > 0.30) return PROFESSIONS[1];
-            return PROFESSIONS[0];
-        }
-
-        step(world, ubi, eduInvest) {
-            this.age += 1/12;
-            if (Math.random() < Math.pow(this.age / 105, 12) || this.age > 118) {
-                this.die(world); return false;
-            }
-
-            // 1. Mercado Laboral
-            const isUnemployed = Math.random() < (world.params.unemp / 100);
-            if (this.age < 65) {
-                const baseSal = 1500 * world.conditions.salaryMult;
-                this.salary = isUnemployed ? (ubi * 0.4) : (baseSal * this.profession.power * this.productivity * (1 + this.experience/35));
-                if(!isUnemployed) this.experience += 1/12;
-            } else {
-                this.salary = 1250 * world.conditions.salaryMult;
-            }
-
-            // 2. Mercado de Capitales y Deuda
-            const mYield = world.conditions.marketYield * (this.wealth > 400000 ? (1 + world.params.mateo/800) : 1);
-            this.yield = (this.finCap * mYield) + (this.realCap * (0.0035 + world.conditions.realEstateBoost));
-
-            // Inflación erosiona Finanzas pero puede subir Real Estate
-            this.finCap *= (1 - world.params.inflation/1200);
-            this.realCap *= (1 + world.params.inflation/2400);
-
-            this.income = this.salary + this.yield + ubi;
-
-            // 3. Fiscalidad
-            let taxRate = (world.params.tax / 100);
-            if (world.params.taxSystem === 'progressive') {
-                const threshold = 2500;
-                taxRate = (this.income > threshold) ? taxRate * 1.6 : taxRate * 0.5;
-            } else if (world.params.taxSystem === 'none') taxRate = 0;
-
-            this.lastTax = (this.income * taxRate) + (this.wealth * (world.params.wtax / 1200));
-            this.totalTaxPaid += this.lastTax;
-
-            // 4. Consumo y Supervivencia
-            const net = this.income - this.lastTax;
-            const costOfLiving = 1350 * (1 + world.params.inflation/100);
-            const mpc = this.wealth < 8000 ? 0.99 : (this.wealth > 2000000 ? 0.25 : 0.65);
-            this.consumption = costOfLiving + Math.max(0, (net - costOfLiving) * mpc);
-
-            let balance = net - this.consumption;
-
-            // Manejo de Deuda
-            if (this.debt > 0) {
-                const interest = this.debt * (world.params.int / 1200);
-                balance -= interest;
-                if (balance > 0) {
-                    const repay = Math.min(balance * 0.4, this.debt);
-                    this.debt -= repay; balance -= repay;
-                }
-            }
-
-            if (balance < 0) {
-                if (this.finCap > Math.abs(balance)) {
-                    this.finCap += balance;
-                } else {
-                    const remaining = Math.abs(balance) - this.finCap;
-                    this.finCap = 0;
-                    // Endeudamiento si tiene crédito
-                    const maxDebt = (this.income * 12) * (this.creditScore / 800);
-                    if (this.debt < maxDebt) {
-                        this.debt += remaining;
-                    } else {
-                        // Default / Pobreza extrema
-                        this.realCap = Math.max(0, this.realCap - remaining * 1.5);
-                    }
-                }
-            } else {
-                // Ahorro e Inversión
-                const investReal = balance * (1 - this.riskLevel * 0.8);
-                this.realCap += investReal;
-                this.finCap += (balance - investReal);
-            }
-
-            // Emprendimiento (Risky)
-            if (this.wealth > 50000 && this.education > 0.7 && Math.random() < 0.005) {
-                const stake = this.wealth * 0.2;
-                this.finCap -= stake;
-                if (Math.random() < 0.3) {
-                    const win = stake * (3 + Math.random() * 10);
-                    this.finCap += win;
-                }
-            }
-
-            this.wealth = this.finCap + this.realCap - this.debt;
-            this.education = Math.min(1, this.education + (eduInvest / 180000));
-            this.creditScore = Math.max(300, Math.min(850, (this.wealth / 1000) + (this.income / 10)));
-
-            if (world.month % 12 === 0) {
-                this.profession = this.assignJob();
-                this.history.push(this.wealth); if (this.history.length > 50) this.history.shift();
-                this.tierIdx = this.getTierIdx(this.wealth);
-            }
-            this.updateVisual();
-            return true;
+        generateBirthStory(parent) {
+            if (!parent) return "Primer habitante de la simulación.";
+            const parentTier = STRATA_DEFS[this.getTierIdx(parent.wealth)].name;
+            return `Hijo/a de una familia de ${parentTier}. Recibió $${Math.floor(this.wealth).toLocaleString()} de herencia.`;
         }
 
         getTierIdx(w) {
@@ -638,16 +596,111 @@
             return STRATA_DEFS.length - 1;
         }
 
+        assignJob(world) {
+            if (!world) return PROFESSIONS[0];
+            const score = this.education * 0.8 + (this.experience / 50) * 0.2;
+            const population = world.agents.length;
+            for (let i = PROFESSIONS.length - 1; i >= 1; i--) {
+                const p = PROFESSIONS[i];
+                const currentWorkers = world.jobStats[i] || 0;
+                const maxWorkers = population * p.vacancies;
+                const threshold = [0, 0.30, 0.55, 0.75, 0.92][i];
+                if (score >= threshold && currentWorkers < maxWorkers) {
+                    world.jobStats[i] = (world.jobStats[i] || 0) + 1;
+                    return p;
+                }
+            }
+            world.jobStats[0] = (world.jobStats[0] || 0) + 1;
+            return PROFESSIONS[0];
+        }
+
+        step(world, ubi, eduInvest) {
+            const healthcareSupport = (world.taxPool * 0.1) / world.agents.length;
+            const healthFactor = Math.min(1.2, 0.8 + (this.wealth / 1000000) + (healthcareSupport / 500));
+            this.age += 1/12;
+            const deathProb = Math.pow(this.age / (105 * healthFactor), 12);
+            if (this.rng.random() < deathProb || this.age > 125) { this.die(world); return false; }
+
+            const unrestPenalty = world.lastGini > 0.6 ? (world.lastGini - 0.5) * 0.5 : 0;
+            const isUnemployed = this.rng.random() < (world.params.unemp / 100);
+            const spillover = 1 + (world.stats.avgEdu * 0.6);
+
+            if (this.age < 65) {
+                const baseSal = 1500 * world.conditions.salaryMult * spillover;
+                const prodEff = Math.max(0.1, this.productivity - unrestPenalty);
+                this.salary = isUnemployed ? (ubi * 0.4) : (baseSal * this.profession.power * prodEff * (1 + this.experience/35));
+                if(!isUnemployed) this.experience += 1/12;
+            } else { this.salary = 1250 * world.conditions.salaryMult * spillover; }
+
+            const mYield = world.conditions.marketYield * (this.wealth > 400000 ? (1 + world.params.mateo/800) : 1);
+            this.yield = (this.finCap * mYield) + (this.realCap * (0.0035 + world.conditions.realEstateBoost));
+            this.finCap *= (1 - world.params.inflation/1200);
+            this.realCap *= (1 + world.params.inflation/2400);
+            this.income = this.salary + this.yield + ubi;
+
+            let taxRate = (world.params.tax / 100);
+            if (world.params.taxSystem === 'progressive') {
+                const threshold = 2500;
+                taxRate = (this.income > threshold) ? taxRate * 1.6 : taxRate * 0.5;
+            } else if (world.params.taxSystem === 'none') taxRate = 0;
+            this.lastTax = (this.income * taxRate) + (this.wealth * (world.params.wtax / 1200));
+            this.totalTaxPaid += this.lastTax;
+
+            const net = this.income - this.lastTax;
+            const costOfLiving = 1350 * (1 + world.params.inflation/100);
+            const essential = Math.min(Math.max(0, net), costOfLiving);
+            const discretionary = Math.max(0, net - costOfLiving);
+            const mpc = this.wealth < 8000 ? 0.95 : (this.wealth > 2000000 ? 0.20 : 0.50);
+            this.consumption = essential + discretionary * mpc;
+            let balance = net - this.consumption;
+
+            if (this.debt > 0) {
+                const interest = this.debt * (world.params.int / 1200);
+                balance -= interest;
+                if (balance > 0) { const repay = Math.min(balance * 0.4, this.debt); this.debt -= repay; balance -= repay; }
+            }
+
+            if (balance < 0) {
+                if (this.finCap > Math.abs(balance)) { this.finCap += balance; }
+                else {
+                    const remaining = Math.abs(balance) - this.finCap;
+                    this.finCap = 0;
+                    const maxDebt = (this.income * 12) * (this.creditScore / 800);
+                    if (this.debt < maxDebt) { this.debt += remaining; }
+                    else { this.realCap = Math.max(0, this.realCap - remaining * 1.5); }
+                }
+            } else {
+                const investReal = balance * (1 - this.riskLevel * 0.8);
+                this.realCap += investReal;
+                this.finCap += (balance - investReal);
+            }
+
+            if (this.wealth > 50000 && this.education > 0.7 && this.rng.random() < 0.005) {
+                const stake = this.wealth * 0.2; this.finCap -= stake;
+                if (this.rng.random() < 0.3) { this.finCap += stake * (3 + this.rng.random() * 10); }
+            }
+
+            this.wealth = this.finCap + this.realCap - this.debt;
+            this.education = Math.min(1, this.education + (eduInvest / 180000));
+            this.creditScore = Math.max(300, Math.min(850, (this.wealth / 1000) + (this.income / 10)));
+
+            if (world.month % 12 === 0) {
+                this.profession = this.assignJob(world);
+                this.history.push(this.wealth); if (this.history.length > 50) this.history.shift();
+                this.tierIdx = this.getTierIdx(this.wealth);
+            }
+            this.updateVisual();
+            return true;
+        }
+
         updateVisual() {
             const ty = 0.96 - (this.tierIdx / (STRATA_DEFS.length - 1)) * 0.94;
-            const tx = 0.5 + (Math.random()-0.5) * (0.05 + (STRATA_DEFS.length - this.tierIdx)/STRATA_DEFS.length);
+            const tx = 0.5 + (this.rng.random()-0.5) * (0.05 + (STRATA_DEFS.length - this.tierIdx)/STRATA_DEFS.length);
             this.vx += (tx - this.x) * 0.001; this.vy += (ty - this.y) * 0.006;
             this.x += this.vx; this.y += this.vy;
             this.vx *= 0.85; this.vy *= 0.85;
             this.size = Math.sqrt(Math.max(0, this.wealth)) * 0.18 + 1.8;
-
             this.color = getContinuousColor(this.wealth);
-            if (this.debt > this.wealth * 0.5 && this.wealth < 10000) this.color = "#ff0000";
         }
 
         die(world) {
@@ -655,60 +708,62 @@
             if (world.params.inhSystem === 'none') rate = 0;
             if (world.params.inhSystem === 'limited') rate = Math.min(rate, 300000 / (Math.max(1, this.wealth)));
             const legacy = Math.max(0, this.wealth * rate);
-            const heir = new Agent(this.id, legacy, this);
+            const heir = new Agent(this.id, legacy, this, this.rng);
             const idx = world.agents.findIndex(a => a.id === this.id);
             if (idx !== -1) world.agents[idx] = heir;
         }
     }
 
     class World {
-        constructor(canvasId) {
+        constructor(canvasId, seed = Math.floor(Math.random()*99999)) {
             this.canvas = document.getElementById(canvasId);
             this.ctx = this.canvas.getContext('2d');
+            this.rng = new PRNG(seed);
             this.agents = []; this.month = 0; this.taxPool = 0; this.giniHistory = []; this.pibHistory = [];
             this.params = { n: 1000, speed: 30, tax: 35, wtax: 1.5, inh: 25, reEdu: 40, reUBI: 30, int: 8, inflation: 3, mateo: 50, unemp: 5, taxSystem: 'progressive', inhSystem: 'free' };
             this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 };
             this.interactions = [];
+            this.jobStats = Array(PROFESSIONS.length).fill(0);
+            this.stats = { avgEdu: 0.5, top1: 0, top5: 0, top10: 0, top20: 0, bottom50: 0, palma: 1.0 };
             this.lastGini = 0; this.init();
         }
 
         init(predefinedWealths = null) {
             this.agents = []; this.month = 0; this.giniHistory = []; this.pibHistory = [];
+            this.jobStats = Array(PROFESSIONS.length).fill(0);
             const count = predefinedWealths ? predefinedWealths.length : this.params.n;
             this.params.n = count;
             for (let i = 0; i < count; i++) {
-                const w = predefinedWealths ? predefinedWealths[i] : (Math.pow(Math.random(), 3) * 120000 + 2000);
-                this.agents.push(new Agent(i, w));
+                const w = predefinedWealths ? predefinedWealths[i] : (Math.pow(this.rng.random(), 3) * 120000 + 2000);
+                this.agents.push(new Agent(i, w, null, this.rng));
             }
         }
 
         step() {
             this.month++;
-            const ubi = this.taxPool * (this.params.reUBI / 100) / this.agents.length;
-            const edu = this.taxPool * (this.params.reEdu / 100) / this.agents.length;
+            if (this.month % 12 === 0) this.stats.avgEdu = this.agents.reduce((acc, a) => acc + a.education, 0) / this.agents.length;
+            const ubi = (this.taxPool * (this.params.reUBI / 100)) / this.agents.length;
+            const edu = (this.taxPool * (this.params.reEdu / 100)) / this.agents.length;
             let collected = 0;
+            if (this.month % 12 === 0) this.jobStats = Array(PROFESSIONS.length).fill(0);
             this.agents.forEach(a => { if (a.step(this, ubi, edu)) collected += a.lastTax; });
             this.taxPool = collected;
 
-            // Transacciones P2P Emergentes
             this.interactions = [];
             for(let k=0; k < this.agents.length/4; k++){
-                const a1 = this.agents[Math.floor(Math.random()*this.agents.length)];
-                const a2 = this.agents[Math.floor(Math.random()*this.agents.length)];
-                if(a1.id === a2.id) continue;
-                const stake = Math.min(Math.max(0, a1.wealth), Math.max(0, a2.wealth)) * 0.03;
+                const a1 = this.agents[Math.floor(this.rng.random()*this.agents.length)];
+                let a2 = (a1.wealth > 500000 && this.rng.random() < 0.7) ?
+                    (this.agents.filter(a => a.wealth > 200000)[Math.floor(this.rng.random()*this.agents.length/5)] || a1) :
+                    this.agents[Math.floor(this.rng.random()*this.agents.length)];
+                if(!a2 || a1.id === a2.id) continue;
+                const socialBoost = 1 + (a1.socialCapital + a2.socialCapital) / 200;
+                const stake = Math.min(Math.max(0, a1.wealth), Math.max(0, a2.wealth)) * 0.03 * socialBoost;
                 if (stake <= 0) continue;
-                const p1 = a1.productivity * (1 + a1.education);
-                const p2 = a2.productivity * (1 + a2.education);
-                if(Math.random() < (p1 / (p1 + p2))) {
-                    a1.finCap += stake; a2.finCap -= stake;
-                    if(k < 15) this.interactions.push({from: a2, to: a1, color: a1.color});
-                } else {
-                    a2.finCap += stake; a1.finCap -= stake;
-                    if(k < 15) this.interactions.push({from: a1, to: a2, color: a2.color});
-                }
+                const p1 = a1.productivity * (1 + a1.education + a1.socialCapital/100);
+                const p2 = a2.productivity * (1 + a2.education + a2.socialCapital/100);
+                if(this.rng.random() < (p1 / (p1 + p2))) { a1.finCap += stake; a2.finCap -= stake; if(k < 15) this.interactions.push({from: a2, to: a1, color: a1.color}); }
+                else { a2.finCap += stake; a1.finCap -= stake; if(k < 15) this.interactions.push({from: a1, to: a2, color: a2.color}); }
             }
-
             if (this.month % 12 === 0) this.runMetrics();
         }
 
@@ -717,8 +772,22 @@
             let sw = 0, tw = 0;
             for(let i=0; i<w.length; i++) { sw += (i+1)*w[i]; tw += w[i]; }
             this.lastGini = tw > 0 ? (2*sw) / (w.length*tw) - (w.length+1)/w.length : 0;
-            this.giniHistory.push(this.lastGini); if(this.giniHistory.length > 100) this.giniHistory.shift();
-            this.pibHistory.push(tw); if(this.pibHistory.length > 100) this.pibHistory.shift();
+
+            if (tw > 0) {
+                this.stats.top1 = (w.slice(-Math.max(1, Math.floor(w.length*0.01))).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
+                this.stats.top5 = (w.slice(-Math.max(1, Math.floor(w.length*0.05))).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
+                this.stats.top10 = (w.slice(-Math.max(1, Math.floor(w.length*0.10))).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
+                this.stats.top20 = (w.slice(-Math.max(1, Math.floor(w.length*0.20))).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
+                this.stats.bottom50 = (w.slice(0, Math.floor(w.length*0.50)).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
+
+                const top10w = w.slice(-Math.max(1, Math.floor(w.length*0.10))).reduce((a,b)=>a+b, 0);
+                const bottom40w = w.slice(0, Math.floor(w.length*0.40)).reduce((a,b)=>a+b, 0);
+                this.stats.palma = bottom40w > 0 ? (top10w / bottom40w).toFixed(2) : "10.00+";
+            }
+
+            this.giniHistory.push(this.lastGini); this.pibHistory.push(tw);
+            if(this.giniHistory.length > 100) this.giniHistory.shift();
+            if(this.pibHistory.length > 100) this.pibHistory.shift();
         }
 
         shock(t) {
@@ -726,86 +795,75 @@
             if(t==='bubble') { this.conditions.realEstateBoost = 0.02; }
             if(t==='hyper') { this.params.inflation = 80; this.conditions.marketYield = -0.1; }
             if(t==='growth') { this.conditions.marketYield = 0.015; this.conditions.salaryMult = 2.0; this.params.unemp = 1; }
-            if(t==='pandemic') { this.params.unemp = 30; this.conditions.salaryMult = 0.5; this.conditions.marketYield = -0.02; }
             if(t==='tech') { this.conditions.salaryMult = 2.5; this.params.reEdu = 80; }
-            setTimeout(() => {
-                this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 };
-                syncSliders();
-            }, 6000);
+            setTimeout(() => { this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 }; syncSliders(); }, 6000);
         }
 
         render() {
             this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
             this.agents.forEach(a => {
+                const alpha = (highlightTier === null || a.tierIdx === highlightTier) ? 1 : 0.05;
+                this.ctx.globalAlpha = alpha;
                 this.ctx.fillStyle = a.color;
+                if (a.debt > 0 && a.debt > a.wealth * 0.8) {
+                    this.ctx.strokeStyle = "#ff0000"; this.ctx.lineWidth = 1;
+                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size + 1, 0, Math.PI*2); this.ctx.stroke();
+                }
                 this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size, 0, Math.PI*2); this.ctx.fill();
-                if (a.wealth > 5000000) {
-                    this.ctx.save(); this.ctx.globalAlpha = 0.1; this.ctx.shadowBlur = 15; this.ctx.shadowColor = a.color;
-                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size*2, 0, Math.PI*2); this.ctx.fill();
+                if (a.wealth > 10000000) {
+                    this.ctx.save(); this.ctx.globalAlpha = 0.2 * alpha; this.ctx.shadowBlur = 15; this.ctx.shadowColor = a.color;
+                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size * 1.5, 0, Math.PI*2); this.ctx.fill();
                     this.ctx.restore();
                 }
             });
-            this.drawInteractions();
+            this.ctx.globalAlpha = 1;
+
+            if (isComparing) {
+                this.drawInteractions(this.ctx);
+            } else {
+                const ictx = document.getElementById('interactionCanvas').getContext('2d');
+                ictx.clearRect(0,0,this.canvas.width, this.canvas.height);
+                this.drawInteractions(ictx);
+                if (document.getElementById('heatmapCanvas').style.display === 'block') this.drawHeatmap();
+            }
         }
 
-        drawInteractions() {
-            const ictx = document.getElementById('interactionCanvas').getContext('2d');
-            ictx.clearRect(0,0,this.canvas.width, this.canvas.height);
-            ictx.lineWidth = 1;
+        drawInteractions(ctx) {
+            ctx.save();
+            ctx.lineWidth = 0.8; ctx.globalAlpha = 0.4;
             this.interactions.forEach(inter => {
-                ictx.strokeStyle = inter.color;
-                ictx.beginPath();
-                ictx.moveTo(inter.from.x * this.canvas.width, inter.from.y * this.canvas.height);
-                ictx.lineTo(inter.to.x * this.canvas.width, inter.to.y * this.canvas.height);
-                ictx.stroke();
+                ctx.strokeStyle = inter.color;
+                ctx.beginPath(); ctx.moveTo(inter.from.x * this.canvas.width, inter.from.y * this.canvas.height);
+                ctx.lineTo(inter.to.x * this.canvas.width, inter.to.y * this.canvas.height); ctx.stroke();
             });
-            if (document.getElementById('heatmapCanvas').style.display === 'block') this.drawHeatmap();
+            ctx.restore();
         }
 
         drawHeatmap() {
-            const hcnv = document.getElementById('heatmapCanvas');
-            const hctx = hcnv.getContext('2d');
+            const hcnv = document.getElementById('heatmapCanvas'); const hctx = hcnv.getContext('2d');
             hctx.clearRect(0,0,hcnv.width, hcnv.height);
-            const grid = 20;
-            const rows = Math.ceil(hcnv.height / grid);
-            const cols = Math.ceil(hcnv.width / grid);
+            const grid = 20, rows = Math.ceil(hcnv.height / grid), cols = Math.ceil(hcnv.width / grid);
             const data = Array(rows * cols).fill(0);
-
             this.agents.forEach(a => {
-                const c = Math.floor(a.x * cols);
-                const r = Math.floor(a.y * rows);
-                if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                    data[r * cols + c] += Math.log10(Math.max(1, a.wealth));
-                }
+                const c = Math.floor(a.x * cols), r = Math.floor(a.y * rows);
+                if (r >= 0 && r < rows && c >= 0 && c < cols) data[r * cols + c] += Math.log10(Math.max(1, a.wealth));
             });
-
             const maxV = Math.max(...data, 1);
-            for(let r=0; r<rows; r++){
-                for(let c=0; c<cols; c++){
-                    const val = data[r*cols + c] / maxV;
-                    if (val > 0.1) {
-                        hctx.fillStyle = `rgba(255, 255, 0, ${val})`;
-                        hctx.fillRect(c*grid, r*grid, grid, grid);
-                    }
-                }
+            for(let r=0; r<rows; r++) for(let c=0; c<cols; c++){
+                const val = data[r*cols + c] / maxV;
+                if (val > 0.1) { hctx.fillStyle = `rgba(255, 255, 0, ${val})`; hctx.fillRect(c*grid, r*grid, grid, grid); }
             }
         }
     }
 
-    let world = new World('simCanvas');
-    let worldA = null, worldB = null;
-    let isComparing = false, selAg = null;
+    let world = new World('simCanvas'), worldA = null, worldB = null, isComparing = false, selAg = null, highlightTier = null, statWorld = 'A';
 
     function resize() {
-        const vp = document.getElementById('viewport');
-        const cw = vp.clientWidth, ch = vp.clientHeight;
+        const vp = document.getElementById('viewport'), cw = vp.clientWidth, ch = vp.clientHeight;
         world.canvas.width = cw; world.canvas.height = ch;
         document.getElementById('heatmapCanvas').width = cw; document.getElementById('heatmapCanvas').height = ch;
         document.getElementById('interactionCanvas').width = cw; document.getElementById('interactionCanvas').height = ch;
-        if(isComparing && worldA) {
-            worldA.canvas.width = cw/2; worldA.canvas.height = ch;
-            worldB.canvas.width = cw/2; worldB.canvas.height = ch;
-        }
+        if(isComparing && worldA) { worldA.canvas.width = cw/2; worldA.canvas.height = ch; worldB.canvas.width = cw/2; worldB.canvas.height = ch; }
         renderTierLabels();
     }
     window.onresize = resize; setTimeout(resize, 100);
@@ -822,185 +880,179 @@
     function engineLoop() {
         const speed = parseInt(document.getElementById('p-speed').value);
         const steps = Math.max(1, Math.floor(speed / 10));
-        for(let i=0; i<steps; i++) {
-            if(!isComparing) world.step();
-            else { worldA.step(); worldB.step(); }
-        }
-        if(!isComparing) world.render();
-        else { worldA.render(); worldB.render(); }
+        for(let i=0; i<steps; i++) { if(!isComparing) world.step(); else { worldA.step(); worldB.step(); } }
+        if(!isComparing) world.render(); else { worldA.render(); worldB.render(); }
         refreshDash(); requestAnimationFrame(engineLoop);
     }
 
-        let lastFullMetricTime = 0;
-        let cachedMetrics = { sorted: [], totalW: 0, totalDebt: 0 };
-
-        function refreshDash() {
-        const w = isComparing ? (worldA || world) : world;
-            const now = Date.now();
-
+    let cachedMetrics = { totalW: 0, totalDebt: 0 };
+    function refreshDash() {
+        const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
         document.getElementById('ui-top-year').innerText = Math.floor(w.month / 12);
         document.getElementById('ui-top-gini').innerText = w.lastGini.toFixed(3);
-
-            // Throttle calculations for high performance (every 500ms or on month change)
-            if (now - lastFullMetricTime > 500 || w.month % 1 === 0) {
-                cachedMetrics.totalW = w.agents.reduce((a, b) => a + Math.max(0, b.wealth), 0);
-                cachedMetrics.totalDebt = w.agents.reduce((a, b) => a + b.debt, 0);
-                lastFullMetricTime = now;
-            }
-
-            const totalW = cachedMetrics.totalW;
-            const totalDebt = cachedMetrics.totalDebt;
-        document.getElementById('ui-top-pib').innerText = Math.floor(totalW).toLocaleString();
+        cachedMetrics.totalW = w.agents.reduce((a, b) => a + Math.max(0, b.wealth), 0);
+        cachedMetrics.totalDebt = w.agents.reduce((a, b) => a + b.debt, 0);
+        document.getElementById('ui-top-pib').innerText = Math.floor(cachedMetrics.totalW).toLocaleString();
         document.getElementById('ui-top-inf').innerText = w.params.inflation + "%";
-        document.getElementById('ui-top-debt').innerText = Math.floor(totalDebt).toLocaleString();
-
+        document.getElementById('ui-top-debt').innerText = Math.floor(cachedMetrics.totalDebt).toLocaleString();
         const active = document.querySelector('.tab-btn.active').dataset.pane;
         if(active === 'tab-stats') {
-            document.getElementById('st-gini').innerText = w.lastGini.toFixed(3);
-
-                // Only sort when absolutely necessary for charts
             const sorted = w.agents.map(a => Math.max(0, a.wealth)).sort((a,b)=>a-b);
-
+            document.getElementById('st-gini').innerText = w.lastGini.toFixed(3);
+            document.getElementById('st-palma').innerText = w.stats.palma;
             document.getElementById('st-median').innerText = '$' + Math.floor(sorted[Math.floor(sorted.length/2)]).toLocaleString();
             document.getElementById('st-poverty').innerText = (sorted.filter(v => v < 8000).length / sorted.length * 100).toFixed(1) + '%';
+            document.getElementById('st-mobility').innerText = (w.agents.filter(a => a.tierIdx > a.birthTier).length / w.agents.length * 100).toFixed(1) + '%';
 
-            const upMobility = (w.agents.filter(a => a.tierIdx > a.birthTier).length / w.agents.length * 100).toFixed(1);
-            document.getElementById('st-mobility').innerText = upMobility + '%';
+            document.getElementById('p-1').innerText = w.stats.top1 + "%";
+            document.getElementById('p-5').innerText = w.stats.top5 + "%";
+            document.getElementById('p-10').innerText = w.stats.top10 + "%";
+            document.getElementById('p-20').innerText = w.stats.top20 + "%";
+            document.getElementById('p-50').innerText = w.stats.bottom50 + "%";
 
-            // Percentiles
-            const p1 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.01))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
-            const p5 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.05))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
-            const p10 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.1))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
-            const p20 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.2))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
-            const p50 = (sorted.slice(0, Math.floor(sorted.length*0.5)).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
-            document.getElementById('p-1').innerText = p1 + "%";
-            document.getElementById('p-5').innerText = p5 + "%";
-            document.getElementById('p-10').innerText = p10 + "%";
-            document.getElementById('p-20').innerText = p20 + "%";
-            document.getElementById('p-50').innerText = p50 + "%";
-
-            const top10w = sorted.slice(-Math.floor(sorted.length*0.1)).reduce((a,b)=>a+b, 0);
-            const bot40w = sorted.slice(0, Math.floor(sorted.length*0.4)).reduce((a,b)=>a+b, 0);
-            document.getElementById('st-palma').innerText = bot40w > 0 ? (top10w/bot40w).toFixed(2) : '∞';
-
-            drawLorenz(sorted, totalW); drawGiniT(w); drawPibT(w);
-            document.getElementById('st-avg').innerText = '$' + Math.floor(totalW / w.agents.length).toLocaleString();
-        } else if(active === 'tab-theory') {
-            drawPyramid(w); drawLogH(w);
-            document.getElementById('an-mill-count').innerText = w.agents.filter(a => a.wealth > 1000000 && a.wealth < 100000000).length;
-            document.getElementById('an-bill-count').innerText = w.agents.filter(a => a.wealth > 100000000).length;
-            document.getElementById('an-middle').innerText = (w.agents.filter(a => a.wealth > 25000 && a.wealth < 130000).length / w.agents.length * 100).toFixed(1) + '%';
-        }
+            drawLorenz(sorted, cachedMetrics.totalW); drawGiniT(w); drawPibT(w);
+            document.getElementById('st-avg').innerText = '$' + Math.floor(cachedMetrics.totalW / w.agents.length).toLocaleString();
+        } else if(active === 'tab-theory') { drawPyramid(w); drawLogH(w); }
         if(selAg) refreshIns(selAg);
     }
 
+    function switchStatWorld(id) {
+        statWorld = id;
+        document.getElementById('btn-sel-a').classList.toggle('btn-active', id === 'A');
+        document.getElementById('btn-sel-b').classList.toggle('btn-active', id === 'B');
+        syncSliders();
+        refreshDash();
+    }
+
     function drawLorenz(sorted, total) {
-        const c = document.getElementById('viz-lorenz'); const ctx = c.getContext('2d');
-        if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight;
-        ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.beginPath(); ctx.moveTo(0, c.height); ctx.lineTo(c.width, 0); ctx.stroke();
-        ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, c.height);
-        let acc = 0; sorted.forEach((v, i) => { acc += v; ctx.lineTo((i/sorted.length)*c.width, c.height - (acc/total)*c.height); }); ctx.stroke();
+        const c = document.getElementById('viz-lorenz'), ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight; ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.beginPath(); ctx.moveTo(0, c.height); ctx.lineTo(c.width, 0); ctx.stroke();
+
+        if (isComparing) {
+            ctx.strokeStyle = "rgba(255,255,255,0.2)"; ctx.lineWidth = 1;
+            const drawOne = (worldRef) => {
+                const s = worldRef.agents.map(a => Math.max(0, a.wealth)).sort((a,b)=>a-b);
+                const tw = s.reduce((a,b)=>a+b, 0);
+                ctx.beginPath(); ctx.moveTo(0, c.height);
+                let acc = 0; s.forEach((v, i) => { acc += v; ctx.lineTo((i/s.length)*c.width, c.height - (acc/tw)*c.height); }); ctx.stroke();
+            };
+            ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 2; drawOne(worldA);
+            ctx.strokeStyle = getThemeColor('--secondary'); drawOne(worldB);
+        } else {
+            ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, c.height);
+            let acc = 0; sorted.forEach((v, i) => { acc += v; ctx.lineTo((i/sorted.length)*c.width, c.height - (acc/total)*c.height); }); ctx.stroke();
+        }
     }
 
     function drawGiniT(w) {
-        const c = document.getElementById('viz-gini-t'); const ctx = c.getContext('2d');
+        const c = document.getElementById('viz-gini-t'), ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
-        ctx.strokeStyle = getThemeColor('--secondary'); ctx.lineWidth = 2; ctx.beginPath();
-        w.giniHistory.forEach((g, i) => { const x = (i/100)*c.width; const y = c.height - (g*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+        const drawL = (hist, col) => {
+            ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath();
+            hist.forEach((g, i) => { const x = (i/100)*c.width, y = c.height - (g*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+        };
+        if (isComparing) {
+            drawL(worldA.giniHistory, getThemeColor('--primary'));
+            drawL(worldB.giniHistory, getThemeColor('--secondary'));
+        } else {
+            drawL(w.giniHistory, getThemeColor('--secondary'));
+        }
     }
 
     function drawPibT(w) {
-        const c = document.getElementById('viz-pib-t'); const ctx = c.getContext('2d');
-        if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight;
-        ctx.strokeStyle = getThemeColor('--accent'); ctx.lineWidth = 2; ctx.beginPath();
-        const maxP = Math.max(...w.pibHistory, 1);
-        w.pibHistory.forEach((p, i) => { const x = (i/100)*c.width; const y = c.height - (p/maxP*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+        const c = document.getElementById('viz-pib-t'), ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight;
+        const maxP = Math.max(...(isComparing ? [...worldA.pibHistory, ...worldB.pibHistory] : w.pibHistory), 1);
+        const drawL = (hist, col) => {
+            ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath();
+            hist.forEach((p, i) => { const x = (i/100)*c.width, y = c.height - (p/maxP*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+        };
+        if (isComparing) {
+            drawL(worldA.pibHistory, getThemeColor('--primary'));
+            drawL(worldB.pibHistory, getThemeColor('--secondary'));
+        } else {
+            drawL(w.pibHistory, getThemeColor('--accent'));
+        }
     }
 
     function drawPyramid(w) {
-        const c = document.getElementById('viz-pyramid'); const ctx = c.getContext('2d');
+        const c = document.getElementById('viz-pyramid'), ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
         const counts = STRATA_DEFS.map(s => w.agents.filter(a => a.wealth >= s.min && a.wealth < s.max).length);
-        const maxV = Math.max(...counts, 1);
+        const maxV = Math.max(...counts, 1), barH = Math.floor(c.height / STRATA_DEFS.length);
         STRATA_DEFS.slice().reverse().forEach((s, i) => {
-            const v = counts[STRATA_DEFS.length-1-i];
-            const bw = (v/maxV) * c.width * 0.8;
-            ctx.fillStyle = `rgb(${s.color.join(',')})`; ctx.fillRect((c.width-bw)/2, i*40+10, bw, 30);
-            ctx.fillStyle = "#fff"; ctx.font = "10px Inter"; ctx.fillText(s.name, 10, i*40+30);
+            const idx = STRATA_DEFS.length - 1 - i, v = counts[idx], bw = (v/maxV) * c.width * 0.8;
+            ctx.fillStyle = `rgb(${s.color.join(',')})`; ctx.fillRect((c.width-bw)/2, i*barH + 4, bw, barH - 8);
+            ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.font = "9px Inter"; ctx.fillText(s.name, 5, i*barH + barH/2 + 3);
         });
     }
 
     function drawLogH(w) {
-        const c = document.getElementById('viz-hist-w'); const ctx = c.getContext('2d');
+        const c = document.getElementById('viz-hist-w'), ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
-        const bins = 40; const freq = Array(bins).fill(0);
-        w.agents.forEach(a => { const l = Math.log10(Math.max(1, a.wealth)); const b = Math.min(bins-1, Math.floor((l/9)*bins)); freq[b]++; });
-        const maxF = Math.max(...freq, 1); ctx.fillStyle = "var(--accent)";
-        freq.forEach((f, i) => { const h = (f/maxF)*c.height; ctx.fillRect(i*(c.width/bins), c.height-h, (c.width/bins)-1, h); });
+        const bins = 40, freq = Array(bins).fill(0);
+        w.agents.forEach(a => { const l = Math.log10(Math.max(1, a.wealth)), b = Math.min(bins-1, Math.floor((l/9)*bins)); freq[b]++; });
+        const maxF = Math.max(...freq, 1);
+        freq.forEach((f, i) => { const h = (f/maxF)*c.height, wealthApprox = Math.pow(10, (i/bins)*9); ctx.fillStyle = getContinuousColor(wealthApprox); ctx.fillRect(i*(c.width/bins), c.height-h, (c.width/bins)-1, h); });
     }
 
     function applyScenario(s) {
-        if(s === 'nordic') { world.params.tax = 55; world.params.reUBI = 60; world.params.taxSystem = 'progressive'; world.params.int = 4; world.params.mateo = 20; }
-        if(s === 'neolib') { world.params.tax = 15; world.params.reUBI = 0; world.params.taxSystem = 'flat'; world.params.int = 12; world.params.mateo = 85; }
-        if(s === 'post-crisis') { world.shock('crash'); world.params.inflation = 15; world.params.unemp = 25; }
+        const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
+        if(s === 'nordic') { w.params.tax = 55; w.params.reUBI = 60; w.params.reEdu = 35; w.params.taxSystem = 'progressive'; w.params.inhSystem = 'limited'; w.params.int = 4; w.params.mateo = 20; }
+        if(s === 'neolib') { w.params.tax = 15; w.params.reUBI = 0; w.params.reEdu = 5; w.params.taxSystem = 'flat'; w.params.inhSystem = 'free'; w.params.int = 12; w.params.mateo = 85; }
+        if(s === 'post-crisis') { w.shock('crash'); w.params.inflation = 15; w.params.unemp = 25; }
         syncSliders();
     }
 
-    document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => {
-        document.querySelectorAll('.tab-btn, .pane').forEach(el => el.classList.remove('active'));
-        b.classList.add('active'); document.getElementById(b.dataset.pane).classList.add('active');
-    });
+    document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => { document.querySelectorAll('.tab-btn, .pane').forEach(el => el.classList.remove('active')); b.classList.add('active'); document.getElementById(b.dataset.pane).classList.add('active'); });
 
-    document.getElementById('simCanvas').onclick = (e) => {
-        const r = world.canvas.getBoundingClientRect();
-        const mx = (e.clientX - r.left)/world.canvas.width, my = (e.clientY - r.top)/world.canvas.height;
-        let best = 0.05, found = null;
-        world.agents.forEach(a => { const d = Math.sqrt((a.x-mx)**2+(a.y-my)**2); if(d<best){ best=d; found=a; } });
-        if(found){ selAg = found; document.getElementById('inspector').style.display='block'; }
-    };
+    function handleCanvasClick(e, wRef) {
+        const r = wRef.canvas.getBoundingClientRect(), mx = (e.clientX - r.left)/wRef.canvas.width, my = (e.clientY - r.top)/wRef.canvas.height;
+        let best = 0.05, found = null; wRef.agents.forEach(a => { const d = Math.sqrt((a.x-mx)**2+(a.y-my)**2); if(d<best){ best=d; found=a; } });
+        if(found){ selAg = found; document.getElementById('inspector').style.display='block'; refreshIns(selAg); }
+    }
+    document.getElementById('simCanvas').onclick = (e) => handleCanvasClick(e, world);
     document.getElementById('ins-close').onclick = () => { selAg = null; document.getElementById('inspector').style.display='none'; };
 
     function refreshIns(a) {
         document.getElementById('ins-id-display').innerText = `Agente #${a.id}`;
-        document.getElementById('ins-age').innerText = Math.floor(a.age);
-        document.getElementById('ins-prof').innerText = a.profession.name;
-        document.getElementById('ins-inc').innerText = Math.floor(a.income).toLocaleString();
-        document.getElementById('ins-wealth').innerText = Math.floor(a.wealth).toLocaleString();
-        document.getElementById('ins-debt').innerText = Math.floor(a.debt).toLocaleString();
-        document.getElementById('ins-credit').innerText = Math.floor(a.creditScore);
-        document.getElementById('ins-cons').innerText = Math.floor(a.consumption).toLocaleString();
-        document.getElementById('ins-tax').innerText = Math.floor(a.lastTax).toLocaleString();
-        document.getElementById('ins-edu').innerText = (a.education*100).toFixed(0) + "%";
-        document.getElementById('ins-prod').innerText = a.productivity.toFixed(1);
-        document.getElementById('ins-save').innerText = Math.floor(a.income - a.consumption - a.lastTax).toLocaleString();
-        document.getElementById('ins-fin-val').innerText = "$" + Math.floor(a.finCap).toLocaleString();
+        document.getElementById('ins-age').innerText = Math.floor(a.age); document.getElementById('ins-prof').innerText = a.profession.name;
+        document.getElementById('ins-inc').innerText = Math.floor(a.income).toLocaleString(); document.getElementById('ins-wealth').innerText = Math.floor(a.wealth).toLocaleString();
+        document.getElementById('ins-debt').innerText = Math.floor(a.debt).toLocaleString(); document.getElementById('ins-credit').innerText = Math.floor(a.creditScore);
+        document.getElementById('ins-cons').innerText = Math.floor(a.consumption).toLocaleString(); document.getElementById('ins-tax').innerText = Math.floor(a.lastTax).toLocaleString();
+        document.getElementById('ins-edu').innerText = (a.education*100).toFixed(0) + "%"; document.getElementById('ins-prod').innerText = a.productivity.toFixed(1);
+        document.getElementById('ins-save').innerText = Math.floor(a.income - a.consumption - a.lastTax).toLocaleString(); document.getElementById('ins-social').innerText = Math.floor(a.socialCapital);
+        document.getElementById('ins-story').innerText = a.story; document.getElementById('ins-fin-val').innerText = "$" + Math.floor(a.finCap).toLocaleString();
         document.getElementById('ins-real-val').innerText = "$" + Math.floor(a.realCap).toLocaleString();
-        document.getElementById('ins-fin-bar').style.width = (a.finCap / Math.max(1, a.wealth) * 100) + "%";
-        document.getElementById('ins-real-bar').style.width = (a.realCap / Math.max(1, a.wealth) * 100) + "%";
-        const c = document.getElementById('ins-chart'); const ctx = c.getContext('2d');
-            if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight; ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 2; ctx.beginPath();
+        document.getElementById('ins-fin-bar').style.width = (a.finCap / Math.max(1, a.wealth) * 100) + "%"; document.getElementById('ins-real-bar').style.width = (a.realCap / Math.max(1, a.wealth) * 100) + "%";
+        const c = document.getElementById('ins-chart'), ctx = c.getContext('2d');
+        c.width = c.clientWidth; c.height = c.clientHeight; ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 2; ctx.beginPath();
         const maxH = Math.max(...a.history, 1); a.history.forEach((v, i) => { const x = (i/50)*c.width, y = c.height - (v/maxH)*c.height; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
     }
 
     document.getElementById('btn-compare-toggle').onclick = () => {
-        isComparing = !isComparing; document.getElementById('comp-layout').style.display = isComparing ? 'flex' : 'none';
-        const btn = document.getElementById('btn-compare-toggle');
+        isComparing = !isComparing;
+        document.getElementById('comp-layout').style.display = isComparing ? 'flex' : 'none';
+        document.getElementById('comp-selector').style.display = isComparing ? 'block' : 'none';
+        document.getElementById('interactionCanvas').style.display = isComparing ? 'none' : 'block';
         if(isComparing) {
-            btn.classList.add('btn-active');
-            // Inicializar con la misma semilla para comparación científica
-            const initialWealths = Array.from({length: 1000}, () => Math.pow(Math.random(), 3) * 120000 + 2000);
+            const sharedSeed = Math.floor(Math.random() * 999999);
+            const seedRNG = new PRNG(sharedSeed);
+            const initialWealths = Array.from({length: 1000}, () => Math.pow(seedRNG.random(), 3) * 120000 + 2000);
 
-            worldA = new World('canvasA');
-            worldB = new World('canvasB');
+            worldA = new World('canvasA', sharedSeed);
+            worldB = new World('canvasB', sharedSeed);
 
             worldA.init(initialWealths);
             worldB.init(initialWealths);
 
             worldA.params.tax = 50; worldA.params.reUBI = 60; worldA.params.taxSystem = 'progressive';
             worldB.params.tax = 10; worldB.params.reUBI = 0; worldB.params.taxSystem = 'flat';
+
+            document.getElementById('canvasA').onclick = (e) => handleCanvasClick(e, worldA);
+            document.getElementById('canvasB').onclick = (e) => handleCanvasClick(e, worldB);
+
             resize();
-        } else {
-            btn.classList.remove('btn-active');
         }
     };
 
@@ -1008,48 +1060,46 @@
     inputs.forEach(id => {
         const el = document.getElementById('p-' + id);
         if(el) el.oninput = () => {
-            const v = el.value; document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? v : v + '%';
-            const key = id.replace('re-', 're'); world.params[key] = parseFloat(v);
+            const v = el.value;
+            document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? v : v + '%';
+            const paramKey = id.replace('re-', 're');
+            const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
+            w.params[paramKey] = parseFloat(v);
         };
     });
 
-    document.getElementById('sel-tax-system').onchange = (e) => world.params.taxSystem = e.target.value;
-    document.getElementById('sel-inh-system').onchange = (e) => world.params.inhSystem = e.target.value;
-    document.getElementById('btn-reset-sim').onclick = () => world.init();
     document.getElementById('btn-didactic-open').onclick = () => document.getElementById('modal-didactic').style.display = 'flex';
     document.getElementById('edu-close-icon').onclick = () => document.getElementById('modal-didactic').style.display = 'none';
-
-    document.getElementById('btn-load-config').onclick = () => document.getElementById('json-file-input').click();
-    document.getElementById('json-file-input').onchange = (e) => {
-        const f = e.target.files[0]; if(!f) return;
-        const reader = new FileReader(); reader.onload = (ev) => { const d = JSON.parse(ev.target.result); world.params = d.params; world.init(); syncSliders(); };
-        reader.readAsText(f);
-    };
-
-    function toggleHeatmap() {
-        const h = document.getElementById('heatmapCanvas');
-        const isHidden = window.getComputedStyle(h).display === 'none';
-        h.style.display = isHidden ? 'block' : 'none';
-    }
-
+    document.getElementById('btn-reset-sim').onclick = () => { if(isComparing) { worldA.init(); worldB.init(); } else world.init(); };
     function syncSliders() {
+        const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
         inputs.forEach(id => {
-            const key = id.replace('re-', 're');
-            const el = document.getElementById('p-' + id); if(el) {
-                el.value = world.params[key];
-                document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? el.value : el.value + '%';
+            const el = document.getElementById('p-' + id);
+            if(el) {
+                const val = w.params[id.replace('re-', 're')];
+                el.value = val;
+                document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? val : val + '%';
             }
         });
-        document.getElementById('sel-tax-system').value = world.params.taxSystem;
-        document.getElementById('sel-inh-system').value = world.params.inhSystem;
+        document.getElementById('sel-tax-system').value = w.params.taxSystem;
+        if(document.getElementById('sel-inh-system')) document.getElementById('sel-inh-system').value = w.params.inhSystem;
     }
-
     function ioExporter(fmt) {
-        if(fmt === 'json') { const b = new Blob([JSON.stringify({ params: world.params })]); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'config.json'; a.click(); }
+        if(fmt === 'json') {
+            const data = {
+                params: world.params,
+                history: {
+                    gini: world.giniHistory,
+                    pib: world.pibHistory,
+                    months: world.month
+                }
+            };
+            const b = new Blob([JSON.stringify(data)]);
+            const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'sim_evolution.json'; a.click();
+        }
         else if(fmt === 'csv') { const c = "ID,Wealth,Debt,Age\n" + world.agents.map(a => `${a.id},${a.wealth},${a.debt},${a.age}`).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([c])); a.download = 'data.csv'; a.click(); }
         else { const a = document.createElement('a'); a.href = world.canvas.toDataURL(); a.download = 'capture.png'; a.click(); }
     }
-
     engineLoop();
 </script>
 </body>
