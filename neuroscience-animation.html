@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro-V14 | OMEGA Connectome</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap');
+
+        :root {
+            --primary: #00f2ff;
+            --primary-glow: rgba(0, 242, 255, 0.4);
+            --secondary: #7000ff;
+            --secondary-glow: rgba(112, 0, 255, 0.4);
+            --bg: #010205;
+            --panel: rgba(5, 8, 15, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e0e6ed;
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --glutamate: #00f2ff;
+            --dopamine: #ffcc00;
+            --gaba: #ff3366;
+            --serotonin: #00ff88;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #laboratory-root {
+            position: relative;
+            width: 100vw; height: 100vh;
+            background:
+                radial-gradient(circle at 50% 50%, #0a0e1a 0%, #010205 100%);
+        }
+
+        /* Scanline and grain effect */
+        #laboratory-root::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyIiBoZWlnaHQ9IjIiPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMikiLz48L3N2Zz4=');
+            pointer-events: none;
+            z-index: 499;
+            opacity: 0.3;
+        }
+
+        #laboratory-root::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 500;
+            opacity: 0.2;
+        }
+
+        canvas {
+            position: absolute; top: 0; left: 0;
+            cursor: move;
+        }
+
+        /* HUD & Interface */
+        .hud-element {
+            position: absolute;
+            background: var(--panel);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            pointer-events: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .hud-element:hover {
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+        }
+
+        .header {
+            top: 25px; left: 25px;
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -0.5px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .header p {
+            font-size: 0.6rem;
+            opacity: 0.6;
+            margin: 5px 0 0 0;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Advanced Telemetry Panel */
+        .telemetry-panel {
+            top: 150px; left: 25px;
+            width: 220px;
+        }
+
+        .telemetry-item {
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .telemetry-item:hover { transform: translateX(5px); }
+        .telemetry-item.active .telemetry-label { color: var(--primary); opacity: 1; text-shadow: 0 0 10px var(--primary-glow); }
+
+        .telemetry-chart {
+            height: 35px;
+            background: rgba(255,255,255,0.02);
+            margin: 6px 0;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .telemetry-label {
+            font-size: 0.5rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        /* System Log */
+        .system-log {
+            bottom: 25px; left: 25px;
+            width: 320px;
+            height: 120px;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            background: rgba(0,0,0,0.4);
+            border-bottom: 1px solid var(--primary);
+        }
+
+        .global-eeg {
+            position: absolute;
+            bottom: 25px; left: 365px;
+            right: 305px;
+            height: 120px;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            pointer-events: none;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.6);
+            white-space: nowrap;
+        }
+        .log-entry.active { color: var(--primary); }
+        .log-entry.alert { color: var(--gaba); }
+
+        /* Stats Panel */
+        .stats-panel {
+            top: 25px; right: 25px;
+            width: 260px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label { font-size: 0.5rem; opacity: 0.4; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-value { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--primary); }
+
+        /* Educational Modal */
+        #educational-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 2, 5, 0.65);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: none;
+            justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+
+        #educational-modal.visible { display: flex; opacity: 1; }
+
+        .modal-content {
+            background: var(--panel);
+            width: 80%; max-width: 900px; max-height: 85vh;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 0 100px rgba(0, 242, 255, 0.1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .modal-content::-webkit-scrollbar { width: 4px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .modal-close {
+            position: absolute; top: 20px; right: 25px;
+            font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: 0.2s;
+        }
+        .modal-close:hover { opacity: 1; color: var(--primary); }
+
+        .edu-section { margin-bottom: 40px; }
+        .edu-section h2 {
+            font-family: 'Playfair Display', serif; color: var(--primary);
+            border-bottom: 1px solid var(--border); padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .edu-section h3 { font-size: 0.9rem; color: #fff; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .edu-section p, .edu-section li { font-size: 0.85rem; line-height: 1.7; opacity: 0.8; margin-bottom: 15px; }
+
+        .edu-trigger {
+            color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700;
+            padding: 2px 5px; border-radius: 4px; transition: 0.3s;
+            display: inline-block;
+        }
+        .edu-trigger:hover { color: #000; background: var(--primary); transform: scale(1.05); }
+
+        .ref-box {
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;
+            font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px;
+        }
+
+        /* Orbit Controls Hint */
+        .orbit-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            opacity: 0.4;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hint-icon { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; }
+
+        /* Presets & Controls */
+        .controls-right {
+            bottom: 25px; right: 25px;
+            width: 260px;
+        }
+
+        .control-group { margin-top: 15px; }
+        .control-group label {
+            display: flex; justify-content: space-between;
+            font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%; height: 2px; background: var(--border);
+            appearance: none; outline: none; border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none; width: 12px; height: 12px;
+            background: var(--primary); border: 2px solid #fff; border-radius: 50%;
+            cursor: pointer; box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .preset-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px;
+        }
+
+        .preset-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            color: #fff; padding: 10px; border-radius: 6px; font-size: 0.55rem;
+            text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+        }
+        .preset-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--primary); }
+        .preset-btn.active { background: var(--primary); color: #000; font-weight: 700; }
+
+        /* Tooltip */
+        #inspector {
+            position: absolute; background: var(--panel); border: 1px solid var(--primary);
+            padding: 12px; border-radius: 8px; font-size: 0.6rem; display: none;
+            z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        .footer-brand {
+            position: absolute; bottom: 10px; width: 100%; text-align: center;
+            font-size: 0.5rem; opacity: 0.2; letter-spacing: 8px; text-transform: uppercase;
+        }
+
+        /* Loading Overlay */
+        #boot-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 1px solid var(--border);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="boot-overlay">
+        <div class="loader"></div>
+        <div style="margin-top: 20px; font-size: 0.6rem; letter-spacing: 4px; opacity: 0.5;">INITIALIZING OMEGA_CORE...</div>
+    </div>
+
+    <div id="educational-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+
+            <div class="edu-section">
+                <h2>Archivo de Investigación: Neuro-Omega v14</h2>
+                <p>Bienvenido al laboratorio interactivo de neurociencia. Este simulador modela la complejidad del conectoma humano mediante principios biofísicos y matemáticos avanzados. A continuación, se detalla el funcionamiento del sistema para fines educativos.</p>
+            </div>
+
+            <div class="edu-section">
+                <h3>1. El Motor Biofísico: Paso a Paso</h3>
+                <p>La simulación se rige por un ciclo de vida neuronal continuo:</p>
+                <ul>
+                    <li><strong>Sembrado (Seeding):</strong> Los neuronas se distribuyen en regiones anatómicas específicas (Frontal, Parietal, etc.) siguiendo densidades probabilísticas.</li>
+                    <li><strong>Sinaptogénesis Inicial:</strong> Se establecen conexiones basadas en la proximidad espacial, emulando el desarrollo temprano del cerebro.</li>
+                    <li><strong>Dinámica LIF:</strong> Cada nodo utiliza el modelo <em>Leaky Integrate-and-Fire</em>. La neurona acumula potencial eléctrico; si supera el umbral, dispara un potencial de acción y se reinicia (leak).</li>
+                    <li><strong>Plasticidad Estructural:</strong> El sistema evalúa constantemente la eficiencia. Las sinapsis débiles son eliminadas (Poda/Pruning) y se crean nuevas conexiones (Neurogénesis) en áreas de alta actividad.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>2. Muestras de Laboratorio</h3>
+                <p>Observe estos estados sistémicos para comprender la homeostasis cognitiva:</p>
+                <ul>
+                    <li><span class="edu-trigger" onclick="runPreset('stable'); closeModal();">Muestra A: Equilibrio Dinámico:</span> Red optimizada con baja entropía y poda eficiente.</li>
+                    <li><span class="edu-trigger" onclick="runPreset('plastic'); closeModal();">Muestra B: Período Crítico:</span> Máxima plasticidad, emulando el cerebro infantil o estados de aprendizaje intenso.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>3. Ejemplos Dinámicos</h3>
+                <p>Interactúe con la red para observar respuestas biológicas en tiempo real:</p>
+                <ul>
+                    <li><strong>Bioluminiscencia:</strong> Los pulsos cian representan <em>Glutamato</em> (excitación), los rosas <em>GABA</em> (inhibición).</li>
+                    <li><strong>Ley de Hebb:</strong> Observe cómo los vínculos entre neuronas que disparan sincrónicamente se engrosan, representando la memoria física.</li>
+                    <li><span class="edu-trigger" onclick="runPreset('focus'); closeModal();">Ejemplo: Concentración Alpha:</span> Aumento de la ganancia global y enfoque en el Lóbulo Frontal.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>4. Implicaciones Neurocientíficas</h3>
+                <p>Este modelo ilustra conceptos críticos para la ciencia moderna:</p>
+                <ul>
+                    <li><strong>Aprendizaje y Memoria:</strong> La plasticidad demostrada es la base del almacenamiento de información. Sin poda sináptica, el cerebro sería ineficiente.</li>
+                    <li><strong>Rehabilitación:</strong> La capacidad de generar nuevos vínculos (Neurogénesis) es la clave para la recuperación tras lesiones cerebrales.</li>
+                    <li><strong>Entropía Cognitiva:</strong> El panel de control permite observar cómo un exceso de ganancia global (excitabilidad) puede llevar al sistema al caos (alta entropía), similar a estados epilépticos.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>5. Referencias y Bibliografía</h3>
+                <p>Para profundizar en los conceptos presentados, se recomiendan las siguientes fuentes:</p>
+                <div class="ref-box">
+                    • De la Serna, J. M. (2020). <em>Neurociencias y Educación</em>. Editorial Académica Española.<br>
+                    • Gerstner, W., & Kistler, W. M. (2002). <em>Spiking Neuron Models</em>. Cambridge University Press.<br>
+                    • Hebb, D. O. (1949). <em>The Organization of Behavior</em>. Wiley.<br>
+                    • Purves, D., et al. (2018). <em>Neuroscience</em>. Oxford University Press.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="laboratory-root">
+        <canvas id="neuroCanvas"></canvas>
+
+        <div id="inspector">
+            <div id="insp-title" style="font-weight: 700; margin-bottom: 5px; color: var(--primary);">NEURON_0x42</div>
+            <div id="insp-body"></div>
+        </div>
+
+        <div class="hud-element header">
+            <h1>NEURO-OMEGA V14</h1>
+            <p>Recursive Structural Plasticity Engine</p>
+        </div>
+
+        <div class="hud-element telemetry-panel">
+            <div style="font-size: 0.6rem; font-weight: 700; opacity: 0.8; margin-bottom: 15px; letter-spacing: 1px;">REGIONAL ACTIVITY</div>
+            <div id="telemetry-charts"></div>
+        </div>
+
+        <div class="hud-element system-log" id="system-log">
+            <!-- Log entries injected here -->
+        </div>
+
+        <div class="global-eeg">
+            <div class="telemetry-label" style="margin-bottom: 5px;"><span>NEURAL_OSCILLATION_OSC</span><span id="eeg-freq">12Hz</span></div>
+            <canvas id="eeg-canvas" style="width: 100%; height: 80px;"></canvas>
+        </div>
+
+        <div class="hud-element stats-panel">
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Neurons</div>
+                    <div id="stat-neurons" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Synapses</div>
+                    <div id="stat-synapses" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Frequency</div>
+                    <div id="stat-rate" class="stat-value">0Hz</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Connectivity</div>
+                    <div id="stat-connect" class="stat-value">0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Stability</div>
+                    <div id="stat-stability" class="stat-value">100%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Entropy</div>
+                    <div id="stat-entropy" class="stat-value">LOW</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-element controls-right">
+            <button class="preset-btn" style="width: 100%; border-color: var(--primary); margin-bottom: 15px; color: var(--primary);" onclick="openModal()">📖 NOTAS DE INVESTIGACIÓN</button>
+            <div style="font-size: 0.6rem; font-weight: 700; opacity: 0.8; margin-bottom: 10px; letter-spacing: 1px;">SYSTEM CONFIG</div>
+            <div class="control-group">
+                <label>Structural Pruning <span id="val-prune">20%</span></label>
+                <input type="range" id="param-prune" min="0" max="100" value="20">
+            </div>
+            <div class="control-group">
+                <label>Neurogenesis Rate <span id="val-genesis">15%</span></label>
+                <input type="range" id="param-genesis" min="0" max="100" value="15">
+            </div>
+
+            <div class="preset-grid">
+                <button class="preset-btn active" onclick="setPreset('stable', this)">Equilibrium</button>
+                <button class="preset-btn" onclick="setPreset('plastic', this)">High Plasticity</button>
+                <button class="preset-btn" onclick="setPreset('focus', this)">Focus Mode</button>
+                <button class="preset-btn" onclick="setPreset('decay', this)">Atrophy</button>
+            </div>
+        </div>
+
+        <div class="orbit-hint">
+            <div><span class="hint-icon">LMB</span> ROTATE</div>
+            <div><span class="hint-icon">SCROLL</span> ZOOM</div>
+            <div><span class="hint-icon">RMB</span> PAN</div>
+        </div>
+
+        <div class="footer-brand">DR. JUAN MOISÉS DE LA SERNA | NEURO-INTELLIGENCE ARCHIVE</div>
+    </div>
+
+    <script>
+        /**
+         * Neuro-OMEGA v14 Engine
+         * Advanced 3D Orbit Connectome with Structural Plasticity
+         */
+
+        const canvas = document.getElementById('neuroCanvas');
+        const ctx = canvas.getContext('2d');
+        const logPanel = document.getElementById('system-log');
+        const inspector = document.getElementById('inspector');
+        const modal = document.getElementById('educational-modal');
+
+        function openModal() {
+            modal.classList.add('visible');
+        }
+
+        function closeModal() {
+            modal.classList.remove('visible');
+        }
+
+        let width, height;
+        let neurons = [];
+        let pulses = [];
+        let particles = [];
+        let frameCount = 0;
+        let spikeCount = 0;
+        let focusedRegion = null;
+
+        // Camera / Orbit State
+        const camera = {
+            phi: Math.PI / 4,
+            theta: 0,
+            distance: 800,
+            targetDistance: 800,
+            panX: 0, panY: 0,
+            isDragging: false,
+            isPanning: false,
+            lastMouseX: 0, lastMouseY: 0
+        };
+
+        const settings = {
+            neuronCount: 160,
+            maxSynapses: 12,
+            pruningThreshold: 0.4,
+            genesisProbability: 0.001,
+            globalGain: 0.7,
+            plasticity: 0.5,
+            regions: {
+                FRONTAL: { color: '#00f2ff', label: 'FRONTAL LOBE', ox: 0.8, oy: 0, oz: 0, sx: 0.8, sy: 0.7, sz: 0.7 },
+                PARIETAL: { color: '#ffcc00', label: 'PARIETAL LOBE', ox: -0.2, oy: 0.5, oz: 0, sx: 0.6, sy: 0.6, sz: 0.7 },
+                TEMPORAL: { color: '#ff3366', label: 'TEMPORAL LOBE', ox: 0.2, oy: -0.4, oz: 0.7, sx: 0.6, sy: 0.5, sz: 0.4 },
+                OCCIPITAL: { color: '#00ff88', label: 'OCCIPITAL LOBE', ox: -0.8, oy: 0, oz: 0, sx: 0.5, sy: 0.6, sz: 0.6 },
+                CEREBELLUM: { color: '#7000ff', label: 'CEREBELLUM', ox: -0.7, oy: -0.7, oz: 0, sx: 0.5, sy: 0.4, sz: 0.5 }
+            }
+        };
+
+        class Neuron {
+            constructor(id, regionKey) {
+                this.id = id;
+                this.regionKey = regionKey;
+                this.region = settings.regions[regionKey];
+                this.pos = this.generatePos();
+                this.p2d = { x: 0, y: 0, z: 0 }; // Projected
+
+                this.potential = Math.random() * 0.5;
+                this.threshold = 1.0;
+                this.lastSpike = -1000;
+                this.synapses = [];
+                this.type = Math.random() > 0.15 ? 'glutamate' : 'gaba';
+                this.color = this.type === 'gaba' ? '#ff3366' : this.region.color;
+                this.activityBuffer = Array(50).fill(0);
+            }
+
+            generatePos() {
+                const r = this.region;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const rho = Math.cbrt(Math.random());
+                let x = r.ox + rho * r.sx * Math.sin(phi) * Math.cos(theta);
+                let y = r.oy + rho * r.sy * Math.sin(phi) * Math.sin(theta);
+                let z = r.oz + rho * r.sz * Math.cos(phi);
+                if (Math.random() > 0.5 && r.oz === 0) z *= -1; // Bilateral symmetry
+                return { x: x * 250, y: y * 200, z: z * 200 };
+            }
+
+            update() {
+                this.potential *= 0.985; // Leak
+                if (Math.random() < 0.005 * settings.globalGain) this.potential += 0.3 * settings.globalGain;
+
+                if (this.potential > this.threshold && (frameCount - this.lastSpike) > 20) {
+                    this.fire();
+                }
+
+                // Structural Plasticity: Pruning
+                if (frameCount % 600 === 0) {
+                    this.synapses = this.synapses.filter(s => {
+                        if (s.weight < settings.pruningThreshold) {
+                            if (Math.random() < settings.plasticity) {
+                                addLog(`PRUNING: Link 0x${this.id.toString(16)} removed (weight too low)`);
+                                return false;
+                            }
+                        }
+                        return true;
+                    });
+                }
+
+                // Structural Plasticity: Neurogenesis
+                if (Math.random() < settings.genesisProbability * settings.plasticity) {
+                    this.attemptNeurogenesis();
+                }
+
+                this.activityBuffer.push(this.potential);
+                this.activityBuffer.shift();
+            }
+
+            fire() {
+                this.potential = 0;
+                this.lastSpike = frameCount;
+                spikeCount++;
+
+                this.synapses.forEach(s => {
+                    const target = s.targetObj || neurons.find(n => n.id === s.targetId);
+                    if (!s.targetObj) s.targetObj = target;
+                    if (!target) return;
+
+                    setTimeout(() => {
+                        pulses.push(new Pulse(this, target, s.weight, this.type));
+                    }, Math.random() * 50);
+
+                    // Hebbian learning
+                    if (frameCount - target.lastSpike < 30) {
+                        s.weight = Math.min(2.5, s.weight + 0.1 * settings.plasticity);
+                    } else {
+                        s.weight = Math.max(0.1, s.weight - 0.005);
+                    }
+                });
+
+                // Emit particles
+                for(let i=0; i<3; i++) particles.push(new Particle(this.p2d, this.color));
+            }
+
+            attemptNeurogenesis() {
+                const targets = neurons.filter(n => n.id !== this.id && !this.synapses.find(s => s.targetId === n.id));
+                if (targets.length > 0 && this.synapses.length < settings.maxSynapses) {
+                    const target = targets[Math.floor(Math.random() * targets.length)];
+                    const distSq = (this.pos.x - target.pos.x)**2 + (this.pos.y - target.pos.y)**2 + (this.pos.z - target.pos.z)**2;
+                    if (distSq < 40000) { // Limit link length
+                        this.synapses.push({ targetId: target.id, targetObj: target, weight: 0.5, cp: (Math.random()-0.5)*0.3 });
+                        addLog(`GENESIS: New link formed between 0x${this.id.toString(16)} and 0x${target.id.toString(16)}`, 'active');
+                    }
+                }
+            }
+
+            project() {
+                // 3D Matrix Rotation
+                const cosP = Math.cos(camera.phi);
+                const sinP = Math.sin(camera.phi);
+                const cosT = Math.cos(camera.theta);
+                const sinT = Math.sin(camera.theta);
+
+                // Rotate around Y
+                let x1 = this.pos.x * cosT - this.pos.z * sinT;
+                let z1 = this.pos.x * sinT + this.pos.z * cosT;
+                // Rotate around X
+                let y1 = this.pos.y * cosP - z1 * sinP;
+                let z2 = this.pos.y * sinP + z1 * cosP;
+
+                const perspective = 1000 / (z2 + camera.distance);
+                this.p2d.x = x1 * perspective + width / 2 + camera.panX;
+                this.p2d.y = y1 * perspective + height / 2 + camera.panY;
+                this.p2d.z = z2;
+                this.p2d.scale = perspective;
+            }
+
+            draw() {
+                const glow = Math.max(0, 1 - (frameCount - this.lastSpike) / 25);
+                let baseAlpha = Math.max(0.05, (600 - this.p2d.z) / 1000);
+
+                if (focusedRegion && this.regionKey !== focusedRegion) {
+                    baseAlpha *= 0.15;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = baseAlpha;
+
+                // Depth of Field (DoF) effect
+                const blur = Math.abs(this.p2d.z) / 250;
+                if (blur > 0.5) ctx.filter = `blur(${blur}px)`;
+
+                // Draw Synapses
+                this.synapses.forEach(s => {
+                    const target = s.targetObj || neurons.find(n => n.id === s.targetId);
+                    if (!s.targetObj) s.targetObj = target;
+                    if (!target) return;
+
+                    let sAlpha = baseAlpha * 0.2 * s.weight;
+                    if (focusedRegion && (this.regionKey !== focusedRegion || target.regionKey !== focusedRegion)) {
+                        sAlpha *= 0.1;
+                    }
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 0.5 * s.weight * this.p2d.scale;
+                    ctx.globalAlpha = sAlpha;
+
+                    const mx = (this.p2d.x + target.p2d.x) / 2;
+                    const my = (this.p2d.y + target.p2d.y) / 2;
+                    const dx = target.p2d.x - this.p2d.x;
+                    const dy = target.p2d.y - this.p2d.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const angle = Math.atan2(dy, dx) + Math.PI/2;
+                    const cx = mx + Math.cos(angle) * (dist * s.cp);
+                    const cy = my + Math.sin(angle) * (dist * s.cp);
+
+                    ctx.moveTo(this.p2d.x, this.p2d.y);
+                    ctx.quadraticCurveTo(cx, cy, target.p2d.x, target.p2d.y);
+                    ctx.stroke();
+                });
+
+                // Draw Neuron Body
+                ctx.filter = 'none';
+                ctx.globalAlpha = baseAlpha;
+                ctx.shadowBlur = (5 + glow * 20) * this.p2d.scale;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = glow > 0.5 ? '#fff' : this.color;
+
+                ctx.beginPath();
+                ctx.arc(this.p2d.x, this.p2d.y, 3 * this.p2d.scale * (1 + glow), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Pulse {
+            constructor(source, target, weight, type) {
+                this.source = source;
+                this.target = target;
+                this.weight = weight;
+                this.type = type;
+                this.progress = 0;
+                this.speed = 0.015 + Math.random() * 0.01;
+            }
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) {
+                    this.target.potential += this.type === 'gaba' ? -0.4 : 0.3 * this.weight;
+                    return false;
+                }
+                return true;
+            }
+            draw() {
+                const s = this.source.p2d;
+                const t = this.target.p2d;
+                const x = s.x + (t.x - s.x) * this.progress;
+                const y = s.y + (t.y - s.y) * this.progress;
+
+                ctx.save();
+                ctx.fillStyle = this.type === 'gaba' ? '#ff3366' : '#00f2ff';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.beginPath();
+                ctx.arc(x, y, 2 * s.scale, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Particle {
+            constructor(pos, color) {
+                this.x = pos.x; this.y = pos.y;
+                this.vx = (Math.random()-0.5)*4;
+                this.vy = (Math.random()-0.5)*4;
+                this.life = 1.0;
+                this.color = color;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                this.life -= 0.02;
+                return this.life > 0;
+            }
+            draw() {
+                ctx.globalAlpha = this.life * 0.5;
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, 1.5, 1.5);
+            }
+        }
+
+        function addLog(text, type = '') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerText = `[${new Date().toLocaleTimeString()}] ${text}`;
+            logPanel.prepend(entry);
+            if (logPanel.children.length > 15) logPanel.lastChild.remove();
+        }
+
+        function runPreset(mode) {
+            const btnMap = {
+                'stable': 'Equilibrium',
+                'plastic': 'High Plasticity',
+                'focus': 'Focus Mode',
+                'decay': 'Atrophy'
+            };
+            const targetBtn = [...document.querySelectorAll('.preset-btn')].find(b => b.textContent.trim().includes(btnMap[mode]));
+            if (targetBtn) {
+                setPreset(mode, targetBtn);
+            } else {
+                setPreset(mode, null);
+            }
+        }
+
+        function setPreset(mode, btn) {
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const pruneSlider = document.getElementById('param-prune');
+            const genesisSlider = document.getElementById('param-genesis');
+
+            switch(mode) {
+                case 'stable':
+                    settings.plasticity = 0.4;
+                    settings.genesisProbability = 0.0005;
+                    settings.pruningThreshold = 0.3;
+                    settings.globalGain = 0.7;
+                    break;
+                case 'plastic':
+                    settings.plasticity = 0.9;
+                    settings.genesisProbability = 0.005;
+                    settings.pruningThreshold = 0.5;
+                    settings.globalGain = 0.9;
+                    break;
+                case 'focus':
+                    settings.globalGain = 1.4;
+                    settings.plasticity = 0.2;
+                    break;
+                case 'decay':
+                    settings.plasticity = 0.5;
+                    settings.genesisProbability = 0;
+                    settings.pruningThreshold = 1.0;
+                    settings.globalGain = 0.2;
+                    break;
+            }
+            pruneSlider.value = settings.pruningThreshold * 100;
+            genesisSlider.value = settings.genesisProbability * 5000;
+            document.getElementById('val-prune').innerText = Math.floor(settings.pruningThreshold * 100) + "%";
+            document.getElementById('val-genesis').innerText = Math.floor(settings.genesisProbability * 5000) + "%";
+            addLog(`PRESET_LOADED: ${mode.toUpperCase()}`, 'active');
+        }
+
+        function toggleRegionFocus(rk) {
+            focusedRegion = (focusedRegion === rk) ? null : rk;
+
+            document.querySelectorAll('.telemetry-item').forEach(el => el.classList.remove('active'));
+            if (focusedRegion) {
+                [...document.querySelectorAll('.telemetry-item')].forEach(el => {
+                   if (el.innerText.includes(settings.regions[rk].label)) el.classList.add('active');
+                });
+            }
+            addLog(`REGION_FOCUS: ${focusedRegion ? focusedRegion : 'RESTORED_GLOBAL'}`, 'active');
+        }
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+
+            neurons = [];
+            const rKeys = Object.keys(settings.regions);
+            for(let i=0; i<settings.neuronCount; i++) {
+                neurons.push(new Neuron(i, rKeys[Math.floor(Math.random() * rKeys.length)]));
+            }
+
+            // Initial random connectivity
+            neurons.forEach(n => {
+                const count = 3 + Math.floor(Math.random() * 3);
+                for(let i=0; i<count; i++) {
+                    const target = neurons[Math.floor(Math.random() * neurons.length)];
+                    if (target.id !== n.id) n.synapses.push({ targetId: target.id, weight: 0.5 + Math.random(), cp: (Math.random()-0.5)*0.3 });
+                }
+            });
+
+            // Init Telemetry Charts
+            const chartRoot = document.getElementById('telemetry-charts');
+            chartRoot.innerHTML = '';
+            rKeys.forEach(rk => {
+                const container = document.createElement('div');
+                container.className = 'telemetry-item';
+                container.onclick = () => toggleRegionFocus(rk);
+                container.innerHTML = `
+                    <div class="telemetry-label"><span>${settings.regions[rk].label}</span><span id="chart-val-${rk}">0%</span></div>
+                    <div class="telemetry-chart"><canvas id="chart-canvas-${rk}" style="width:100%; height:100%"></canvas></div>
+                `;
+                chartRoot.appendChild(container);
+            });
+
+            addLog("NEURO_OMEGA v14 ONLINE", "active");
+            addLog("STRUCTURAL_PLASTICITY_CORE... LOADED");
+            addLog("VOLUMETRIC_CONNECTOME... STABLE");
+
+            document.getElementById('boot-overlay').style.opacity = 0;
+            setTimeout(() => document.getElementById('boot-overlay').remove(), 1000);
+        }
+
+        const regionalData = {};
+        const eegData = Array(100).fill(0);
+        function updateTelemetry() {
+            // Global EEG
+            const globalActivity = neurons.reduce((s, n) => s + n.potential, 0) / neurons.length;
+            eegData.push(globalActivity);
+            eegData.shift();
+
+            const ec = document.getElementById('eeg-canvas');
+            if (ec) {
+                const ecx = ec.getContext('2d');
+                const ew = ec.width = ec.clientWidth * 2;
+                const eh = ec.height = ec.clientHeight * 2;
+                ecx.clearRect(0, 0, ew, eh);
+
+                // EEG Wave
+                ecx.strokeStyle = 'rgba(0, 242, 255, 0.8)';
+                ecx.lineWidth = 3;
+                ecx.beginPath();
+                const estep = ew / (eegData.length - 1);
+                eegData.forEach((v, i) => {
+                    const y = eh/2 + (v - 0.3) * eh * 1.5;
+                    if (i === 0) ecx.moveTo(0, y);
+                    else ecx.lineTo(i * estep, y);
+                });
+                ecx.stroke();
+
+                // Grid
+                ecx.strokeStyle = 'rgba(255,255,255,0.05)';
+                ecx.lineWidth = 1;
+                for(let i=1; i<4; i++) {
+                    ecx.beginPath();
+                    ecx.moveTo(0, eh * (i/4)); ecx.lineTo(ew, eh * (i/4));
+                    ecx.stroke();
+                }
+                document.getElementById('eeg-freq').innerText = (10 + globalActivity * 30).toFixed(1) + "Hz";
+            }
+
+            Object.keys(settings.regions).forEach(rk => {
+                const rNeurons = neurons.filter(n => n.regionKey === rk);
+                const avgPotential = rNeurons.reduce((s, n) => s + n.potential, 0) / rNeurons.length;
+
+                if (!regionalData[rk]) regionalData[rk] = Array(40).fill(0);
+                regionalData[rk].push(avgPotential);
+                regionalData[rk].shift();
+
+                const c = document.getElementById(`chart-canvas-${rk}`);
+                if (!c) return;
+                const cx = c.getContext('2d');
+                const w = c.width = c.clientWidth * 2;
+                const h = c.height = c.clientHeight * 2;
+
+                cx.clearRect(0, 0, w, h);
+                const grad = cx.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, settings.regions[rk].color + '44');
+                grad.addColorStop(1, 'transparent');
+
+                cx.strokeStyle = settings.regions[rk].color;
+                cx.lineWidth = 4;
+                cx.beginPath();
+                const step = w / (regionalData[rk].length - 1);
+                regionalData[rk].forEach((v, i) => {
+                    const y = h - (v * h * 0.8) - h * 0.1;
+                    if (i === 0) cx.moveTo(0, y);
+                    else cx.lineTo(i * step, y);
+                });
+                cx.stroke();
+                cx.lineTo(w, h); cx.lineTo(0, h);
+                cx.fillStyle = grad;
+                cx.fill();
+
+                document.getElementById(`chart-val-${rk}`).innerText = Math.floor(avgPotential * 100) + "%";
+            });
+        }
+
+        function animate() {
+            frameCount++;
+            ctx.clearRect(0, 0, width, height);
+
+            camera.distance += (camera.targetDistance - camera.distance) * 0.1;
+            if (!camera.isDragging) camera.theta += 0.002;
+
+            neurons.forEach(n => {
+                n.update();
+                n.project();
+            });
+
+            // Draw link particles (bioluminescence)
+            particles = particles.filter(p => {
+                p.draw();
+                return p.update();
+            });
+
+            // Depth sorting for render
+            const sortedNeurons = [...neurons].sort((a, b) => b.p2d.z - a.p2d.z);
+            sortedNeurons.forEach(n => n.draw());
+
+            // Draw Regional Labels
+            ctx.save();
+            Object.keys(settings.regions).forEach(rk => {
+                const r = settings.regions[rk];
+                const center = { x: r.ox * 250, y: r.oy * 200, z: r.oz * 200 };
+
+                // Project center
+                const cosP = Math.cos(camera.phi);
+                const sinP = Math.sin(camera.phi);
+                const cosT = Math.cos(camera.theta);
+                const sinT = Math.sin(camera.theta);
+                let x1 = center.x * cosT - center.z * sinT;
+                let z1 = center.x * sinT + center.z * cosT;
+                let y1 = center.y * cosP - z1 * sinP;
+                let z2 = center.y * sinP + z1 * cosP;
+                const perspective = 1000 / (z2 + camera.distance);
+                const px = x1 * perspective + width / 2 + camera.panX;
+                const py = y1 * perspective + height / 2 + camera.panY;
+
+                const alpha = Math.max(0, (600 - z2) / 1000);
+                if (alpha > 0.1) {
+                    ctx.globalAlpha = alpha * 0.5;
+                    ctx.fillStyle = r.color;
+                    ctx.font = `bold ${Math.floor(10 * perspective)}px var(--font-mono)`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(r.label, px, py - 40 * perspective);
+
+                    // Small indicator line
+                    ctx.beginPath();
+                    ctx.strokeStyle = r.color;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(px, py - 35 * perspective);
+                    ctx.lineTo(px, py - 10 * perspective);
+                    ctx.stroke();
+                }
+            });
+            ctx.restore();
+
+            pulses = pulses.filter(p => {
+                p.draw();
+                return p.update();
+            });
+
+            if (frameCount % 5 === 0) updateTelemetry();
+            if (frameCount % 60 === 0) {
+                const synCount = neurons.reduce((s, n) => s + n.synapses.length, 0);
+                const totalPossible = neurons.length * settings.maxSynapses;
+                const activity = neurons.reduce((s, n) => s + n.potential, 0) / neurons.length;
+
+                document.getElementById('stat-neurons').innerText = neurons.length;
+                document.getElementById('stat-synapses').innerText = synCount;
+                document.getElementById('stat-rate').innerText = spikeCount + "Hz";
+                document.getElementById('stat-connect').innerText = ((synCount / totalPossible) * 100).toFixed(1) + "%";
+                document.getElementById('stat-stability').innerText = Math.max(0, 100 - (activity * 100)).toFixed(0) + "%";
+                document.getElementById('stat-entropy').innerText = activity > 0.4 ? "HIGH" : activity > 0.2 ? "MED" : "LOW";
+
+                spikeCount = 0;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Orbit Interaction
+        window.addEventListener('mousedown', e => {
+            if (e.button === 0) camera.isDragging = true;
+            if (e.button === 2) camera.isPanning = true;
+            camera.lastMouseX = e.clientX;
+            camera.lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', e => {
+            const dx = e.clientX - camera.lastMouseX;
+            const dy = e.clientY - camera.lastMouseY;
+            if (camera.isDragging) {
+                camera.theta += dx * 0.01;
+                camera.phi += dy * 0.01;
+                camera.phi = Math.max(0.1, Math.min(Math.PI - 0.1, camera.phi));
+            }
+            if (camera.isPanning) {
+                camera.panX += dx;
+                camera.panY += dy;
+            }
+            camera.lastMouseX = e.clientX;
+            camera.lastMouseY = e.clientY;
+
+            // Inspector
+            let hovered = false;
+            neurons.forEach(n => {
+                const dist = Math.sqrt((n.p2d.x - e.clientX)**2 + (n.p2d.y - e.clientY)**2);
+                if (dist < 15 * n.p2d.scale) {
+                    hovered = true;
+                    inspector.style.display = 'block';
+                    inspector.style.left = (e.clientX + 20) + 'px';
+                    inspector.style.top = (e.clientY + 20) + 'px';
+                    document.getElementById('insp-title').innerText = `NEURON_0x${n.id.toString(16).toUpperCase()}`;
+                    document.getElementById('insp-title').style.color = n.color;
+                    document.getElementById('insp-body').innerHTML = `
+                        Region: ${n.regionKey}<br>
+                        Type: ${n.type.toUpperCase()}<br>
+                        Synapses: ${n.synapses.length}<br>
+                        Potential: ${(n.potential * 100).toFixed(1)}%
+                    `;
+                }
+            });
+            if (!hovered) inspector.style.display = 'none';
+        });
+
+        window.addEventListener('mouseup', () => { camera.isDragging = false; camera.isPanning = false; });
+        window.addEventListener('wheel', e => {
+            camera.targetDistance = Math.max(200, Math.min(1500, camera.targetDistance + e.deltaY));
+        });
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        document.getElementById('param-prune').addEventListener('input', e => {
+            settings.pruningThreshold = e.target.value / 100;
+            document.getElementById('val-prune').innerText = e.target.value + "%";
+        });
+        document.getElementById('param-genesis').addEventListener('input', e => {
+            settings.genesisProbability = e.target.value / 5000;
+            document.getElementById('val-genesis').innerText = e.target.value + "%";
+        });
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+    </script>
+</body>
+</html>
