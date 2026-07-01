@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio de Economía Emergente V67 | Research Identity 10.0</title>
+    <title>Laboratorio de Economía Emergente V70 | Research Identity 10.0</title>
     <!--
-        LABORATORIO DE ECONOMÍA EMERGENTE V67.0 - "SISTEMA ADAPTATIVO"
+        LABORATORIO DE ECONOMÍA EMERGENTE V70.0 - "SISTEMA ADAPTATIVO COMPLEJO"
         Simulación de Desigualdad y Distribución de la Riqueza basada en Agentes (ABM)
         Autor: Dr. Juan Moisés de la Serna
         Desarrollo: Jules (Senior Software Engineer)
+
+        MEJORAS V70:
+        - Motor de Deuda y Crédito (Trampas de Pobreza).
+        - Emprendimiento (Riesgo/Recompensa).
+        - Inflación diferenciada por activos (Inmuebles vs Efectivo).
+        - Visualización de interacciones P2P (líneas de flujo).
+        - Presets de Escenarios (Nórdico, Laissez-Faire, Crisis).
+        - Estadísticas de Percentiles (1%, 10%, 50%).
     -->
     <style>
         :root {
@@ -61,33 +69,32 @@
             z-index: 1200;
         }
         .logo-box { display: flex; align-items: center; gap: 14px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; font-size: 1rem; cursor: default; }
-        .top-stats-bar { display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.25); padding: 10px 25px; border-radius: 50px; border: 1px solid var(--border); }
+        .top-stats-bar { display: flex; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 50px; border: 1px solid var(--border); }
         .top-stats-bar span b { color: var(--accent); }
-
-        .flex { display: flex; }
-        .gap-2 { gap: 0.5rem; }
 
         .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
 
         .viewport { flex: 1; position: relative; background: #000; overflow: hidden; border-right: 1px solid var(--border); }
         #simCanvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
-        #heatmapCanvas { position: absolute; top: 0; left: 0; pointer-events: none; opacity: 0.3; width: 100%; height: 100%; }
+        #interactionCanvas { position: absolute; top: 0; left: 0; pointer-events: none; width: 100%; height: 100%; }
+        #heatmapCanvas { position: absolute; top: 0; left: 0; pointer-events: none; opacity: 0.4; width: 100%; height: 100%; display: none; }
 
         .tier-labels { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .tier-marker { position: absolute; right: 25px; font-size: 0.6rem; font-weight: 950; color: rgba(255,255,255,0.06); text-transform: uppercase; letter-spacing: 5px; width: 100%; text-align: right; border-top: 1px solid rgba(255,255,255,0.02); padding-top: 6px; }
 
         .simulation-legend {
             position: absolute; bottom: 30px; left: 30px;
-            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); padding: 18px 25px; border-radius: var(--radius);
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+            border: 1px solid var(--border); padding: 20px; border-radius: var(--radius);
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            z-index: 500;
         }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
-        .l-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 15px currentColor; }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+        .l-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
 
         .sidebar {
-            width: 520px;
+            width: 540px;
             background: var(--bg-alt);
             display: flex;
             flex-direction: column;
@@ -96,102 +103,102 @@
         }
         .sidebar-tabs { display: flex; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border); }
         .tab-btn {
-            flex: 1; padding: 22px; border: none; background: none; color: var(--text-muted);
-            font-size: 0.8rem; font-weight: 900; text-transform: uppercase; cursor: pointer;
+            flex: 1; padding: 20px; border: none; background: none; color: var(--text-muted);
+            font-size: 0.75rem; font-weight: 900; text-transform: uppercase; cursor: pointer;
             transition: 0.3s; position: relative;
         }
         .tab-btn.active { color: #fff; background: rgba(99, 102, 241, 0.15); }
         .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--primary); box-shadow: 0 -5px 25px var(--primary-glow); }
 
-        .pane { flex: 1; overflow-y: auto; padding: 2.5rem; display: none; scrollbar-width: thin; }
+        .pane { flex: 1; overflow-y: auto; padding: 2rem; display: none; scrollbar-width: thin; }
         .pane.active { display: block; }
 
-        .s-header { font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; margin: 2.5rem 0 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
+        .s-header { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
         .s-header:first-child { margin-top: 0; }
 
-        .control-group { margin-bottom: 1.8rem; }
-        .control-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px; font-weight: 700; color: var(--text); }
+        .control-group { margin-bottom: 1.5rem; }
+        .control-label { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 10px; font-weight: 700; color: var(--text); }
         .control-label span { color: var(--accent); font-family: var(--font-mono); }
 
-        input[type="range"] { width: 100%; height: 8px; border-radius: 4px; background: #1e293b; appearance: none; outline: none; transition: 0.2s; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 28px; height: 28px; background: #fff; border: 6px solid var(--primary); border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px var(--primary-glow); transition: 0.2s; }
+        input[type="range"] { width: 100%; height: 6px; border-radius: 4px; background: #1e293b; appearance: none; outline: none; transition: 0.2s; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: #fff; border: 5px solid var(--primary); border-radius: 6px; cursor: pointer; box-shadow: 0 0 15px var(--primary-glow); }
 
-        select { width: 100%; padding: 14px; border-radius: 12px; background: #1e293b; color: #fff; border: 1px solid var(--border); font-family: var(--font-main); font-weight: 800; text-transform: uppercase; cursor: pointer; outline: none; transition: 0.3s; margin-top: 5px; }
+        select { width: 100%; padding: 12px; border-radius: 10px; background: #1e293b; color: #fff; border: 1px solid var(--border); font-family: var(--font-main); font-weight: 800; text-transform: uppercase; cursor: pointer; outline: none; }
 
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .btn {
-            background: #1e293b; border: 1px solid var(--border); color: #fff; padding: 16px; border-radius: 15px; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s; text-align: center; text-decoration: none;
+            background: #1e293b; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s; text-align: center; text-decoration: none;
         }
-        .btn:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
-        .btn-active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); }
+        .btn:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-2px); }
+        .btn-active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
         .btn-danger { background: var(--secondary); border: none; }
         .btn-accent { background: var(--accent); color: #000; border: none; }
         .btn-full { width: 100%; display: block; }
         .mt-4 { margin-top: 1rem; }
 
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 2rem; }
-        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 22px; border-radius: 24px; border-left: 6px solid var(--primary); transition: 0.3s; position: relative; overflow: hidden; }
-        .stat-card:hover { transform: translateY(-6px); background: rgba(30, 41, 59, 1); border-color: var(--primary); }
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; letter-spacing: 2px; }
-        .stat-value { font-size: 1.6rem; font-weight: 900; font-family: var(--font-mono); margin-top: 12px; color: #fff; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; border-left: 4px solid var(--primary); transition: 0.3s; position: relative; overflow: hidden; }
+        .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; letter-spacing: 1.5px; }
+        .stat-value { font-size: 1.3rem; font-weight: 900; font-family: var(--font-mono); margin-top: 8px; color: #fff; }
 
-        .chart-box { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 25px; padding: 25px; margin-bottom: 2rem; }
-        .chart-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 20px; font-weight: 950; display: block; border-left: 5px solid var(--secondary); padding-left: 15px; }
-        .viz-canvas { width: 100%; height: 180px; }
+        .chart-box { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 1.5rem; }
+        .chart-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; font-weight: 950; display: block; border-left: 4px solid var(--secondary); padding-left: 12px; }
+        .viz-canvas { width: 100%; height: 160px; }
 
         #inspector {
-            position: absolute; top: 30px; left: 30px; width: 480px;
-            background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(40px);
-            border: 2px solid var(--primary); border-radius: 35px; padding: 40px;
-            display: none; box-shadow: 0 80px 200px rgba(0,0,0,0.98); z-index: 2100;
+            position: absolute; top: 30px; left: 30px; width: 450px;
+            background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(40px);
+            border: 2px solid var(--primary); border-radius: 30px; padding: 30px;
+            display: none; box-shadow: 0 50px 150px rgba(0,0,0,0.9); z-index: 2100;
         }
-        .ins-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 18px; }
-        .ins-header h3 { font-size: 1.3rem; font-weight: 950; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; }
-        .ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.85rem; }
-        .ins-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 0; }
+        .ins-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .ins-header h3 { font-size: 1.1rem; font-weight: 950; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        .ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.8rem; }
+        .ins-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; }
         .ins-row b { color: var(--accent); font-family: var(--font-mono); }
-        .ins-portfolio { margin-top: 30px; padding: 25px; background: rgba(0,0,0,0.35); border-radius: 24px; border: 1px solid var(--border); }
-        .p-bar-row { margin-bottom: 15px; }
-        .p-bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; color: var(--text-muted); }
-        .p-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
-        .p-bar-fill { height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary-glow); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .ins-portfolio { margin-top: 20px; padding: 18px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid var(--border); }
+        .p-bar-row { margin-bottom: 12px; }
+        .p-bar-label { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
+        .p-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+        .p-bar-fill { height: 100%; background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
 
         .comp-overlay { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 100; }
         .pane-split { flex: 1; border-right: 2px solid var(--border); position: relative; background: #000; overflow: hidden; }
-        .pane-tag { position: absolute; top: 35px; left: 35px; background: var(--primary); color: #fff; padding: 14px 35px; border-radius: 50px; font-size: 0.9rem; font-weight: 950; text-transform: uppercase; z-index: 300; border: 3px solid rgba(255,255,255,0.3); box-shadow: 0 15px 40px rgba(0,0,0,0.7); }
+        .pane-tag { position: absolute; top: 25px; left: 25px; background: var(--primary); color: #fff; padding: 10px 25px; border-radius: 40px; font-size: 0.8rem; font-weight: 950; text-transform: uppercase; z-index: 300; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 10000; display: none;
-            align-items: center; justify-content: center; padding: 3rem;
+            align-items: center; justify-content: center; padding: 2rem;
         }
         .modal-box {
-            background: var(--bg-alt); border: 2px solid var(--primary); border-radius: 50px;
-            max-width: 1200px; width: 100%; max-height: 90vh; padding: 6rem; overflow-y: auto;
-            position: relative; box-shadow: 0 0 250px var(--primary-glow);
+            background: var(--bg-alt); border: 2px solid var(--primary); border-radius: 40px;
+            max-width: 1000px; width: 100%; max-height: 85vh; padding: 4rem; overflow-y: auto;
+            position: relative; box-shadow: 0 0 150px var(--primary-glow);
         }
-        .close-modal-btn { position: absolute; top: 50px; right: 60px; font-size: 5rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: 0.4s; }
-        .close-modal-btn:hover { color: #fff; transform: scale(1.1) rotate(90deg); }
+        .close-modal-btn { position: absolute; top: 30px; right: 40px; font-size: 4rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: 0.3s; }
+        .close-modal-btn:hover { color: #fff; transform: rotate(90deg); }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; border: 3px solid var(--bg-alt); }
+        /* Percentile Stats List */
+        .perc-list { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); line-height: 2; margin-top: 10px; }
+        .perc-list b { color: #fff; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo-box">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-        <span>Research Identity 10.0</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+        <span>Research Economic Intelligence V70</span>
     </div>
     <div class="top-stats-bar">
         <span>AÑO: <b id="ui-top-year">0</b></span>
-        <span>MES: <b id="ui-top-month">0</b></span>
         <span>GINI: <b id="ui-top-gini">0.000</b></span>
-        <span>PIB ESTIMADO: $<b id="ui-top-pib">0</b></span>
+        <span>PIB: $<b id="ui-top-pib">0</b></span>
+        <span>INFLACIÓN: <b id="ui-top-inf">0%</b></span>
+        <span>DEUDA AGREG.: $<b id="ui-top-debt">0</b></span>
     </div>
-    <div class="flex gap-2">
+    <div style="display:flex; gap:10px;">
         <button class="btn btn-accent" id="btn-didactic-open">Didáctica</button>
         <button class="btn" id="btn-compare-toggle">Modo Comparación</button>
     </div>
@@ -201,6 +208,7 @@
     <div class="viewport" id="viewport">
         <canvas id="simCanvas"></canvas>
         <canvas id="heatmapCanvas"></canvas>
+        <canvas id="interactionCanvas"></canvas>
 
         <div class="tier-labels" id="tier-markers"></div>
 
@@ -213,56 +221,47 @@
             <div class="legend-item"><div class="l-dot" style="background:var(--c-billion); color:var(--c-billion);"></div> Billionaires</div>
         </div>
 
-        <!-- Inspector de Agente -->
+        <!-- Inspector -->
         <div id="inspector">
             <div class="ins-header">
                 <h3 id="ins-id-display">Agente #0000</h3>
-                <span class="close-modal-btn" style="font-size:2rem; top:35px; right:45px; cursor:pointer;" id="ins-close">✕</span>
+                <span class="close-modal-btn" style="font-size:2rem; top:25px; right:35px; cursor:pointer;" id="ins-close">✕</span>
             </div>
             <div class="ins-grid">
                 <div class="ins-row">Edad: <b id="ins-age">0</b></div>
                 <div class="ins-row">Profesión: <b id="ins-prof">-</b></div>
                 <div class="ins-row">Productividad: <b id="ins-prod">0.0</b></div>
                 <div class="ins-row">Educación: <b id="ins-edu">0%</b></div>
-                <div class="ins-row">Salario Mes: $<b id="ins-sal">0</b></div>
-                <div class="ins-row">Rentas Capital: $<b id="ins-yield">0</b></div>
-                <div class="ins-row">Ingresos Totales: $<b id="ins-inc">0</b></div>
-                <div class="ins-row">Consumo Mensual: $<b id="ins-cons">0</b></div>
+                <div class="ins-row">Ingresos Mes: $<b id="ins-inc">0</b></div>
                 <div class="ins-row">Patrimonio Neto: $<b id="ins-wealth">0</b></div>
+                <div class="ins-row">Deuda Acum.: $<b id="ins-debt">0</b></div>
+                <div class="ins-row">Crédito Score: <b id="ins-credit">0</b></div>
+                <div class="ins-row">Consumo Mes: $<b id="ins-cons">0</b></div>
                 <div class="ins-row">Impuestos Mes: $<b id="ins-tax">0</b></div>
-                <div class="ins-row">Herencia Recib.: $<b id="ins-inh">0</b></div>
-                <div class="ins-row">Ahorro Neto: $<b id="ins-save">0</b></div>
-                <div class="ins-row">Prob. Ascenso: <b id="ins-asc">0%</b></div>
-                <div class="ins-row">Riesgo Inversión: <b id="ins-risk">0%</b></div>
+                <div class="ins-row">Herencia: $<b id="ins-inh">0</b></div>
+                <div class="ins-row">Ahorro: $<b id="ins-save">0</b></div>
             </div>
 
             <div class="ins-portfolio">
                 <div class="p-bar-row">
-                    <div class="p-bar-label">Capital Financiero <span id="ins-fin-val">$0</span></div>
+                    <div class="p-bar-label">Capital Financiero (Cash) <span id="ins-fin-val">$0</span></div>
                     <div class="p-bar-bg"><div class="p-bar-fill" id="ins-fin-bar" style="width:0%"></div></div>
                 </div>
                 <div class="p-bar-row">
-                    <div class="p-bar-label">Capital Inmobiliario <span id="ins-real-val">$0</span></div>
+                    <div class="p-bar-label">Capital Inmobiliario (Assets) <span id="ins-real-val">$0</span></div>
                     <div class="p-bar-bg"><div class="p-bar-fill" id="ins-real-bar" style="width:0%; background:var(--accent);"></div></div>
                 </div>
             </div>
 
-            <div style="margin-top:25px;">
-                <span class="chart-label" style="font-size:0.75rem; border:none; padding:0;">Trayectoria Patrimonial Anual</span>
-                <canvas id="ins-chart" style="width:100%; height:80px;"></canvas>
+            <div style="margin-top:20px;">
+                <span class="chart-label" style="font-size:0.6rem; border:none; padding:0;">Trayectoria de Riqueza</span>
+                <canvas id="ins-chart" style="width:100%; height:70px;"></canvas>
             </div>
         </div>
 
-        <!-- Vista Comparativa (Split) -->
         <div class="comp-overlay" id="comp-layout">
-            <div class="pane-split">
-                <span class="pane-tag">A: Sistema Redistributivo</span>
-                <canvas id="canvasA"></canvas>
-            </div>
-            <div class="pane-split">
-                <span class="pane-tag">B: Mercado Libre</span>
-                <canvas id="canvasB"></canvas>
-            </div>
+            <div class="pane-split"><span class="pane-tag">A: Sistema Redistributivo</span><canvas id="canvasA"></canvas></div>
+            <div class="pane-split"><span class="pane-tag">B: Capitalismo Laissez-Faire</span><canvas id="canvasB"></canvas></div>
         </div>
     </div>
 
@@ -273,107 +272,105 @@
             <button class="tab-btn" data-pane="tab-theory">Sociología</button>
         </div>
 
-        <!-- TAB: LABORATORIO -->
         <div class="pane active" id="tab-lab">
-            <div class="s-header">Población</div>
+            <div class="s-header">Escenarios Predeterminados</div>
+            <div class="btn-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                <button class="btn btn-accent" onclick="applyScenario('nordic')">Nórdico</button>
+                <button class="btn btn-accent" onclick="applyScenario('neolib')">Neoliberal</button>
+                <button class="btn btn-accent" onclick="applyScenario('post-crisis')">Post-Crisis</button>
+            </div>
+
+            <div class="s-header">Población y Velocidad</div>
             <div class="control-group">
                 <div class="control-label">Agentes <span><b id="lbl-n">1000</b></span></div>
                 <input type="range" id="p-n" min="500" max="5000" value="1000" step="100">
             </div>
             <div class="control-group">
-                <div class="control-label">Velocidad <span><b id="lbl-speed">30</b></span></div>
+                <div class="control-label">Velocidad Simulación <span><b id="lbl-speed">30</b></span></div>
                 <input type="range" id="p-speed" min="1" max="100" value="30">
             </div>
 
-            <div class="s-header">Ingeniería Fiscal</div>
+            <div class="s-header">Política Económica</div>
             <div class="control-group">
-                <div class="control-label">Sistema</div>
+                <div class="control-label">Sistema Fiscal</div>
                 <select id="sel-tax-system">
-                    <option value="progressive">Modelo Progresivo</option>
-                    <option value="flat">Impuesto Plano</option>
-                    <option value="none">Sin Impuestos</option>
+                    <option value="progressive">Modelo Progresivo (Solidario)</option>
+                    <option value="flat">Impuesto Plano (Eficiencia)</option>
+                    <option value="none">Sin Impuestos (Laissez-Faire)</option>
                 </select>
             </div>
             <div class="control-group">
-                <div class="control-label">IRPF Máximo <span><b id="lbl-tax">30%</b></span></div>
-                <input type="range" id="p-tax" min="0" max="95" value="30">
+                <div class="control-label">Tasa IRPF Máx <span><b id="lbl-tax">35%</b></span></div>
+                <input type="range" id="p-tax" min="0" max="95" value="35">
             </div>
             <div class="control-group">
                 <div class="control-label">Impuesto Patrimonio <span><b id="lbl-wtax">1.5%</b></span></div>
                 <input type="range" id="p-wtax" min="0" max="15" value="1.5" step="0.1">
             </div>
-
-            <div class="s-header">Herencia</div>
             <div class="control-group">
-                <div class="control-label">Modelo</div>
+                <div class="control-label">Modelo de Herencia</div>
                 <select id="sel-inh-system">
                     <option value="free">Herencia Libre</option>
-                    <option value="limited">Limitada (300k max)</option>
-                    <option value="high">Alta Tributación</option>
-                    <option value="none">Sin Herencia</option>
+                    <option value="limited">Herencia Limitada (Cap)</option>
+                    <option value="heavy">Alta Tributación (50%+)</option>
+                    <option value="none">Sin Herencia (Mérito Puro)</option>
                 </select>
             </div>
-            <div class="control-group">
-                <div class="control-label">Tasa Sucesiones <span><b id="lbl-inh">25%</b></span></div>
-                <input type="range" id="p-inh" min="0" max="100" value="25">
-            </div>
 
-            <div class="s-header">Redistribución</div>
+            <div class="s-header">Finanzas y Mercado</div>
             <div class="control-group">
-                <div class="control-label">Educación <span><b id="lbl-re-edu">45%</b></span></div>
-                <input type="range" id="p-re-edu" min="0" max="100" value="45">
+                <div class="control-label">Interés Préstamos <span><b id="lbl-int">8%</b></span></div>
+                <input type="range" id="p-int" min="0" max="40" value="8">
             </div>
             <div class="control-group">
-                <div class="control-label">Renta Básica <span><b id="lbl-re-ubi">25%</b></span></div>
-                <input type="range" id="p-re-ubi" min="0" max="100" value="25">
+                <div class="control-label">Inflación Anual <span><b id="lbl-inflation">3%</b></span></div>
+                <input type="range" id="p-inflation" min="-5" max="50" value="3">
             </div>
             <div class="control-group">
-                <div class="control-label">Sanidad <span><b id="lbl-re-health">30%</b></span></div>
-                <input type="range" id="p-re-health" min="0" max="100" value="30">
-            </div>
-
-            <div class="s-header">Dinámicas de Mercado</div>
-            <div class="control-group">
-                <div class="control-label">Efecto Mateo <span><b id="lbl-mateo">50%</b></span></div>
+                <div class="control-label">Efecto Mateo (Redistr. vs Concentr.) <span><b id="lbl-mateo">50%</b></span></div>
                 <input type="range" id="p-mateo" min="0" max="100" value="50">
             </div>
+
+            <div class="s-header">Inversión Pública (Redistribución)</div>
             <div class="control-group">
-                <div class="control-label">Desempleo <span><b id="lbl-unemp">5%</b></span></div>
-                <input type="range" id="p-unemp" min="0" max="50" value="5">
+                <div class="control-label">Educación <span><b id="lbl-re-edu">40%</b></span></div>
+                <input type="range" id="p-re-edu" min="0" max="100" value="40">
             </div>
             <div class="control-group">
-                <div class="control-label">Inflación <span><b id="lbl-inflation">2%</b></span></div>
-                <input type="range" id="p-inflation" min="-5" max="20" value="2">
+                <div class="control-label">Renta Básica <span><b id="lbl-re-ubi">30%</b></span></div>
+                <input type="range" id="p-re-ubi" min="0" max="100" value="30">
             </div>
 
             <div class="btn-grid">
-                <button class="btn" onclick="world.shock('crisis')">Crisis</button>
-                <button class="btn" onclick="world.shock('boom')">Boom</button>
+                <button class="btn" onclick="world.shock('crash')">Crash Bolsa</button>
+                <button class="btn" onclick="world.shock('bubble')">Burbuja Inmob.</button>
+                <button class="btn" onclick="world.shock('hyper')">Hiperinflación</button>
+                <button class="btn" onclick="world.shock('growth')">Milagro Econ.</button>
                 <button class="btn" onclick="world.shock('pandemic')">Pandemia</button>
-                <button class="btn" onclick="world.shock('crash')">Crash</button>
+                <button class="btn" onclick="world.shock('tech')">Salto Tech</button>
             </div>
 
-            <button class="btn btn-danger btn-full mt-4" id="btn-reset-sim">Reiniciar Simulación</button>
+            <button class="btn btn-danger btn-full mt-4" id="btn-reset-sim">Reset Laboratorio</button>
         </div>
 
-        <!-- TAB: ANALÍTICA -->
         <div class="pane" id="tab-stats">
             <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Coeficiente Gini</div>
-                    <div class="stat-value" id="st-gini">0.000</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Índice de Palma</div>
-                    <div class="stat-value" id="st-palma">1.00</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Mediana Riqueza</div>
-                    <div class="stat-value" id="st-median">$0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Pobreza %</div>
-                    <div class="stat-value" id="st-poverty">0%</div>
+                <div class="stat-card"><div class="stat-label">Gini</div><div class="stat-value" id="st-gini">0.000</div></div>
+                <div class="stat-card"><div class="stat-label">Índice Palma</div><div class="stat-value" id="st-palma">1.00</div></div>
+                <div class="stat-card"><div class="stat-label">Patrimonio Medio</div><div class="stat-value" id="st-avg">$0</div></div>
+                <div class="stat-card"><div class="stat-label">Mediana Riqueza</div><div class="stat-value" id="st-median">$0</div></div>
+                <div class="stat-card"><div class="stat-label">Tasa Pobreza</div><div class="stat-value" id="st-poverty">0%</div></div>
+                <div class="stat-card"><div class="stat-label">Movilidad Ascendente</div><div class="stat-value" id="st-mobility">0%</div></div>
+            </div>
+
+            <div class="chart-box">
+                <span class="chart-label">Concentración de Riqueza (Percentiles)</span>
+                <div class="perc-list" id="ui-perc-stats">
+                    Top 1% de la población: <b id="p-1">0%</b> de la riqueza total<br>
+                    Top 5% de la población: <b id="p-5">0%</b> de la riqueza total<br>
+                    Top 10% de la población: <b id="p-10">0%</b> de la riqueza total<br>
+                    Top 20% de la población: <b id="p-20">0%</b> de la riqueza total<br>
+                    Bottom 50% de la población: <b id="p-50">0%</b> de la riqueza total
                 </div>
             </div>
 
@@ -382,34 +379,33 @@
                 <canvas id="viz-lorenz" class="viz-canvas"></canvas>
             </div>
             <div class="chart-box">
-                <span class="chart-label">Gini Temporal</span>
+                <span class="chart-label">Evolución Histórica Gini</span>
                 <canvas id="viz-gini-t" class="viz-canvas"></canvas>
+            </div>
+            <div class="chart-box">
+                <span class="chart-label">Evolución del PIB (Riqueza Total)</span>
+                <canvas id="viz-pib-t" class="viz-canvas"></canvas>
             </div>
         </div>
 
-        <!-- TAB: SOCIOLOGÍA -->
         <div class="pane" id="tab-theory">
             <div class="chart-box" style="height:320px;">
-                <span class="chart-label">Pirámide Social</span>
+                <span class="chart-label">Pirámide de Estratificación Social</span>
                 <canvas id="viz-pyramid" style="width:100%; height:260px;"></canvas>
             </div>
             <div class="chart-box">
-                <span class="chart-label">Distribución Logarítmica</span>
+                <span class="chart-label">Distribución de Riqueza (Escala Log)</span>
                 <canvas id="viz-hist-w" class="viz-canvas"></canvas>
             </div>
             <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Billionaires</div>
-                    <div class="stat-value" id="an-bill-count">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Clase Media %</div>
-                    <div class="stat-value" id="an-middle">0%</div>
-                </div>
+                <div class="stat-card"><div class="stat-label">Millionaires</div><div class="stat-value" id="an-mill-count">0</div></div>
+                <div class="stat-card"><div class="stat-label">Billionaires</div><div class="stat-value" id="an-bill-count">0</div></div>
+                <div class="stat-card"><div class="stat-label">Clase Media %</div><div class="stat-value" id="an-middle">0%</div></div>
+                <div class="stat-card"><div class="stat-label">Mapa de Calor</div><button class="btn btn-full" onclick="toggleHeatmap()">Toggle</button></div>
             </div>
         </div>
 
-        <div style="padding:2rem; border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
+        <div style="padding:1.5rem; border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;">
             <button class="btn" onclick="ioExporter('csv')">CSV</button>
             <button class="btn" onclick="ioExporter('json')">JSON</button>
             <button class="btn" onclick="ioExporter('png')">PNG</button>
@@ -422,16 +418,39 @@
 <div class="modal-overlay" id="modal-didactic">
     <div class="modal-box">
         <span class="close-modal-btn" id="edu-close-icon">×</span>
-        <h1 style="color:var(--primary); font-size:3rem; margin-bottom:2rem; text-transform:uppercase;">Didáctica de la Desigualdad</h1>
+        <h1 style="color:var(--primary); font-size:2.8rem; margin-bottom:1.5rem; text-transform:uppercase;">Didáctica de la Complejidad Económica</h1>
         <div style="font-size:1.1rem; line-height:1.8; color:var(--text-muted);">
-            <p>La desigualdad económica no es un fenómeno estático, sino un <b>resultado emergente</b> de las reglas del juego. Este simulador permite observar cómo pequeñas diferencias en educación, capacidad de ahorro y acceso al capital generan brechas masivas a lo largo de las generaciones.</p>
-            <p><b>El Efecto Mateo:</b> "Porque a cualquiera que tiene, le será dado, y tendrá más; pero al que no tiene, aun lo que tiene le será quitado". En términos económicos, poseer capital financiero permite obtener rentabilidades pasivas que superan al crecimiento de los salarios, concentrando la riqueza en la cúspide.</p>
-            <p><b>Coeficiente de Gini:</b> Es la medida estándar de desigualdad. 0 significa que todos tienen lo mismo; 1 significa que una persona tiene todo. Los sistemas redistributivos buscan bajar este número para fortalecer la cohesión social y la clase media.</p>
+            <p>En este laboratorio, la economía es un <b>sistema emergente</b>. No hay un gobierno central que decida quién es rico, sino reglas individuales que, multiplicadas por miles, generan estructuras sociales.</p>
+
+            <h3 style="color:var(--accent); margin-top:2rem;">1. La Trampa de la Deuda</h3>
+            <p>Los agentes que no cubren sus necesidades básicas con su salario recurren al crédito. Con tipos de interés altos, estos agentes dedican una parte creciente de su renta a pagar intereses, impidiendo el ahorro y la inversión (movilidad descendente).</p>
+
+            <h3 style="color:var(--warning); margin-top:2rem;">2. El Emprendimiento</h3>
+            <p>Los agentes con capital y alta educación pueden "emprender". Esto implica una inversión de alto riesgo que puede multiplicar su riqueza o llevarlos a la quiebra. Observe cómo esto aumenta la volatilidad en la parte alta de la pirámide.</p>
+
+            <h3 style="color:var(--primary); margin-top:2rem;">3. Inflación y Activos</h3>
+            <p>La inflación erosiona el poder adquisitivo del dinero en efectivo (Capital Financiero). Sin embargo, los Inmuebles y Empresas (Capital Real) suelen revalorizarse con la inflación. Esto penaliza a los ahorradores de clase baja y beneficia a los poseedores de activos de clase alta.</p>
+
+            <h3 style="color:var(--secondary); margin-top:2rem;">4. El Coeficiente de Gini y Curva de Lorenz</h3>
+            <p>La <b>Curva de Lorenz</b> representa qué porcentaje de la riqueza posee cada porcentaje de la población. El <b>Gini</b> mide el área entre esta curva y la línea de igualdad perfecta. 0 es igualdad total; 1 es una sola persona poseyendo todo.</p>
+
+            <h3 style="color:var(--info); margin-top:2rem;">5. El Efecto Mateo</h3>
+            <p><i>"Porque al que tiene, se le dará más..."</i>. En economía, esto describe cómo el capital genera más capital de forma exponencial. Los que ya tienen patrimonio acceden a mejores inversiones y protección contra la inflación, mientras que los que no tienen, pagan intereses por el consumo.</p>
+
+            <h3 style="color:var(--accent); margin-top:2rem;">6. Redistribución y Clase Media</h3>
+            <p>La <b>Clase Media</b> suele ser frágil en sistemas de libre mercado puro. La inversión en <b>Educación</b> aumenta la productividad a largo plazo, permitiendo que hijos de familias pobres asciendan. La <b>Redistribución</b> (impuestos progresivos + servicios públicos) actúa como un amortiguador que evita la ruptura social durante las crisis.</p>
+
+            <h3 style="color:var(--warning); margin-top:2rem;">7. Herencia vs Mérito</h3>
+            <p>La herencia libre permite la acumulación de dinastías económicas. Limitar la herencia o gravarla fuertemente favorece una "igualdad de oportunidades" teórica, donde la posición económica depende más del talento y esfuerzo individual que del patrimonio familiar.</p>
         </div>
     </div>
 </div>
 
 <script>
+    /**
+     * MOTOR DE SIMULACIÓN V70 - SISTEMAS ADAPTATIVOS COMPLEJOS
+     */
+
     const STRATA_DEFS = [
         { name: "Pobreza Extrema", min: 0, max: 4000, color: [239, 68, 68] },
         { name: "Bajos Ingresos", min: 4000, max: 25000, color: [249, 115, 22] },
@@ -441,27 +460,56 @@
         { name: "Billionaires", min: 100000000, max: Infinity, color: [168, 85, 247] }
     ];
 
+    // Helper para resolver variables CSS en Canvas
+    function getThemeColor(varName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#ffffff";
+    }
+
+    function lerpColor(c1, c2, t) {
+        return [
+            Math.round(c1[0] + (c2[0] - c1[0]) * t),
+            Math.round(c1[1] + (c2[1] - c1[1]) * t),
+            Math.round(c1[2] + (c2[2] - c1[2]) * t)
+        ];
+    }
+
+    function getContinuousColor(wealth) {
+        const w = Math.max(0, wealth);
+        for (let i = 0; i < STRATA_DEFS.length - 1; i++) {
+            const s1 = STRATA_DEFS[i], s2 = STRATA_DEFS[i+1];
+            if (w < s2.min) {
+                const t = (w - s1.min) / (s2.min - s1.min);
+                const rgb = lerpColor(s1.color, s2.color, t);
+                return `rgb(${rgb.join(',')})`;
+            }
+        }
+        const last = STRATA_DEFS[STRATA_DEFS.length - 1];
+        return `rgb(${last.color.join(',')})`;
+    }
+
     const PROFESSIONS = [
-        { name: "Sector Primario", power: 0.50 },
-        { name: "Servicios", power: 1.40 },
+        { name: "Sector Primario/Informal", power: 0.50 },
+        { name: "Servicios/Comercio", power: 1.40 },
         { name: "Técnico Especializado", power: 3.30 },
-        { name: "Ingeniería/Gestión", power: 7.80 },
-        { name: "Inversión Capital", power: 26.5 }
+        { name: "Gestión/Ingeniería", power: 7.80 },
+        { name: "Alta Dirección/Inversión", power: 26.5 }
     ];
 
     class Agent {
         constructor(id, wealth = 2500, parent = null) {
             this.id = id;
             this.age = parent ? 18 : (18 + Math.random() * 55);
-            this.education = parent ? Math.max(0, Math.min(1, parent.education + (Math.random()-0.4)*0.2)) : Math.random();
-            this.productivity = 0.5 + Math.random() + (this.education * 0.9);
+            this.education = parent ? Math.max(0, Math.min(1, parent.education + (Math.random()-0.4)*0.25)) : Math.random();
+            this.productivity = 0.5 + Math.random() + (this.education * 1.0);
             this.riskLevel = Math.random();
-            this.saveRate = 0.05 + (this.education * 0.2);
 
-            this.finCap = wealth * 0.4;
-            this.realCap = wealth * 0.6;
+            this.finCap = wealth * 0.45;
+            this.realCap = wealth * 0.55;
             this.wealth = wealth;
+            this.debt = 0;
+            this.creditScore = 500;
             this.inheritanceReceived = parent ? wealth : 0;
+            this.birthTier = this.getTierIdx(wealth);
             this.totalTaxPaid = 0;
 
             this.income = 0; this.salary = 0; this.yield = 0;
@@ -469,89 +517,144 @@
             this.profession = this.assignJob();
             this.history = [];
 
-            this.experience = 0;
-            this.tierIdx = 0;
+            this.experience = 0; this.tierIdx = 0;
             this.x = Math.random(); this.y = Math.random();
             this.vx = 0; this.vy = 0;
             this.size = 2; this.color = "#fff";
         }
 
         assignJob() {
-            const s = this.education * 0.7 + (this.wealth / 1000000) * 0.3;
-            if (s > 0.9) return PROFESSIONS[4];
-            if (s > 0.7) return PROFESSIONS[3];
-            if (s > 0.5) return PROFESSIONS[2];
-            if (s > 0.25) return PROFESSIONS[1];
+            const s = this.education * 0.75 + (this.wealth / 1500000) * 0.25;
+            if (s > 0.92) return PROFESSIONS[4];
+            if (s > 0.75) return PROFESSIONS[3];
+            if (s > 0.55) return PROFESSIONS[2];
+            if (s > 0.30) return PROFESSIONS[1];
             return PROFESSIONS[0];
         }
 
         step(world, ubi, eduInvest) {
             this.age += 1/12;
-            if (Math.random() < Math.pow(this.age / 100, 15) || this.age > 115) {
+            if (Math.random() < Math.pow(this.age / 105, 12) || this.age > 118) {
                 this.die(world); return false;
             }
 
+            // 1. Mercado Laboral
             const isUnemployed = Math.random() < (world.params.unemp / 100);
             if (this.age < 65) {
                 const baseSal = 1500 * world.conditions.salaryMult;
-                this.salary = isUnemployed ? (ubi * 0.5) : (baseSal * this.profession.power * this.productivity * (1 + this.experience/40));
+                this.salary = isUnemployed ? (ubi * 0.4) : (baseSal * this.profession.power * this.productivity * (1 + this.experience/35));
                 if(!isUnemployed) this.experience += 1/12;
             } else {
-                this.salary = 1200 * world.conditions.salaryMult;
+                this.salary = 1250 * world.conditions.salaryMult;
             }
 
-            const mYield = world.conditions.marketYield * (this.wealth > 500000 ? (1 + world.params.mateo/1000) : 1);
-            this.yield = (this.finCap * mYield) + (this.realCap * 0.003);
+            // 2. Mercado de Capitales y Deuda
+            const mYield = world.conditions.marketYield * (this.wealth > 400000 ? (1 + world.params.mateo/800) : 1);
+            this.yield = (this.finCap * mYield) + (this.realCap * (0.0035 + world.conditions.realEstateBoost));
+
+            // Inflación erosiona Finanzas pero puede subir Real Estate
+            this.finCap *= (1 - world.params.inflation/1200);
+            this.realCap *= (1 + world.params.inflation/2400);
+
             this.income = this.salary + this.yield + ubi;
 
+            // 3. Fiscalidad
             let taxRate = (world.params.tax / 100);
             if (world.params.taxSystem === 'progressive') {
-                taxRate *= (this.income > 5000 ? 1.8 : 0.6);
-            } else if (world.params.taxSystem === 'none') {
-                taxRate = 0;
-            }
+                const threshold = 2500;
+                taxRate = (this.income > threshold) ? taxRate * 1.6 : taxRate * 0.5;
+            } else if (world.params.taxSystem === 'none') taxRate = 0;
+
             this.lastTax = (this.income * taxRate) + (this.wealth * (world.params.wtax / 1200));
             this.totalTaxPaid += this.lastTax;
 
+            // 4. Consumo y Supervivencia
             const net = this.income - this.lastTax;
-            const minCost = 1400 * (1 + world.params.inflation/100);
-            const mpc = this.wealth < 10000 ? 0.99 : (this.wealth > 1000000 ? 0.3 : 0.7);
-            this.consumption = minCost + Math.max(0, (net - minCost) * mpc);
+            const costOfLiving = 1350 * (1 + world.params.inflation/100);
+            const mpc = this.wealth < 8000 ? 0.99 : (this.wealth > 2000000 ? 0.25 : 0.65);
+            this.consumption = costOfLiving + Math.max(0, (net - costOfLiving) * mpc);
 
-            const saved = net - this.consumption;
-            this.finCap += saved;
-            if (this.finCap < 0) { this.realCap += this.finCap; this.finCap = 0; }
-            this.wealth = Math.max(0, this.finCap + this.realCap);
-            this.education = Math.min(1, this.education + (eduInvest / 200000));
+            let balance = net - this.consumption;
+
+            // Manejo de Deuda
+            if (this.debt > 0) {
+                const interest = this.debt * (world.params.int / 1200);
+                balance -= interest;
+                if (balance > 0) {
+                    const repay = Math.min(balance * 0.4, this.debt);
+                    this.debt -= repay; balance -= repay;
+                }
+            }
+
+            if (balance < 0) {
+                if (this.finCap > Math.abs(balance)) {
+                    this.finCap += balance;
+                } else {
+                    const remaining = Math.abs(balance) - this.finCap;
+                    this.finCap = 0;
+                    // Endeudamiento si tiene crédito
+                    const maxDebt = (this.income * 12) * (this.creditScore / 800);
+                    if (this.debt < maxDebt) {
+                        this.debt += remaining;
+                    } else {
+                        // Default / Pobreza extrema
+                        this.realCap = Math.max(0, this.realCap - remaining * 1.5);
+                    }
+                }
+            } else {
+                // Ahorro e Inversión
+                const investReal = balance * (1 - this.riskLevel * 0.8);
+                this.realCap += investReal;
+                this.finCap += (balance - investReal);
+            }
+
+            // Emprendimiento (Risky)
+            if (this.wealth > 50000 && this.education > 0.7 && Math.random() < 0.005) {
+                const stake = this.wealth * 0.2;
+                this.finCap -= stake;
+                if (Math.random() < 0.3) {
+                    const win = stake * (3 + Math.random() * 10);
+                    this.finCap += win;
+                }
+            }
+
+            this.wealth = this.finCap + this.realCap - this.debt;
+            this.education = Math.min(1, this.education + (eduInvest / 180000));
+            this.creditScore = Math.max(300, Math.min(850, (this.wealth / 1000) + (this.income / 10)));
 
             if (world.month % 12 === 0) {
                 this.profession = this.assignJob();
                 this.history.push(this.wealth); if (this.history.length > 50) this.history.shift();
-                for(let i=0; i<STRATA_DEFS.length; i++) {
-                    if(this.wealth < STRATA_DEFS[i].max) { this.tierIdx = i; break; }
-                }
+                this.tierIdx = this.getTierIdx(this.wealth);
             }
             this.updateVisual();
             return true;
         }
 
+        getTierIdx(w) {
+            for(let i=0; i<STRATA_DEFS.length; i++) {
+                if(w < STRATA_DEFS[i].max) return i;
+            }
+            return STRATA_DEFS.length - 1;
+        }
+
         updateVisual() {
-            const ty = 0.95 - (this.tierIdx / (STRATA_DEFS.length - 1)) * 0.9;
-            const tx = 0.5 + (Math.random()-0.5) * (0.1 + (STRATA_DEFS.length - this.tierIdx)/STRATA_DEFS.length);
-            this.vx += (tx - this.x) * 0.001; this.vy += (ty - this.y) * 0.005;
+            const ty = 0.96 - (this.tierIdx / (STRATA_DEFS.length - 1)) * 0.94;
+            const tx = 0.5 + (Math.random()-0.5) * (0.05 + (STRATA_DEFS.length - this.tierIdx)/STRATA_DEFS.length);
+            this.vx += (tx - this.x) * 0.001; this.vy += (ty - this.y) * 0.006;
             this.x += this.vx; this.y += this.vy;
-            this.vx *= 0.9; this.vy *= 0.9;
-            this.size = Math.sqrt(this.wealth) * 0.15 + 1.5;
-            const c = STRATA_DEFS[this.tierIdx].color;
-            this.color = `rgb(${c[0]},${c[1]},${c[2]})`;
+            this.vx *= 0.85; this.vy *= 0.85;
+            this.size = Math.sqrt(Math.max(0, this.wealth)) * 0.18 + 1.8;
+
+            this.color = getContinuousColor(this.wealth);
+            if (this.debt > this.wealth * 0.5 && this.wealth < 10000) this.color = "#ff0000";
         }
 
         die(world) {
             let rate = 1 - (world.params.inh / 100);
             if (world.params.inhSystem === 'none') rate = 0;
-            if (world.params.inhSystem === 'limited') rate = Math.min(rate, 300000 / (this.wealth || 1));
-
-            const legacy = this.wealth * rate;
+            if (world.params.inhSystem === 'limited') rate = Math.min(rate, 300000 / (Math.max(1, this.wealth)));
+            const legacy = Math.max(0, this.wealth * rate);
             const heir = new Agent(this.id, legacy, this);
             const idx = world.agents.findIndex(a => a.id === this.id);
             if (idx !== -1) world.agents[idx] = heir;
@@ -562,16 +665,19 @@
         constructor(canvasId) {
             this.canvas = document.getElementById(canvasId);
             this.ctx = this.canvas.getContext('2d');
-            this.agents = []; this.month = 0; this.taxPool = 0; this.giniHistory = [];
-            this.params = { n: 1000, speed: 30, tax: 30, wtax: 1.5, inh: 25, reEdu: 45, reUBI: 25, reHealth: 30, mateo: 50, unemp: 5, inflation: 2, taxSystem: 'progressive', inhSystem: 'free' };
-            this.conditions = { marketYield: 0.006, salaryMult: 1.0 };
+            this.agents = []; this.month = 0; this.taxPool = 0; this.giniHistory = []; this.pibHistory = [];
+            this.params = { n: 1000, speed: 30, tax: 35, wtax: 1.5, inh: 25, reEdu: 40, reUBI: 30, int: 8, inflation: 3, mateo: 50, unemp: 5, taxSystem: 'progressive', inhSystem: 'free' };
+            this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 };
+            this.interactions = [];
             this.lastGini = 0; this.init();
         }
 
-        init() {
-            this.agents = []; this.month = 0; this.giniHistory = [];
-            for (let i = 0; i < this.params.n; i++) {
-                const w = Math.pow(Math.random(), 3) * 100000 + 2000;
+        init(predefinedWealths = null) {
+            this.agents = []; this.month = 0; this.giniHistory = []; this.pibHistory = [];
+            const count = predefinedWealths ? predefinedWealths.length : this.params.n;
+            this.params.n = count;
+            for (let i = 0; i < count; i++) {
+                const w = predefinedWealths ? predefinedWealths[i] : (Math.pow(Math.random(), 3) * 120000 + 2000);
                 this.agents.push(new Agent(i, w));
             }
         }
@@ -584,33 +690,48 @@
             this.agents.forEach(a => { if (a.step(this, ubi, edu)) collected += a.lastTax; });
             this.taxPool = collected;
 
-            // Transacciones P2P
-            for(let k=0; k<this.agents.length/3; k++){
+            // Transacciones P2P Emergentes
+            this.interactions = [];
+            for(let k=0; k < this.agents.length/4; k++){
                 const a1 = this.agents[Math.floor(Math.random()*this.agents.length)];
                 const a2 = this.agents[Math.floor(Math.random()*this.agents.length)];
-                const stake = Math.min(a1.wealth, a2.wealth) * 0.02;
-                if(a1.productivity > a2.productivity) { a1.wealth += stake; a2.wealth -= stake; }
-                else { a2.wealth += stake; a1.wealth -= stake; }
+                if(a1.id === a2.id) continue;
+                const stake = Math.min(Math.max(0, a1.wealth), Math.max(0, a2.wealth)) * 0.03;
+                if (stake <= 0) continue;
+                const p1 = a1.productivity * (1 + a1.education);
+                const p2 = a2.productivity * (1 + a2.education);
+                if(Math.random() < (p1 / (p1 + p2))) {
+                    a1.finCap += stake; a2.finCap -= stake;
+                    if(k < 15) this.interactions.push({from: a2, to: a1, color: a1.color});
+                } else {
+                    a2.finCap += stake; a1.finCap -= stake;
+                    if(k < 15) this.interactions.push({from: a1, to: a2, color: a2.color});
+                }
             }
 
             if (this.month % 12 === 0) this.runMetrics();
         }
 
         runMetrics() {
-            const w = this.agents.map(a => a.wealth).sort((a,b) => a-b);
+            const w = this.agents.map(a => Math.max(0, a.wealth)).sort((a,b) => a-b);
             let sw = 0, tw = 0;
             for(let i=0; i<w.length; i++) { sw += (i+1)*w[i]; tw += w[i]; }
-            this.lastGini = (2*sw) / (w.length*tw) - (w.length+1)/w.length;
+            this.lastGini = tw > 0 ? (2*sw) / (w.length*tw) - (w.length+1)/w.length : 0;
             this.giniHistory.push(this.lastGini); if(this.giniHistory.length > 100) this.giniHistory.shift();
+            this.pibHistory.push(tw); if(this.pibHistory.length > 100) this.pibHistory.shift();
         }
 
         shock(t) {
-            const oc = {...this.conditions};
-            if(t==='crisis') { this.conditions.marketYield = -0.05; this.conditions.salaryMult = 0.6; }
-            if(t==='boom') { this.conditions.marketYield = 0.02; this.conditions.salaryMult = 1.8; }
-            if(t==='crash') { this.conditions.marketYield = -0.2; }
-            if(t==='pandemic') { this.conditions.salaryMult = 0.4; }
-            setTimeout(() => this.conditions = oc, 5000);
+            if(t==='crash') { this.conditions.marketYield = -0.06; this.conditions.salaryMult = 0.6; }
+            if(t==='bubble') { this.conditions.realEstateBoost = 0.02; }
+            if(t==='hyper') { this.params.inflation = 80; this.conditions.marketYield = -0.1; }
+            if(t==='growth') { this.conditions.marketYield = 0.015; this.conditions.salaryMult = 2.0; this.params.unemp = 1; }
+            if(t==='pandemic') { this.params.unemp = 30; this.conditions.salaryMult = 0.5; this.conditions.marketYield = -0.02; }
+            if(t==='tech') { this.conditions.salaryMult = 2.5; this.params.reEdu = 80; }
+            setTimeout(() => {
+                this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 };
+                syncSliders();
+            }, 6000);
         }
 
         render() {
@@ -618,7 +739,56 @@
             this.agents.forEach(a => {
                 this.ctx.fillStyle = a.color;
                 this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size, 0, Math.PI*2); this.ctx.fill();
+                if (a.wealth > 5000000) {
+                    this.ctx.save(); this.ctx.globalAlpha = 0.1; this.ctx.shadowBlur = 15; this.ctx.shadowColor = a.color;
+                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size*2, 0, Math.PI*2); this.ctx.fill();
+                    this.ctx.restore();
+                }
             });
+            this.drawInteractions();
+        }
+
+        drawInteractions() {
+            const ictx = document.getElementById('interactionCanvas').getContext('2d');
+            ictx.clearRect(0,0,this.canvas.width, this.canvas.height);
+            ictx.lineWidth = 1;
+            this.interactions.forEach(inter => {
+                ictx.strokeStyle = inter.color;
+                ictx.beginPath();
+                ictx.moveTo(inter.from.x * this.canvas.width, inter.from.y * this.canvas.height);
+                ictx.lineTo(inter.to.x * this.canvas.width, inter.to.y * this.canvas.height);
+                ictx.stroke();
+            });
+            if (document.getElementById('heatmapCanvas').style.display === 'block') this.drawHeatmap();
+        }
+
+        drawHeatmap() {
+            const hcnv = document.getElementById('heatmapCanvas');
+            const hctx = hcnv.getContext('2d');
+            hctx.clearRect(0,0,hcnv.width, hcnv.height);
+            const grid = 20;
+            const rows = Math.ceil(hcnv.height / grid);
+            const cols = Math.ceil(hcnv.width / grid);
+            const data = Array(rows * cols).fill(0);
+
+            this.agents.forEach(a => {
+                const c = Math.floor(a.x * cols);
+                const r = Math.floor(a.y * rows);
+                if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                    data[r * cols + c] += Math.log10(Math.max(1, a.wealth));
+                }
+            });
+
+            const maxV = Math.max(...data, 1);
+            for(let r=0; r<rows; r++){
+                for(let c=0; c<cols; c++){
+                    const val = data[r*cols + c] / maxV;
+                    if (val > 0.1) {
+                        hctx.fillStyle = `rgba(255, 255, 0, ${val})`;
+                        hctx.fillRect(c*grid, r*grid, grid, grid);
+                    }
+                }
+            }
         }
     }
 
@@ -628,14 +798,13 @@
 
     function resize() {
         const vp = document.getElementById('viewport');
-        world.canvas.width = vp.clientWidth; world.canvas.height = vp.clientHeight;
-        document.getElementById('heatmapCanvas').width = vp.clientWidth;
-        document.getElementById('heatmapCanvas').height = vp.clientHeight;
-        if(isComparing && worldA && worldB) {
-            const cw = document.getElementById('comp-layout').clientWidth / 2;
-            const ch = document.getElementById('comp-layout').clientHeight;
-            worldA.canvas.width = cw; worldA.canvas.height = ch;
-            worldB.canvas.width = cw; worldB.canvas.height = ch;
+        const cw = vp.clientWidth, ch = vp.clientHeight;
+        world.canvas.width = cw; world.canvas.height = ch;
+        document.getElementById('heatmapCanvas').width = cw; document.getElementById('heatmapCanvas').height = ch;
+        document.getElementById('interactionCanvas').width = cw; document.getElementById('interactionCanvas').height = ch;
+        if(isComparing && worldA) {
+            worldA.canvas.width = cw/2; worldA.canvas.height = ch;
+            worldB.canvas.width = cw/2; worldB.canvas.height = ch;
         }
         renderTierLabels();
     }
@@ -644,54 +813,81 @@
     function renderTierLabels() {
         const c = document.getElementById('tier-markers'); c.innerHTML = '';
         STRATA_DEFS.forEach((t, i) => {
-            const y = (0.95 - (i / (STRATA_DEFS.length-1)) * 0.9) * 100;
+            const y = (0.96 - (i / (STRATA_DEFS.length-1)) * 0.94) * 100;
             const el = document.createElement('div'); el.className = 'tier-marker'; el.style.top = (100-y) + '%';
             el.innerText = t.name; c.appendChild(el);
         });
     }
 
     function engineLoop() {
-        const steps = Math.max(1, Math.floor(parseInt(document.getElementById('p-speed').value) / 10));
+        const speed = parseInt(document.getElementById('p-speed').value);
+        const steps = Math.max(1, Math.floor(speed / 10));
         for(let i=0; i<steps; i++) {
             if(!isComparing) world.step();
-            else if(worldA && worldB) { worldA.step(); worldB.step(); }
+            else { worldA.step(); worldB.step(); }
         }
-        if(!isComparing) { world.render(); drawHeat(); }
-        else if(worldA && worldB) { worldA.render(); worldB.render(); }
+        if(!isComparing) world.render();
+        else { worldA.render(); worldB.render(); }
         refreshDash(); requestAnimationFrame(engineLoop);
     }
 
-    function drawHeat() {
-        const c = document.getElementById('heatmapCanvas'); const ctx = c.getContext('2d');
-        ctx.clearRect(0,0,c.width, c.height);
-        world.agents.forEach(a => {
-            if(a.wealth > 500000) {
-                ctx.fillStyle = "rgba(99, 102, 241, 0.05)";
-                ctx.beginPath(); ctx.arc(a.x*c.width, a.y*c.height, 40, 0, Math.PI*2); ctx.fill();
-            }
-        });
-    }
+        let lastFullMetricTime = 0;
+        let cachedMetrics = { sorted: [], totalW: 0, totalDebt: 0 };
 
-    function refreshDash() {
+        function refreshDash() {
         const w = isComparing ? (worldA || world) : world;
+            const now = Date.now();
+
         document.getElementById('ui-top-year').innerText = Math.floor(w.month / 12);
-        document.getElementById('ui-top-month').innerText = w.month % 12;
         document.getElementById('ui-top-gini').innerText = w.lastGini.toFixed(3);
-        const totalW = w.agents.reduce((a, b) => a + b.wealth, 0);
+
+            // Throttle calculations for high performance (every 500ms or on month change)
+            if (now - lastFullMetricTime > 500 || w.month % 1 === 0) {
+                cachedMetrics.totalW = w.agents.reduce((a, b) => a + Math.max(0, b.wealth), 0);
+                cachedMetrics.totalDebt = w.agents.reduce((a, b) => a + b.debt, 0);
+                lastFullMetricTime = now;
+            }
+
+            const totalW = cachedMetrics.totalW;
+            const totalDebt = cachedMetrics.totalDebt;
         document.getElementById('ui-top-pib').innerText = Math.floor(totalW).toLocaleString();
+        document.getElementById('ui-top-inf').innerText = w.params.inflation + "%";
+        document.getElementById('ui-top-debt').innerText = Math.floor(totalDebt).toLocaleString();
 
         const active = document.querySelector('.tab-btn.active').dataset.pane;
         if(active === 'tab-stats') {
             document.getElementById('st-gini').innerText = w.lastGini.toFixed(3);
-            const sorted = w.agents.map(a => a.wealth).sort((a,b)=>a-b);
+
+                // Only sort when absolutely necessary for charts
+            const sorted = w.agents.map(a => Math.max(0, a.wealth)).sort((a,b)=>a-b);
+
             document.getElementById('st-median').innerText = '$' + Math.floor(sorted[Math.floor(sorted.length/2)]).toLocaleString();
             document.getElementById('st-poverty').innerText = (sorted.filter(v => v < 8000).length / sorted.length * 100).toFixed(1) + '%';
-            const top10 = sorted.slice(-Math.floor(sorted.length*0.1)).reduce((a,b)=>a+b, 0);
-            const bot40 = sorted.slice(0, Math.floor(sorted.length*0.4)).reduce((a,b)=>a+b, 0);
-            document.getElementById('st-palma').innerText = bot40 > 0 ? (top10/bot40).toFixed(2) : 'N/A';
-            drawLorenz(sorted, totalW); drawGiniT(w);
+
+            const upMobility = (w.agents.filter(a => a.tierIdx > a.birthTier).length / w.agents.length * 100).toFixed(1);
+            document.getElementById('st-mobility').innerText = upMobility + '%';
+
+            // Percentiles
+            const p1 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.01))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
+            const p5 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.05))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
+            const p10 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.1))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
+            const p20 = (sorted.slice(-Math.max(1, Math.floor(sorted.length*0.2))).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
+            const p50 = (sorted.slice(0, Math.floor(sorted.length*0.5)).reduce((a,b)=>a+b, 0) / totalW * 100).toFixed(1);
+            document.getElementById('p-1').innerText = p1 + "%";
+            document.getElementById('p-5').innerText = p5 + "%";
+            document.getElementById('p-10').innerText = p10 + "%";
+            document.getElementById('p-20').innerText = p20 + "%";
+            document.getElementById('p-50').innerText = p50 + "%";
+
+            const top10w = sorted.slice(-Math.floor(sorted.length*0.1)).reduce((a,b)=>a+b, 0);
+            const bot40w = sorted.slice(0, Math.floor(sorted.length*0.4)).reduce((a,b)=>a+b, 0);
+            document.getElementById('st-palma').innerText = bot40w > 0 ? (top10w/bot40w).toFixed(2) : '∞';
+
+            drawLorenz(sorted, totalW); drawGiniT(w); drawPibT(w);
+            document.getElementById('st-avg').innerText = '$' + Math.floor(totalW / w.agents.length).toLocaleString();
         } else if(active === 'tab-theory') {
             drawPyramid(w); drawLogH(w);
+            document.getElementById('an-mill-count').innerText = w.agents.filter(a => a.wealth > 1000000 && a.wealth < 100000000).length;
             document.getElementById('an-bill-count').innerText = w.agents.filter(a => a.wealth > 100000000).length;
             document.getElementById('an-middle').innerText = (w.agents.filter(a => a.wealth > 25000 && a.wealth < 130000).length / w.agents.length * 100).toFixed(1) + '%';
         }
@@ -700,17 +896,25 @@
 
     function drawLorenz(sorted, total) {
         const c = document.getElementById('viz-lorenz'); const ctx = c.getContext('2d');
-        c.width = c.clientWidth; c.height = c.clientHeight;
+        if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight;
         ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.beginPath(); ctx.moveTo(0, c.height); ctx.lineTo(c.width, 0); ctx.stroke();
-        ctx.strokeStyle = "var(--primary)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, c.height);
+        ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, c.height);
         let acc = 0; sorted.forEach((v, i) => { acc += v; ctx.lineTo((i/sorted.length)*c.width, c.height - (acc/total)*c.height); }); ctx.stroke();
     }
 
     function drawGiniT(w) {
         const c = document.getElementById('viz-gini-t'); const ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
-        ctx.strokeStyle = "var(--secondary)"; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.strokeStyle = getThemeColor('--secondary'); ctx.lineWidth = 2; ctx.beginPath();
         w.giniHistory.forEach((g, i) => { const x = (i/100)*c.width; const y = c.height - (g*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+    }
+
+    function drawPibT(w) {
+        const c = document.getElementById('viz-pib-t'); const ctx = c.getContext('2d');
+        if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight;
+        ctx.strokeStyle = getThemeColor('--accent'); ctx.lineWidth = 2; ctx.beginPath();
+        const maxP = Math.max(...w.pibHistory, 1);
+        w.pibHistory.forEach((p, i) => { const x = (i/100)*c.width; const y = c.height - (p/maxP*c.height); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
     }
 
     function drawPyramid(w) {
@@ -721,8 +925,7 @@
         STRATA_DEFS.slice().reverse().forEach((s, i) => {
             const v = counts[STRATA_DEFS.length-1-i];
             const bw = (v/maxV) * c.width * 0.8;
-            ctx.fillStyle = `rgb(${s.color.join(',')})`;
-            ctx.fillRect((c.width-bw)/2, i*40+10, bw, 30);
+            ctx.fillStyle = `rgb(${s.color.join(',')})`; ctx.fillRect((c.width-bw)/2, i*40+10, bw, 30);
             ctx.fillStyle = "#fff"; ctx.font = "10px Inter"; ctx.fillText(s.name, 10, i*40+30);
         });
     }
@@ -731,9 +934,16 @@
         const c = document.getElementById('viz-hist-w'); const ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
         const bins = 40; const freq = Array(bins).fill(0);
-        w.agents.forEach(a => { const l = Math.log10(a.wealth+1); const b = Math.min(bins-1, Math.floor((l/9)*bins)); freq[b]++; });
+        w.agents.forEach(a => { const l = Math.log10(Math.max(1, a.wealth)); const b = Math.min(bins-1, Math.floor((l/9)*bins)); freq[b]++; });
         const maxF = Math.max(...freq, 1); ctx.fillStyle = "var(--accent)";
         freq.forEach((f, i) => { const h = (f/maxF)*c.height; ctx.fillRect(i*(c.width/bins), c.height-h, (c.width/bins)-1, h); });
+    }
+
+    function applyScenario(s) {
+        if(s === 'nordic') { world.params.tax = 55; world.params.reUBI = 60; world.params.taxSystem = 'progressive'; world.params.int = 4; world.params.mateo = 20; }
+        if(s === 'neolib') { world.params.tax = 15; world.params.reUBI = 0; world.params.taxSystem = 'flat'; world.params.int = 12; world.params.mateo = 85; }
+        if(s === 'post-crisis') { world.shock('crash'); world.params.inflation = 15; world.params.unemp = 25; }
+        syncSliders();
     }
 
     document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => {
@@ -756,40 +966,49 @@
         document.getElementById('ins-prof').innerText = a.profession.name;
         document.getElementById('ins-inc').innerText = Math.floor(a.income).toLocaleString();
         document.getElementById('ins-wealth').innerText = Math.floor(a.wealth).toLocaleString();
-        document.getElementById('ins-sal').innerText = Math.floor(a.salary).toLocaleString();
-        document.getElementById('ins-yield').innerText = Math.floor(a.yield).toLocaleString();
+        document.getElementById('ins-debt').innerText = Math.floor(a.debt).toLocaleString();
+        document.getElementById('ins-credit').innerText = Math.floor(a.creditScore);
         document.getElementById('ins-cons').innerText = Math.floor(a.consumption).toLocaleString();
         document.getElementById('ins-tax').innerText = Math.floor(a.lastTax).toLocaleString();
-        document.getElementById('ins-inh').innerText = Math.floor(a.inheritanceReceived).toLocaleString();
         document.getElementById('ins-edu').innerText = (a.education*100).toFixed(0) + "%";
         document.getElementById('ins-prod').innerText = a.productivity.toFixed(1);
         document.getElementById('ins-save').innerText = Math.floor(a.income - a.consumption - a.lastTax).toLocaleString();
-        document.getElementById('ins-asc').innerText = (a.productivity * 20).toFixed(0) + "%";
-        document.getElementById('ins-risk').innerText = (a.riskLevel*100).toFixed(0) + "%";
         document.getElementById('ins-fin-val').innerText = "$" + Math.floor(a.finCap).toLocaleString();
         document.getElementById('ins-real-val').innerText = "$" + Math.floor(a.realCap).toLocaleString();
-        document.getElementById('ins-fin-bar').style.width = (a.finCap / a.wealth * 100) + "%";
-        document.getElementById('ins-real-bar').style.width = (a.realCap / a.wealth * 100) + "%";
+        document.getElementById('ins-fin-bar').style.width = (a.finCap / Math.max(1, a.wealth) * 100) + "%";
+        document.getElementById('ins-real-bar').style.width = (a.realCap / Math.max(1, a.wealth) * 100) + "%";
         const c = document.getElementById('ins-chart'); const ctx = c.getContext('2d');
-        c.width = c.clientWidth; c.height = c.clientHeight; ctx.strokeStyle = "var(--primary)"; ctx.lineWidth = 2; ctx.beginPath();
+            if(!c) return; c.width = c.clientWidth; c.height = c.clientHeight; ctx.strokeStyle = getThemeColor('--primary'); ctx.lineWidth = 2; ctx.beginPath();
         const maxH = Math.max(...a.history, 1); a.history.forEach((v, i) => { const x = (i/50)*c.width, y = c.height - (v/maxH)*c.height; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
     }
 
     document.getElementById('btn-compare-toggle').onclick = () => {
         isComparing = !isComparing; document.getElementById('comp-layout').style.display = isComparing ? 'flex' : 'none';
+        const btn = document.getElementById('btn-compare-toggle');
         if(isComparing) {
-            worldA = new World('canvasA'); worldB = new World('canvasB');
+            btn.classList.add('btn-active');
+            // Inicializar con la misma semilla para comparación científica
+            const initialWealths = Array.from({length: 1000}, () => Math.pow(Math.random(), 3) * 120000 + 2000);
+
+            worldA = new World('canvasA');
+            worldB = new World('canvasB');
+
+            worldA.init(initialWealths);
+            worldB.init(initialWealths);
+
             worldA.params.tax = 50; worldA.params.reUBI = 60; worldA.params.taxSystem = 'progressive';
-            worldB.params.tax = 5; worldB.params.reUBI = 0; worldB.params.taxSystem = 'none';
+            worldB.params.tax = 10; worldB.params.reUBI = 0; worldB.params.taxSystem = 'flat';
             resize();
+        } else {
+            btn.classList.remove('btn-active');
         }
     };
 
-    const inputs = ['n', 'speed', 'tax', 'wtax', 'inh', 're-edu', 're-ubi', 're-health', 'mateo', 'unemp', 'inflation'];
+    const inputs = ['n', 'speed', 'tax', 'wtax', 'inh', 're-edu', 're-ubi', 'int', 'inflation', 'mateo', 'unemp'];
     inputs.forEach(id => {
         const el = document.getElementById('p-' + id);
-        el.oninput = () => {
-            const v = el.value; document.getElementById('lbl-'+id).innerText = (id==='n'||id==='speed'||id==='mateo'||id==='unemp') ? v : v + '%';
+        if(el) el.oninput = () => {
+            const v = el.value; document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? v : v + '%';
             const key = id.replace('re-', 're'); world.params[key] = parseFloat(v);
         };
     });
@@ -807,37 +1026,28 @@
         reader.readAsText(f);
     };
 
+    function toggleHeatmap() {
+        const h = document.getElementById('heatmapCanvas');
+        const isHidden = window.getComputedStyle(h).display === 'none';
+        h.style.display = isHidden ? 'block' : 'none';
+    }
+
     function syncSliders() {
         inputs.forEach(id => {
             const key = id.replace('re-', 're');
-            const el = document.getElementById('p-' + id); el.value = world.params[key];
-            document.getElementById('lbl-'+id).innerText = (id==='n'||id==='speed'||id==='mateo'||id==='unemp') ? el.value : el.value + '%';
+            const el = document.getElementById('p-' + id); if(el) {
+                el.value = world.params[key];
+                document.getElementById('lbl-'+id).innerText = (['n','speed','mateo','unemp'].includes(id)) ? el.value : el.value + '%';
+            }
         });
         document.getElementById('sel-tax-system').value = world.params.taxSystem;
         document.getElementById('sel-inh-system').value = world.params.inhSystem;
     }
 
     function ioExporter(fmt) {
-        if(fmt === 'json') {
-            const b = new Blob([JSON.stringify({ params: world.params })]);
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(b);
-            a.download = 'config.json';
-            a.click();
-        }
-        else if(fmt === 'csv') {
-            const c = "ID,Wealth,Age\n" + world.agents.map(ag => `${ag.id},${ag.wealth},${ag.age}`).join('\n');
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([c]));
-            a.download = 'data.csv';
-            a.click();
-        }
-        else {
-            const a = document.createElement('a');
-            a.href = world.canvas.toDataURL();
-            a.download = 'capture.png';
-            a.click();
-        }
+        if(fmt === 'json') { const b = new Blob([JSON.stringify({ params: world.params })]); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'config.json'; a.click(); }
+        else if(fmt === 'csv') { const c = "ID,Wealth,Debt,Age\n" + world.agents.map(a => `${a.id},${a.wealth},${a.debt},${a.age}`).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([c])); a.download = 'data.csv'; a.click(); }
+        else { const a = document.createElement('a'); a.href = world.canvas.toDataURL(); a.download = 'capture.png'; a.click(); }
     }
 
     engineLoop();
