@@ -205,6 +205,62 @@
         .stat-label { font-size: 0.5rem; opacity: 0.4; text-transform: uppercase; margin-bottom: 5px; }
         .stat-value { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--primary); }
 
+        /* Educational Modal */
+        #educational-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 2, 5, 0.65);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: none;
+            justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+
+        #educational-modal.visible { display: flex; opacity: 1; }
+
+        .modal-content {
+            background: var(--panel);
+            width: 80%; max-width: 900px; max-height: 85vh;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 0 100px rgba(0, 242, 255, 0.1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .modal-content::-webkit-scrollbar { width: 4px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .modal-close {
+            position: absolute; top: 20px; right: 25px;
+            font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: 0.2s;
+        }
+        .modal-close:hover { opacity: 1; color: var(--primary); }
+
+        .edu-section { margin-bottom: 40px; }
+        .edu-section h2 {
+            font-family: 'Playfair Display', serif; color: var(--primary);
+            border-bottom: 1px solid var(--border); padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .edu-section h3 { font-size: 0.9rem; color: #fff; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .edu-section p, .edu-section li { font-size: 0.85rem; line-height: 1.7; opacity: 0.8; margin-bottom: 15px; }
+
+        .edu-trigger {
+            color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 700;
+            padding: 2px 5px; border-radius: 4px; transition: 0.3s;
+            display: inline-block;
+        }
+        .edu-trigger:hover { color: #000; background: var(--primary); transform: scale(1.05); }
+
+        .ref-box {
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;
+            font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px;
+        }
+
         /* Orbit Controls Hint */
         .orbit-hint {
             position: absolute;
@@ -292,6 +348,68 @@
         <div style="margin-top: 20px; font-size: 0.6rem; letter-spacing: 4px; opacity: 0.5;">INITIALIZING OMEGA_CORE...</div>
     </div>
 
+    <div id="educational-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+
+            <div class="edu-section">
+                <h2>Archivo de Investigación: Neuro-Omega v14</h2>
+                <p>Bienvenido al laboratorio interactivo de neurociencia. Este simulador modela la complejidad del conectoma humano mediante principios biofísicos y matemáticos avanzados. A continuación, se detalla el funcionamiento del sistema para fines educativos.</p>
+            </div>
+
+            <div class="edu-section">
+                <h3>1. El Motor Biofísico: Paso a Paso</h3>
+                <p>La simulación se rige por un ciclo de vida neuronal continuo:</p>
+                <ul>
+                    <li><strong>Sembrado (Seeding):</strong> Los neuronas se distribuyen en regiones anatómicas específicas (Frontal, Parietal, etc.) siguiendo densidades probabilísticas.</li>
+                    <li><strong>Sinaptogénesis Inicial:</strong> Se establecen conexiones basadas en la proximidad espacial, emulando el desarrollo temprano del cerebro.</li>
+                    <li><strong>Dinámica LIF:</strong> Cada nodo utiliza el modelo <em>Leaky Integrate-and-Fire</em>. La neurona acumula potencial eléctrico; si supera el umbral, dispara un potencial de acción y se reinicia (leak).</li>
+                    <li><strong>Plasticidad Estructural:</strong> El sistema evalúa constantemente la eficiencia. Las sinapsis débiles son eliminadas (Poda/Pruning) y se crean nuevas conexiones (Neurogénesis) en áreas de alta actividad.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>2. Muestras de Laboratorio</h3>
+                <p>Observe estos estados sistémicos para comprender la homeostasis cognitiva:</p>
+                <ul>
+                    <li><span class="edu-trigger" onclick="runPreset('stable'); closeModal();">Muestra A: Equilibrio Dinámico:</span> Red optimizada con baja entropía y poda eficiente.</li>
+                    <li><span class="edu-trigger" onclick="runPreset('plastic'); closeModal();">Muestra B: Período Crítico:</span> Máxima plasticidad, emulando el cerebro infantil o estados de aprendizaje intenso.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>3. Ejemplos Dinámicos</h3>
+                <p>Interactúe con la red para observar respuestas biológicas en tiempo real:</p>
+                <ul>
+                    <li><strong>Bioluminiscencia:</strong> Los pulsos cian representan <em>Glutamato</em> (excitación), los rosas <em>GABA</em> (inhibición).</li>
+                    <li><strong>Ley de Hebb:</strong> Observe cómo los vínculos entre neuronas que disparan sincrónicamente se engrosan, representando la memoria física.</li>
+                    <li><span class="edu-trigger" onclick="runPreset('focus'); closeModal();">Ejemplo: Concentración Alpha:</span> Aumento de la ganancia global y enfoque en el Lóbulo Frontal.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>4. Implicaciones Neurocientíficas</h3>
+                <p>Este modelo ilustra conceptos críticos para la ciencia moderna:</p>
+                <ul>
+                    <li><strong>Aprendizaje y Memoria:</strong> La plasticidad demostrada es la base del almacenamiento de información. Sin poda sináptica, el cerebro sería ineficiente.</li>
+                    <li><strong>Rehabilitación:</strong> La capacidad de generar nuevos vínculos (Neurogénesis) es la clave para la recuperación tras lesiones cerebrales.</li>
+                    <li><strong>Entropía Cognitiva:</strong> El panel de control permite observar cómo un exceso de ganancia global (excitabilidad) puede llevar al sistema al caos (alta entropía), similar a estados epilépticos.</li>
+                </ul>
+            </div>
+
+            <div class="edu-section">
+                <h3>5. Referencias y Bibliografía</h3>
+                <p>Para profundizar en los conceptos presentados, se recomiendan las siguientes fuentes:</p>
+                <div class="ref-box">
+                    • De la Serna, J. M. (2020). <em>Neurociencias y Educación</em>. Editorial Académica Española.<br>
+                    • Gerstner, W., & Kistler, W. M. (2002). <em>Spiking Neuron Models</em>. Cambridge University Press.<br>
+                    • Hebb, D. O. (1949). <em>The Organization of Behavior</em>. Wiley.<br>
+                    • Purves, D., et al. (2018). <em>Neuroscience</em>. Oxford University Press.
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="laboratory-root">
         <canvas id="neuroCanvas"></canvas>
 
@@ -349,6 +467,7 @@
         </div>
 
         <div class="hud-element controls-right">
+            <button class="preset-btn" style="width: 100%; border-color: var(--primary); margin-bottom: 15px; color: var(--primary);" onclick="openModal()">📖 NOTAS DE INVESTIGACIÓN</button>
             <div style="font-size: 0.6rem; font-weight: 700; opacity: 0.8; margin-bottom: 10px; letter-spacing: 1px;">SYSTEM CONFIG</div>
             <div class="control-group">
                 <label>Structural Pruning <span id="val-prune">20%</span></label>
@@ -386,6 +505,15 @@
         const ctx = canvas.getContext('2d');
         const logPanel = document.getElementById('system-log');
         const inspector = document.getElementById('inspector');
+        const modal = document.getElementById('educational-modal');
+
+        function openModal() {
+            modal.classList.add('visible');
+        }
+
+        function closeModal() {
+            modal.classList.remove('visible');
+        }
 
         let width, height;
         let neurons = [];
@@ -662,9 +790,24 @@
             if (logPanel.children.length > 15) logPanel.lastChild.remove();
         }
 
+        function runPreset(mode) {
+            const btnMap = {
+                'stable': 'Equilibrium',
+                'plastic': 'High Plasticity',
+                'focus': 'Focus Mode',
+                'decay': 'Atrophy'
+            };
+            const targetBtn = [...document.querySelectorAll('.preset-btn')].find(b => b.textContent.trim().includes(btnMap[mode]));
+            if (targetBtn) {
+                setPreset(mode, targetBtn);
+            } else {
+                setPreset(mode, null);
+            }
+        }
+
         function setPreset(mode, btn) {
             document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            if (btn) btn.classList.add('active');
 
             const pruneSlider = document.getElementById('param-prune');
             const genesisSlider = document.getElementById('param-genesis');
