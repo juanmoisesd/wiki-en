@@ -100,6 +100,8 @@
         }
         button:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
         button.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        .v-btn { padding: 4px 8px; font-size: 0.6rem; border: none; background: transparent; }
+        .v-btn.active { background: var(--primary); color: white; border-radius: 6px; }
 
         .chart-box { height: 120px; width: 100%; background: rgba(0,0,0,0.1); border-radius: 10px; padding: 10px; border: 1px solid var(--border); position: relative; }
         .chart-label { position: absolute; top: 5px; right: 8px; font-size: 0.6rem; color: var(--text-muted); font-weight: 700; }
@@ -109,7 +111,16 @@
             padding: 1.2rem; border-radius: 12px; font-size: 0.8rem; box-shadow: 0 15px 50px rgba(0,0,0,0.6);
             display: none; z-index: 2000; min-width: 280px; backdrop-filter: blur(15px);
             border-left: 5px solid var(--primary);
+            transition: opacity 0.2s;
         }
+
+        .shock-event-msg {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--primary); color: white; padding: 20px 40px; border-radius: 50px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            z-index: 1000; animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
 
         .capital-bar-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; margin-top: 4px; margin-bottom: 8px; overflow: hidden; }
         .capital-bar { height: 100%; transition: width 0.3s; }
@@ -134,16 +145,26 @@
 <header>
     <div class="brand">SOCIETY ANALYTICS <span>PRO</span> <span class="kpi-badge">OECD EDITION</span></div>
     <div style="display: flex; gap: 10px;">
-        <button onclick="openModal('theory')">Mesa de Teoría</button>
-        <button id="cmpBtn" onclick="toggleComparison()">Comparar Escenarios</button>
+        <button onclick="openModal('theory')">Teoría</button>
+        <button id="cmpBtn" onclick="toggleComparison()">Comparar</button>
+        <div style="background: rgba(255,255,255,0.05); padding: 2px; border-radius: 8px; display: flex; gap: 2px; border: 1px solid var(--border);">
+            <button class="v-btn active" onclick="setViewMode('class', this)">Clase</button>
+            <button class="v-btn" onclick="setViewMode('edu', this)">Edu</button>
+            <button class="v-btn" onclick="setViewMode('cult', this)">Cult</button>
+            <button class="v-btn" onclick="setViewMode('soc', this)">Soc</button>
+        </div>
         <button onclick="toggleTheme()">🌓</button>
-        <button id="playBtn" class="active" onclick="togglePlay()">⏸ PAUSA</button>
+        <button id="playBtn" class="active" onclick="togglePlay()">⏸</button>
     </div>
 </header>
 
 <main id="viewport">
     <canvas id="simulationCanvas"></canvas>
     <div id="inspector"></div>
+    <div id="delta-panel" style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); border: 1px solid var(--border); padding: 15px; border-radius: 12px; display: none; font-size: 0.7rem; color: #fff; z-index: 500; min-width: 200px; backdrop-filter: blur(10px);">
+        <h4 style="margin-bottom: 10px; color: var(--accent);">DIFERENCIAL A vs B</h4>
+        <div id="delta-content"></div>
+    </div>
 </main>
 
 <aside>
@@ -178,6 +199,10 @@
             <label>Presión Fiscal / Gasto <span><b id="v_tax">0.2</b></span></label>
             <input type="range" id="p_tax" min="0" max="1" step="0.05" value="0.2">
         </div>
+        <div class="control-row">
+            <label>Meritocracia <span><b id="v_merit">0.5</b></span></label>
+            <input type="range" id="p_merit" min="0" max="1" step="0.05" value="0.5">
+        </div>
     </section>
 
     <section class="control-panel">
@@ -190,13 +215,27 @@
             <span class="chart-label">Curva de Lorenz (Gini)</span>
             <svg id="svgL" width="100%" height="100%"></svg>
         </div>
+        <div style="margin-top:15px" class="chart-box">
+            <span class="chart-label">Evolución Histórica</span>
+            <svg id="svgH" width="100%" height="100%"></svg>
+        </div>
+        <div style="margin-top:15px" class="chart-box">
+            <span class="chart-label">Histograma Riqueza</span>
+            <svg id="svgW" width="100%" height="100%"></svg>
+        </div>
     </section>
 
     <div class="btn-group">
         <button onclick="shock('crisis')">Crisis</button>
         <button onclick="shock('boom')">Auge</button>
+        <button onclick="shock('edu')">Reforma Edu</button>
+        <button onclick="shock('tech')">Automatización</button>
+    </div>
+    <div class="btn-group" style="margin-top: 5px;">
         <button id="recBtn" onclick="startRecording()">📹 REC</button>
         <button onclick="capturePNG()">PNG</button>
+        <button onclick="shock('pandemic')">Pandemia</button>
+        <button onclick="shock('tax')">Gran Fiscalidad</button>
     </div>
     <div class="btn-group" style="margin-top: 5px;">
         <button onclick="exportCSV()">CSV</button>
@@ -257,6 +296,7 @@
         constructor(id, sim, parent = null) {
             this.id = id; this.sim = sim; this.age = parent ? 0 : Math.random()*60 + 18;
             this.isAlive = true; this.parent = parent;
+            this.sex = Math.random() > 0.5 ? 'M' : 'F';
             const h = parent ? sim.cfg.inh : 0;
             // Triada de Bourdieu
             this.ec = parent ? parent.ec*h + Math.random()*(1-h) : Math.random();
@@ -275,26 +315,30 @@
             this.mobilityArrow = 0;
             this.profession = "...";
             this.contacts = [];
+            this.spouse = null;
         }
         update(dt, speed) {
             this.age += dt * speed;
             const cfg = this.sim.cfg;
             const networkBonus = this.contacts.reduce((acc, c) => acc + (c.status > this.status ? 0.05 : 0), 0);
 
-            const income = (12000 + this.edu*45000 + this.ec*40000 + (this.so + networkBonus)*25000) * (0.8 + Math.random()*0.4);
+            const m = cfg.merit || 0.5;
+            const meritFactor = (0.5 + Math.random()) * m * 50000;
+            const capitalFactor = (this.edu*45000 + this.ec*40000 + (this.so + networkBonus)*25000) * (1 - m);
+
+            const income = (12000 + meritFactor + capitalFactor) * (0.8 + Math.random()*0.4);
             const taxes = income * cfg.tax;
             const basic = 10000;
             const lifestyle = (income - basic) * 0.5;
 
-            const oldWealth = this.wealth;
             this.wealth += (income - taxes - basic - lifestyle) * dt * speed;
             this.wealth = Math.max(0, this.wealth);
             this.ec = Math.min(1, Math.log10(this.wealth + 1) / 5.5);
 
             const oldStatus = this.status;
             this.status = (this.ec*0.35 + this.edu*0.25 + this.cu*0.2 + this.so*0.2);
-            this.prestige = (this.status * 0.7 + this.cu * 0.3);
-            this.influence = (this.so * 0.6 + this.wealth / 100000 * 0.4);
+            this.prestige = Math.min(1, this.status * 0.7 + this.cu * 0.3 + (this.influence > 0.8 ? 0.2 : 0));
+            this.influence = Math.min(1, this.so * 0.6 + (this.wealth / 150000) * 0.4);
 
             if (Math.abs(this.status - oldStatus) > 0.005) {
                 this.mobilityArrow = this.status > oldStatus ? 1 : -1;
@@ -321,7 +365,7 @@
     class Simulation {
         constructor(id) {
             this.id = id; this.agents = []; this.year = 2024;
-            this.cfg = { pop: 5000, inh: 0.7, edu: 0.3, tax: 0.2, speed: 2.0 };
+            this.cfg = { pop: 5000, inh: 0.7, edu: 0.3, tax: 0.2, speed: 2.0, merit: 0.5 };
             this.timeline = [];
             this.init();
         }
@@ -367,6 +411,12 @@
             for(let i=0; i<n; i++) { s += w[i]; ws += (i+1)*w[i]; }
             return s === 0 ? 0 : (2*ws)/(n*s) - (n+1)/n;
         }
+        getPalma() {
+            const w = this.agents.map(a => a.wealth).sort((a,b) => a-b);
+            const top10 = w.slice(-Math.floor(w.length * 0.1)).reduce((acc,v)=>acc+v,0);
+            const bottom40 = w.slice(0, Math.floor(w.length * 0.4)).reduce((acc,v)=>acc+v,0);
+            return bottom40 === 0 ? 99 : top10 / bottom40;
+        }
     }
 
     const canvas = document.getElementById('simulationCanvas');
@@ -374,8 +424,14 @@
     let sprites = {};
 
     function createSprites() {
-        const eduColors = ['#cf222e', '#f9c513', '#2ea44f', '#0366d6', '#8a63d2'];
-        eduColors.forEach((color, idx) => {
+        const colors = {
+            class: ['#cf222e', '#f9c513', '#2ea44f', '#0366d6', '#FFD700'],
+            edu: ['#444', '#777', '#aaa', '#ddd', '#fff'],
+            cult: ['#200', '#500', '#900', '#d00', '#f00'],
+            soc: ['#002', '#005', '#009', '#00d', '#00f']
+        };
+        const activeColors = colors[viewMode || 'class'];
+        activeColors.forEach((color, idx) => {
             sprites[idx] = [2, 4, 8, 14].map(size => {
                 const c = document.createElement('canvas'); c.width = size*4; c.height = size*4;
                 const x = c.getContext('2d');
@@ -413,11 +469,16 @@
         }).sort((a,b) => a.rz - b.rz);
 
         dList.forEach(d => {
-            const eduIdx = Math.min(4, Math.floor(d.a.edu * 5));
-            const sz = Math.min(3, Math.floor(d.a.ec*4));
-            const img = sprites[eduIdx][sz]; const sw = img.width*d.p;
+            let colorIdx = 0;
+            if (viewMode === 'class') colorIdx = Math.min(4, Math.floor(d.a.status * 5));
+            else if (viewMode === 'edu') colorIdx = Math.min(4, Math.floor(d.a.edu * 5));
+            else if (viewMode === 'cult') colorIdx = Math.min(4, Math.floor(d.a.cu * 5));
+            else if (viewMode === 'soc') colorIdx = Math.min(4, Math.floor(d.a.so * 5));
 
-            ctx.globalAlpha = 0.5 + d.a.prestige * 0.5;
+            const sz = Math.min(3, Math.floor(d.a.ec*4));
+            const img = sprites[colorIdx][sz]; const sw = img.width*d.p;
+
+            ctx.globalAlpha = 0.4 + d.a.prestige * 0.6;
 
             if (d.a === hover) {
                 ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
@@ -453,7 +514,7 @@
         ctx.stroke();
     }
 
-    let simA = new Simulation('A'), simB = new Simulation('B'), active = simA, isPlay = true, isComp = false, hover = null;
+    let simA = new Simulation('A'), simB = new Simulation('B'), active = simA, isPlay = true, isComp = false, hover = null, viewMode = 'class';
 
     function loop() {
         if (isPlay) { simA.step(0.016); if (isComp) simB.step(0.016); }
@@ -462,11 +523,32 @@
 
     function updateUI() {
         document.getElementById('s_year').innerText = Math.floor(simA.year);
-        document.getElementById('s_gini').innerText = active.getGini().toFixed(3);
+        document.getElementById('s_gini').innerText = active.getGini().toFixed(3) + ' (P:' + active.getPalma().toFixed(1) + ')';
         document.getElementById('s_pop').innerText = active.agents.length;
         const mob = active.agents.filter(a => a.parent && Math.abs(a.status - a.parent.status) > 0.15).length / (active.agents.filter(a=>a.parent).length||1);
         document.getElementById('s_mob').innerText = (mob*100).toFixed(0) + '%';
+
+        if (isComp) {
+            document.getElementById('delta-panel').style.display = 'block';
+            const giniDiff = simB.getGini() - simA.getGini();
+            const wealthA = simA.agents.reduce((acc,a)=>acc+a.wealth,0) / simA.agents.length;
+            const wealthB = simB.agents.reduce((acc,a)=>acc+a.wealth,0) / simB.agents.length;
+            const wDiff = ((wealthB / wealthA) - 1) * 100;
+            document.getElementById('delta-content').innerHTML = `
+                <div>Gini: <span style="color:${giniDiff < 0 ? '#2ea44f':'#cf222e'}">${(giniDiff*100).toFixed(1)}%</span></div>
+                <div>Riqueza: <span style="color:${wDiff > 0 ? '#2ea44f':'#cf222e'}">${wDiff > 0 ? '+':''}${wDiff.toFixed(1)}%</span></div>
+            `;
+        } else {
+            document.getElementById('delta-panel').style.display = 'none';
+        }
         drawCharts();
+    }
+
+    function setViewMode(m, btn) {
+        viewMode = m;
+        document.querySelectorAll('.v-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        createSprites();
     }
 
     function drawCharts() {
@@ -482,6 +564,66 @@
         for(let i=0; i<w.length; i+=step) { cum += w.slice(i, i+step).reduce((a,b)=>a+b, 0); pts += ` ${(i/w.length)*100},${100 - (cum/total)*100}`; }
         pts += " 100,0";
         svgL.innerHTML = `<polyline points="${pts}" fill="none" stroke="var(--primary)" stroke-width="3" vector-effect="non-scaling-stroke"/><line x1="0" y1="100" x2="100" y2="0" stroke="rgba(255,255,255,0.1)" stroke-dasharray="2"/>`;
+
+        const svgH = document.getElementById('svgH');
+        if (active.timeline.length > 2) {
+            let hPts = "";
+            const maxG = Math.max(...active.timeline.map(t => t.gini), 0.1);
+            active.timeline.forEach((t, i) => {
+                const x = (i / active.timeline.length) * 100;
+                const y = 100 - (t.gini / maxG) * 90;
+                hPts += `${x},${y} `;
+            });
+            svgH.innerHTML = `<polyline points="${hPts}" fill="none" stroke="#cf222e" stroke-width="2" vector-effect="non-scaling-stroke"/><text x="0" y="15" fill="#cf222e" font-size="10">GINI</text>`;
+        }
+
+        const svgW = document.getElementById('svgW');
+        const bins = new Array(20).fill(0);
+        const maxW = Math.max(...active.agents.map(a => a.wealth), 1);
+        active.agents.forEach(a => bins[Math.min(19, Math.floor((a.wealth / maxW) * 20))]++);
+        const maxBin = Math.max(...bins, 1);
+        svgW.innerHTML = bins.map((v, i) => `<rect x="${i*5}%" y="${100-(v/maxBin)*100}%" width="4%" height="${(v/maxBin)*100}%" fill="var(--primary)" fill-opacity="0.6"/>`).join('');
+    }
+
+    canvas.addEventListener('click', e => {
+        const r = canvas.getBoundingClientRect(); const mx = e.clientX - r.left; const my = e.clientY - r.top;
+        let best = null, dMin = 30;
+        const check = (s) => s.agents.forEach(a => { const d = Math.hypot(mx - a.sx, my - a.sy); if (d < dMin) { dMin = d; best = a; } });
+        if (isComp) { if (mx < canvas.width/2) check(simA); else check(simB); } else check(simA);
+        if (best) {
+            hover = best; // Pin selection
+            updateInspector(best, e.clientX, e.clientY);
+        } else {
+            hover = null;
+            document.getElementById('inspector').style.display = 'none';
+        }
+    });
+
+    function updateInspector(best, x, y) {
+        const ins = document.getElementById('inspector');
+        ins.style.display = 'block'; ins.style.left = (x + 20) + 'px'; ins.style.top = (y + 20) + 'px';
+        ins.innerHTML = `
+            <div style="font-weight:900; color:var(--accent); margin-bottom:8px; border-bottom:1px solid var(--border); font-size: 0.9rem;">${best.profession.toUpperCase()} #${Math.floor(best.id*1000)%9999}</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:8px;">
+                <div><small>ESTATUS</small><br><b>${(best.status*100).toFixed(1)}%</b></div>
+                <div><small>PRESTIGIO</small><br><b>${(best.prestige*100).toFixed(1)}%</b></div>
+                <div><small>INFLUENCIA</small><br><b>${(best.influence*100).toFixed(1)}%</b></div>
+                <div><small>SATISFACCIÓN</small><br><b>${(best.satisfaction*100).toFixed(0)}%</b></div>
+                <div><small>SEXO</small><br><b>${best.sex}</b></div>
+            </div>
+            <div style="margin-top:10px;">
+                <div style="display:flex; justify-content:space-between;"><small>CAPITAL ECONÓMICO</small><small>$${Math.floor(best.wealth).toLocaleString()}</small></div>
+                <div class="capital-bar-container"><div class="capital-bar" style="width:${best.ec*100}%; background:#2ea44f;"></div></div>
+                <div style="display:flex; justify-content:space-between;"><small>CAPITAL CULTURAL</small><small>${(best.cu*100).toFixed(0)}%</small></div>
+                <div class="capital-bar-container"><div class="capital-bar" style="width:${best.cu*100}%; background:#0366d6;"></div></div>
+                <div style="display:flex; justify-content:space-between;"><small>CAPITAL SOCIAL</small><small>${(best.so*100).toFixed(0)}%</small></div>
+                <div class="capital-bar-container"><div class="capital-bar" style="width:${best.so*100}%; background:#f9c513;"></div></div>
+            </div>
+            <div style="margin-top:10px; font-size:0.6rem; opacity:0.8; border-top:1px solid var(--border); padding-top:5px;">
+                <b>Linaje:</b> ${best.parent ? 'Generación ' + (best.history.length) : 'Fundador'}<br>
+                <b>Historial:</b> ${best.history.map(h => Math.floor(h.s*100)).join('→')}%
+            </div>
+        `;
     }
 
     canvas.addEventListener('mousemove', e => {
@@ -500,6 +642,7 @@
                     <div><small>PRESTIGIO</small><br><b>${(best.prestige*100).toFixed(1)}%</b></div>
                     <div><small>INFLUENCIA</small><br><b>${(best.influence*100).toFixed(1)}%</b></div>
                     <div><small>SATISFACCIÓN</small><br><b>${(best.satisfaction*100).toFixed(0)}%</b></div>
+                    <div><small>SEXO</small><br><b>${best.sex}</b></div>
                 </div>
                 <div style="margin-top:10px;">
                     <div style="display:flex; justify-content:space-between;"><small>CAPITAL ECONÓMICO</small><small>$${Math.floor(best.wealth).toLocaleString()}</small></div>
@@ -521,9 +664,23 @@
     function togglePlay() { isPlay = !isPlay; document.getElementById('playBtn').innerText = isPlay ? '⏸ PAUSA' : '▶ INICIAR'; document.getElementById('playBtn').classList.toggle('active', isPlay); }
     function toggleComparison() { isComp = !isComp; document.getElementById('cmpBtn').classList.toggle('active', isComp); document.getElementById('tabUI').style.display = isComp ? 'flex' : 'none'; if (!isComp) selectSim('A'); }
     function selectSim(id) { active = (id === 'A') ? simA : simB; document.getElementById('tA').classList.toggle('sel', id === 'A'); document.getElementById('tB').classList.toggle('sel', id === 'B'); syncInputs(); }
-    function syncInputs() { const c = active.cfg; ['pop', 'speed', 'inh', 'edu', 'tax'].forEach(k => { document.getElementById('p_'+k).value = c[k]; document.getElementById('v_'+k).innerText = c[k]; }); }
-    ['pop', 'speed', 'inh', 'edu', 'tax'].forEach(k => { document.getElementById('p_'+k).addEventListener('input', e => { const v = parseFloat(e.target.value); active.cfg[k] = v; document.getElementById('v_'+k).innerText = v; }); });
-    function shock(type) { (isComp ? [simA, simB] : [simA]).forEach(s => s.agents.forEach(a => a.wealth *= (type=='crisis'? 0.6 : 1.7))); }
+    function syncInputs() { const c = active.cfg; ['pop', 'speed', 'inh', 'edu', 'tax', 'merit'].forEach(k => { document.getElementById('p_'+k).value = c[k]; document.getElementById('v_'+k).innerText = c[k]; }); }
+    ['pop', 'speed', 'inh', 'edu', 'tax', 'merit'].forEach(k => { document.getElementById('p_'+k).addEventListener('input', e => { const v = parseFloat(e.target.value); active.cfg[k] = v; document.getElementById('v_'+k).innerText = v; }); });
+    function shock(type) {
+        const sims = isComp ? [simA, simB] : [simA];
+        const msg = document.createElement('div'); msg.className = 'shock-event-msg';
+        msg.innerText = type.toUpperCase(); document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 2000);
+
+        sims.forEach(s => {
+            if (type === 'crisis') s.agents.forEach(a => a.wealth *= 0.6);
+            if (type === 'boom') s.agents.forEach(a => a.wealth *= 1.4);
+            if (type === 'pandemic') s.agents.forEach(a => { if (a.status < 0.4) a.wealth *= 0.5; else a.wealth *= 0.9; });
+            if (type === 'edu') s.agents.forEach(a => a.edu = Math.min(1, a.edu + 0.2));
+            if (type === 'tech') s.agents.forEach(a => { if (a.status < 0.5) a.wealth *= 0.7; else a.wealth *= 1.3; });
+            if (type === 'tax') { s.cfg.tax = 0.5; syncInputs(); }
+        });
+    }
     function openModal(id) { document.getElementById('m_'+id).style.display = 'flex'; }
     function closeModal() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
@@ -540,16 +697,52 @@
     }
     function stopRecording() { mediaRecorder.stop(); document.getElementById('recBtn').innerText = '📹 REC'; document.getElementById('recBtn').onclick = startRecording; }
     function generateReport() {
+        const gini = active.getGini().toFixed(3);
+        const wealthTotal = active.agents.reduce((acc,a)=>acc+a.wealth,0);
+        const counts = STRATA.map(s => active.agents.filter(a => a.status >= s.min && a.status < (STRATA[STRATA.indexOf(s)-1]?.min || 1.1)).length);
+        const mob = active.agents.filter(a => a.parent && Math.abs(a.status - a.parent.status) > 0.15).length / (active.agents.filter(a=>a.parent).length||1);
+
         const report = `
-            <html><head><title>Informe de Estratificación</title><style>body{font-family:sans-serif;padding:40px;}table{width:100%;border-collapse:collapse;}td,th{border:1px solid #ddd;padding:8px;}</style></head>
-            <body><h1>Informe de Sociedad - Año ${Math.floor(active.year)}</h1>
-            <p>Gini: ${active.getGini().toFixed(3)}</p>
-            <table><tr><th>Métrica</th><th>Valor</th></tr>
-            <tr><td>Población</td><td>${active.agents.length}</td></tr>
-            <tr><td>Riqueza Total</td><td>$${Math.floor(active.agents.reduce((acc,a)=>acc+a.wealth,0)).toLocaleString()}</td></tr>
-            </table></body></html>
+            <!DOCTYPE html>
+            <html><head><title>Informe OECD: Estratificación Social</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 50px; color: #333; line-height: 1.6; max-width: 800px; margin: auto; }
+                .header { border-bottom: 5px solid #003366; padding-bottom: 20px; margin-bottom: 40px; }
+                h1 { color: #003366; margin: 0; }
+                .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+                .kpi-card { background: #f4f7f9; padding: 20px; border-radius: 10px; border: 1px solid #ddd; text-align: center; }
+                .kpi-card big { display: block; font-size: 2rem; font-weight: 800; color: #003366; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                th { background: #003366; color: white; }
+                .chart-bar { background: #003366; height: 20px; border-radius: 3px; }
+            </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Society Analytics Report</h1>
+                    <p>Referencia Temporal: Año Fiscal ${Math.floor(active.year)} | ID Simulación: ${active.id}</p>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>COEFICIENTE GINI</small><big>${gini}</big></div>
+                    <div class="kpi-card"><small>MOVILIDAD SOCIAL</small><big>${(mob*100).toFixed(1)}%</big></div>
+                    <div class="kpi-card"><small>POBLACIÓN</small><big>${active.agents.length}</big></div>
+                </div>
+                <h3>Distribución de Estratos</h3>
+                <table>
+                    <tr><th>Nivel Social</th><th>Población</th><th>Representación</th></tr>
+                    ${STRATA.map((s, i) => `
+                        <tr>
+                            <td>${s.name}</td>
+                            <td>${counts[i]}</td>
+                            <td><div class="chart-bar" style="width: ${(counts[i]/active.agents.length)*100}%"></div></td>
+                        </tr>
+                    `).join('')}
+                </table>
+                <p style="margin-top:40px; font-size: 0.8rem; color: #777;">Este informe ha sido generado automáticamente por la plataforma de simulación Dr. Juan Moisés de la Serna - Research Identity 10.0.</p>
+            </body></html>
         `;
-        download(report, 'informe.html', 'text/html');
+        download(report, 'informe_oecd.html', 'text/html');
     }
     window.addEventListener('resize', () => { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; createSprites(); });
     window.dispatchEvent(new Event('resize'));
