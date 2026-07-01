@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuro-V12 | Connectome Explorer</title>
+    <title>Neuro-V13 | APEX Connectome</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700&display=swap');
 
         :root {
             --primary: #00f2ff;
@@ -80,13 +80,13 @@
         }
 
         .header h1 {
-            font-family: var(--font-mono);
-            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
             margin: 0;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             font-weight: 700;
             color: var(--primary);
-            text-shadow: 0 0 15px var(--primary-glow);
+            text-shadow: 0 0 20px var(--primary-glow);
         }
 
         .header p {
@@ -243,13 +243,60 @@
 
         /* Brain Silhouette */
         #brain-bg {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 75vh; height: 75vh;
-            opacity: 0.04;
-            pointer-events: none;
-            filter: blur(1px);
+            display: none;
+        }
+
+        .region-hud {
+            top: 180px; left: 25px;
+            width: 200px;
+        }
+        .region-bar-container { margin-bottom: 10px; }
+        .region-bar-label { font-size: 0.55rem; opacity: 0.5; margin-bottom: 3px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 1px; }
+        .region-bar-bg { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+        .region-bar-fill { height: 100%; width: 0%; transition: width 0.1s ease; box-shadow: 0 0 10px currentColor; }
+
+        /* Presets Panel */
+        .presets-panel {
+            top: 400px; left: 25px;
+            width: 200px;
+        }
+
+        .preset-btn {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .preset-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+        .preset-btn.active { background: var(--primary); color: #000; font-weight: 700; box-shadow: 0 0 15px var(--primary-glow); }
+        .preset-icon { width: 4px; height: 14px; background: currentColor; margin-right: 10px; border-radius: 2px; }
+
+        /* Spectral Monitor */
+        .spectral-container {
+            margin-top: 15px;
+            height: 30px;
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+        }
+
+        .spectral-bar {
+            flex: 1;
+            background: var(--primary);
+            opacity: 0.3;
+            transition: height 0.1s ease, opacity 0.1s ease;
         }
     </style>
 </head>
@@ -258,11 +305,6 @@
     <div id="boot-overlay"><div class="loader"></div></div>
 
     <div id="laboratory-root">
-        <svg id="brain-bg" viewBox="0 0 200 200">
-            <path fill="currentColor" d="M100,20c-40,0-75,30-75,70c0,25,15,45,15,65c0,20,15,25,30,25h60c15,0,30-5,30-25c0-20,15-40,15-65C175,50,140,20,100,20z M70,100c-5,0-10-5-10-10s5-10,10-10s10,5,10,10S75,100,70,100z M130,100c-5,0-10-5-10-10s5-10,10-10s10,5,10,10S135,100,130,100z"/>
-            <path fill="none" stroke="currentColor" stroke-width="2" d="M100,20v160 M25,90h150 M50,50c10,10,20,10,30,0 M120,50c10,10,20,10,30,0"/>
-        </svg>
-
         <canvas id="neuroCanvas"></canvas>
         <div id="synaptic-inspector">
             <div class="inspector-row"><span>Type:</span> <span id="insp-type" style="color:var(--primary)">GLUTAMATE</span></div>
@@ -271,8 +313,13 @@
         </div>
 
         <div class="hud-element header">
-            <h1>NEURO-V12: CONNECTOME</h1>
-            <p>Advanced Synaptic Architecture Laboratory</p>
+            <h1>NEURO-APEX V13</h1>
+            <p>High-Fidelity Neural Mapping Console</p>
+        </div>
+
+        <div class="hud-element region-hud">
+            <div style="font-size: 0.6rem; font-weight: 700; opacity: 0.8; letter-spacing: 2px; margin-bottom: 12px;">REGIONAL DYNAMICS</div>
+            <div id="region-bars"></div>
         </div>
 
         <div class="hud-element eeg-panel">
@@ -280,6 +327,16 @@
             <div class="eeg-row"><span class="eeg-label">FRONTAL LOBE (α)</span><canvas id="eeg-1" class="eeg-canvas"></canvas></div>
             <div class="eeg-row"><span class="eeg-label">PARIETAL LOBE (β)</span><canvas id="eeg-2" class="eeg-canvas"></canvas></div>
             <div class="eeg-row"><span class="eeg-label">OCCIPITAL LOBE (γ)</span><canvas id="eeg-3" class="eeg-canvas"></canvas></div>
+            <div class="spectral-container" id="spectral-bars"></div>
+            <div style="font-size: 0.5rem; opacity: 0.4; text-align: center; margin-top: 4px; letter-spacing: 1px;">FREQUENCY SPECTROGRAM (δ - θ - α - β - γ)</div>
+        </div>
+
+        <div class="hud-element presets-panel">
+            <div style="font-size: 0.6rem; font-weight: 700; opacity: 0.8; letter-spacing: 2px; margin-bottom: 12px;">NEUROMODULATION</div>
+            <button class="preset-btn" onclick="setPreset('focus', this)"><div class="preset-icon"></div>Hyper-Focus</button>
+            <button class="preset-btn active" onclick="setPreset('default', this)"><div class="preset-icon"></div>Homeostasis</button>
+            <button class="preset-btn" onclick="setPreset('rem', this)"><div class="preset-icon"></div>REM Phase</button>
+            <button class="preset-btn" onclick="setPreset('chaos', this)"><div class="preset-icon"></div>Neuro-Storm</button>
         </div>
 
         <div class="hud-element stats-panel">
@@ -314,8 +371,8 @@
 
     <script>
         /**
-         * Neuro-Architecture v12 Engine
-         * Connectome Explorer with Advanced Biophysics & 3D Parallax
+         * Neuro-APEX v13 Engine
+         * High-Fidelity 3D Connectome with Regional Biophysics
          */
 
         const canvas = document.getElementById('neuroCanvas');
@@ -332,8 +389,15 @@
         let globalGain = 0.7;
 
         const config = {
-            neuronCount: 40,
-            baseConnections: 3,
+            neuronCount: 150,
+            baseConnections: 4,
+            regions: {
+                FRONTAL: { color: '#00f2ff', label: 'FRONTAL LOBE', ox: 0.6, oy: 0, oz: 0, sx: 0.7, sy: 0.6, sz: 0.6 },
+                PARIETAL: { color: '#ffcc00', label: 'PARIETAL LOBE', ox: -0.1, oy: 0.4, oz: 0, sx: 0.5, sy: 0.5, sz: 0.6 },
+                TEMPORAL: { color: '#ff3366', label: 'TEMPORAL LOBE', ox: 0.1, oy: -0.3, oz: 0.6, sx: 0.5, sy: 0.4, sz: 0.3 },
+                OCCIPITAL: { color: '#00ff88', label: 'OCCIPITAL LOBE', ox: -0.7, oy: 0, oz: 0, sx: 0.4, sy: 0.5, sz: 0.5 },
+                CEREBELLUM: { color: '#aa00ff', label: 'CEREBELLUM', ox: -0.6, oy: -0.6, oz: 0, sx: 0.4, sy: 0.3, sz: 0.4 }
+            },
             colors: {
                 glutamate: '#00f2ff',
                 dopamine: '#ffcc00',
@@ -343,20 +407,37 @@
         };
 
         class Neuron {
-            constructor(id) {
+            constructor(id, regionKey) {
                 this.id = id;
-                this.x3d = (Math.random() - 0.5) * 2.2;
-                this.y3d = (Math.random() - 0.5) * 2.2;
-                this.z3d = (Math.random() - 0.5) * 2.2;
+                this.regionKey = regionKey;
+                this.region = config.regions[regionKey];
+
+                this.generateCoordinates();
 
                 this.x = 0; this.y = 0; this.size = 0;
                 this.potential = Math.random() * 0.5;
                 this.threshold = 1.0;
                 this.type = this.assignType();
-                this.color = config.colors[this.type];
+                this.color = this.type === 'gaba' ? '#ff3366' : this.region.color;
 
                 this.synapses = [];
                 this.lastSpike = -1000;
+            }
+
+            generateCoordinates() {
+                const r = this.region;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const rho = Math.cbrt(Math.random()); // Uniform distribution in volume
+
+                this.x3d = r.ox + rho * r.sx * Math.sin(phi) * Math.cos(theta);
+                this.y3d = r.oy + rho * r.sy * Math.sin(phi) * Math.sin(theta);
+                this.z3d = r.oz + rho * r.sz * Math.cos(phi);
+
+                // Mirroring for bilateral lobes
+                if (Math.random() > 0.5 && (this.regionKey === 'TEMPORAL' || this.regionKey === 'FRONTAL' || this.regionKey === 'PARIETAL')) {
+                    this.z3d *= -1;
+                }
             }
 
             assignType() {
@@ -368,7 +449,6 @@
             }
 
             project(cam) {
-                // Apply subtle rotation
                 const cosR = Math.cos(cam.rotation);
                 const sinR = Math.sin(cam.rotation);
 
@@ -376,12 +456,12 @@
                 const rz = this.x3d * sinR + this.z3d * cosR;
                 this.rotatedZ = rz;
 
-                const pz = rz + 3 + cam.z;
-                const fov = 800;
+                const pz = rz + 4 + cam.z;
+                const fov = 900;
                 this.x = rx * fov / pz + width/2 + cam.x;
                 this.y = this.y3d * fov / pz + height/2 + cam.y;
-                this.size = 14 / pz;
-                this.depthAlpha = Math.max(0.05, (3.5 - pz) / 2.5);
+                this.size = 18 / pz;
+                this.depthAlpha = Math.max(0.05, (4.5 - pz) / 3.5);
             }
 
             update(dt) {
@@ -407,7 +487,7 @@
 
                 this.synapses.forEach(s => {
                     setTimeout(() => {
-                        pulses.push(new Pulse(this, neurons[s.targetId], s.weight, this.type));
+                        pulses.push(new Pulse(this, neurons[s.targetId], s.weight, this.type, s.cpOffset));
                     }, Math.random() * 60);
 
                     // Plasticity: Strengthen if target fires synchronously
@@ -433,15 +513,23 @@
                 ctx.arc(this.x, this.y, this.size * (1 + glow * 0.5), 0, Math.PI * 2);
                 ctx.fill();
 
-                // Draw Synaptic Cables
+                // Draw Synaptic Cables (Bezier)
                 ctx.lineWidth = 0.5;
                 this.synapses.forEach(s => {
                     const t = neurons[s.targetId];
                     ctx.strokeStyle = this.color;
-                    ctx.globalAlpha = this.depthAlpha * 0.15 * s.weight;
+                    ctx.globalAlpha = this.depthAlpha * 0.12 * s.weight;
+
+                    const mx = (this.x + t.x) / 2;
+                    const my = (this.y + t.y) / 2;
+                    const dist = Math.sqrt((t.x - this.x)**2 + (t.y - this.y)**2);
+                    const angle = Math.atan2(t.y - this.y, t.x - this.x) + Math.PI/2;
+                    const cx = mx + Math.cos(angle) * (dist * s.cpOffset);
+                    const cy = my + Math.sin(angle) * (dist * s.cpOffset);
+
                     ctx.beginPath();
                     ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(t.x, t.y);
+                    ctx.quadraticCurveTo(cx, cy, t.x, t.y);
                     ctx.stroke();
                 });
                 ctx.restore();
@@ -449,13 +537,14 @@
         }
 
         class Pulse {
-            constructor(source, target, weight, type) {
+            constructor(source, target, weight, type, cpOffset) {
                 this.source = source;
                 this.target = target;
                 this.weight = weight;
                 this.type = type;
+                this.cpOffset = cpOffset;
                 this.progress = 0;
-                this.speed = 0.015 + Math.random() * 0.01;
+                this.speed = 0.012 + Math.random() * 0.01;
             }
 
             update() {
@@ -470,25 +559,38 @@
                 return true;
             }
 
+            getXY(p) {
+                const mx = (this.source.x + this.target.x) / 2;
+                const my = (this.source.y + this.target.y) / 2;
+                const dist = Math.sqrt((this.target.x - this.source.x)**2 + (this.target.y - this.source.y)**2);
+                const angle = Math.atan2(this.target.y - this.source.y, this.target.x - this.source.x) + Math.PI/2;
+                const cx = mx + Math.cos(angle) * (dist * this.cpOffset);
+                const cy = my + Math.sin(angle) * (dist * this.cpOffset);
+
+                const invP = 1 - p;
+                const x = invP * invP * this.source.x + 2 * invP * p * cx + p * p * this.target.x;
+                const y = invP * invP * this.source.y + 2 * invP * p * cy + p * p * this.target.y;
+                return {x, y};
+            }
+
             draw() {
-                const x = this.source.x + (this.target.x - this.source.x) * this.progress;
-                const y = this.source.y + (this.target.y - this.source.y) * this.progress;
+                const {x, y} = this.getXY(this.progress);
 
                 ctx.save();
                 ctx.fillStyle = config.colors[this.type];
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 12;
                 ctx.shadowColor = ctx.fillStyle;
                 ctx.beginPath();
-                ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                ctx.arc(x, y, 2.8, 0, Math.PI * 2);
                 ctx.fill();
 
                 // Trail
-                ctx.lineWidth = 2;
-                ctx.globalAlpha = 0.4;
+                ctx.lineWidth = 2.5;
+                ctx.globalAlpha = 0.35;
+                ctx.strokeStyle = ctx.fillStyle;
                 ctx.beginPath();
                 ctx.moveTo(x, y);
-                const tx = this.source.x + (this.target.x - this.source.x) * (this.progress - 0.05);
-                const ty = this.source.y + (this.target.y - this.source.y) * (this.progress - 0.05);
+                const {x: tx, y: ty} = this.getXY(Math.max(0, this.progress - 0.06));
                 ctx.lineTo(tx, ty);
                 ctx.stroke();
                 ctx.restore();
@@ -527,6 +629,40 @@
         }
 
         let eegs = [];
+        let spectralBars = [];
+
+        function setPreset(mode, btn) {
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const gainSlider = document.getElementById('param-gain');
+            const plasticitySlider = document.getElementById('param-plasticity');
+
+            switch(mode) {
+                case 'focus':
+                    globalGain = 0.9;
+                    globalPlasticity = 0.4;
+                    break;
+                case 'default':
+                    globalGain = 0.7;
+                    globalPlasticity = 0.5;
+                    break;
+                case 'rem':
+                    globalGain = 0.3;
+                    globalPlasticity = 0.9;
+                    break;
+                case 'chaos':
+                    globalGain = 1.0;
+                    globalPlasticity = 1.0;
+                    break;
+            }
+
+            gainSlider.value = globalGain * 100;
+            plasticitySlider.value = globalPlasticity * 100;
+            document.getElementById('val-gain').innerText = (globalGain * 100).toFixed(0) + "%";
+            document.getElementById('val-plasticity').innerText = (globalPlasticity * 100).toFixed(0) + "%";
+            document.getElementById('stat-plasticity').innerText = (0.5 + globalPlasticity * 0.5).toFixed(2);
+        }
 
         function init() {
             width = canvas.width = window.innerWidth;
@@ -539,15 +675,60 @@
                 return new EEG(id);
             });
 
-            neurons = Array.from({length: config.neuronCount}, (_, i) => new Neuron(i));
+            neurons = [];
+            const regionKeys = Object.keys(config.regions);
+            for(let i=0; i<config.neuronCount; i++) {
+                const rk = regionKeys[Math.floor(Math.random() * regionKeys.length)];
+                neurons.push(new Neuron(i, rk));
+            }
 
             neurons.forEach(n => {
-                const count = 2 + Math.floor(Math.random() * 3);
+                const count = config.baseConnections + Math.floor(Math.random() * 2);
                 for (let i = 0; i < count; i++) {
-                    const targetId = Math.floor(Math.random() * config.neuronCount);
-                    if (targetId !== n.id) n.synapses.push({ targetId, weight: 0.8 + Math.random() });
+                    let targetId;
+                    if (Math.random() < 0.7) {
+                        const sameRegion = neurons.filter(tn => tn.regionKey === n.regionKey && tn.id !== n.id);
+                        targetId = sameRegion[Math.floor(Math.random() * sameRegion.length)].id;
+                    } else {
+                        targetId = Math.floor(Math.random() * config.neuronCount);
+                    }
+                    if (targetId !== n.id) {
+                        n.synapses.push({
+                            targetId,
+                            weight: 0.8 + Math.random(),
+                            cpOffset: (Math.random() - 0.5) * 0.4 // Organic curvature factor
+                        });
+                    }
                 }
             });
+
+            // Init Spectral Bars
+            const spectralContainer = document.getElementById('spectral-bars');
+            spectralContainer.innerHTML = '';
+            spectralBars = [];
+            for(let i=0; i<24; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'spectral-bar';
+                spectralContainer.appendChild(bar);
+                spectralBars.push(bar);
+            }
+
+            // Init Region Bars
+            const barContainer = document.getElementById('region-bars');
+            barContainer.innerHTML = '';
+            regionKeys.forEach(rk => {
+                const div = document.createElement('div');
+                div.className = 'region-bar-container';
+                div.innerHTML = `
+                    <div class="region-bar-label"><span>${config.regions[rk].label}</span><span id="bar-val-${rk}">0%</span></div>
+                    <div class="region-bar-bg"><div id="bar-fill-${rk}" class="region-bar-fill" style="color: ${config.regions[rk].color}; background: currentColor"></div></div>
+                `;
+                barContainer.appendChild(div);
+            });
+
+            // Update stats immediately
+            document.getElementById('stat-neurons').innerText = neurons.length;
+            document.getElementById('stat-synapses').innerText = neurons.reduce((a, n) => a + n.synapses.length, 0);
 
             document.getElementById('boot-overlay').style.opacity = 0;
             setTimeout(() => document.getElementById('boot-overlay').remove(), 1500);
@@ -557,7 +738,6 @@
             frameCount++;
             ctx.clearRect(0, 0, width, height);
 
-            // Subtle Background Bloom on High Activity
             const activityLevel = pulses.length / 50;
             bloomAmount += (activityLevel - bloomAmount) * 0.1;
             document.getElementById('laboratory-root').style.boxShadow = `inset 0 0 ${bloomAmount * 100}px rgba(0, 242, 255, ${bloomAmount * 0.2})`;
@@ -571,8 +751,7 @@
                 n.project(camera);
             });
 
-            // Sort by depth and draw
-            neurons.sort((a, b) => b.rotatedZ - a.rotatedZ).forEach(n => n.draw());
+            [...neurons].sort((a, b) => b.rotatedZ - a.rotatedZ).forEach(n => n.draw());
 
             pulses = pulses.filter(p => {
                 p.draw();
@@ -580,13 +759,43 @@
             });
 
             if (frameCount % 2 === 0) {
-                const avg = neurons.reduce((acc, n) => acc + n.potential, 0) / neurons.length;
-                eegs[0].update(avg, 'alpha');
-                eegs[1].update(avg, 'beta');
-                eegs[2].update(avg, 'gamma');
+                const getAvg = (rk) => {
+                    const rNeurons = neurons.filter(n => n.regionKey === rk);
+                    return rNeurons.reduce((acc, n) => acc + n.potential, 0) / rNeurons.length;
+                };
+
+                eegs[0].update(getAvg('FRONTAL'), 'alpha');
+                eegs[1].update(getAvg('PARIETAL'), 'beta');
+                eegs[2].update(getAvg('OCCIPITAL'), 'gamma');
+
+                const totalAvg = Object.keys(config.regions).reduce((acc, rk) => acc + getAvg(rk), 0) / 5;
+
+                // Update Spectral bars
+                spectralBars.forEach((bar, i) => {
+                    const noise = Math.random() * 0.3;
+                    const freqScale = Math.sin(frameCount * 0.05 + i * 0.2) * 0.5 + 0.5;
+                    const h = (totalAvg * 100 * freqScale) + (noise * 20);
+                    bar.style.height = Math.max(2, h) + "px";
+                    bar.style.opacity = 0.2 + (h/50);
+                });
+
+                Object.keys(config.regions).forEach(rk => {
+                    const avg = getAvg(rk);
+                    const fill = document.getElementById(`bar-fill-${rk}`);
+                    const val = document.getElementById(`bar-val-${rk}`);
+                    const percent = Math.min(100, Math.floor(avg * 100));
+                    fill.style.width = percent + "%";
+                    val.innerText = percent + "%";
+
+                    // Reactive glow based on activity
+                    if (avg > 0.4) {
+                        fill.style.filter = `brightness(1.5) drop-shadow(0 0 5px ${config.regions[rk].color})`;
+                    } else {
+                        fill.style.filter = 'none';
+                    }
+                });
             }
 
-            // Sync Stats
             if (frameCount % 60 === 0) {
                 document.getElementById('stat-neurons').innerText = neurons.length;
                 document.getElementById('stat-synapses').innerText = neurons.reduce((a, n) => a + n.synapses.length, 0);
