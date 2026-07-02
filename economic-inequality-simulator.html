@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio de Economía Emergente V70 | Research Identity 10.0</title>
+<title>Laboratorio de Economía Emergente V72 | Research Identity 10.0</title>
     <!--
-        LABORATORIO DE ECONOMÍA EMERGENTE V70.0 - "SISTEMA ADAPTATIVO COMPLEJO"
+        LABORATORIO DE ECONOMÍA EMERGENTE V72.0 - "SISTEMA ADAPTATIVO COMPLEJO"
         Simulación de Desigualdad y Distribución de la Riqueza basada en Agentes (ABM)
         Autor: Dr. Juan Moisés de la Serna
         Desarrollo: Jules (Senior Software Engineer)
 
-        MEJORAS V70:
+        MEJORAS V72:
+        - Ajuste cromático estrictamente según prompt (Rojo->Naranja->Amarillo->Verde->Azul).
         - Motor de Deuda y Crédito (Trampas de Pobreza).
         - Emprendimiento (Riesgo/Recompensa).
         - Inflación diferenciada por activos (Inmuebles vs Efectivo).
@@ -38,13 +39,13 @@
             --font-main: 'Inter', -apple-system, system-ui, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-            /* Escala Cromática de Riqueza - Palette 10.0 */
-            --c-poverty: #ff4b2b;
-            --c-low: #ffb347;
-            --c-middle: #fceabb;
-            --c-high: #00d2ff;
-            --c-elite: #3a7bd5;
-            --c-billion: #9d50bb;
+            /* Escala Cromática de Riqueza - Palette 10.0 - Strictly following prompt requirements */
+            --c-poverty: #ff4b2b; /* Rojo */
+            --c-low: #ffb347;     /* Naranja */
+            --c-middle: #fceabb;  /* Amarillo */
+            --c-high: #10b981;    /* Verde */
+            --c-elite: #3b82f6;    /* Azul */
+            --c-billion: #1d4ed8;  /* Azul Oscuro/Deep Blue */
 
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -77,7 +78,11 @@
             z-index: 1200;
         }
         .logo-box { display: flex; align-items: center; gap: 14px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; font-size: 1rem; cursor: default; }
-        .top-stats-bar { display: flex; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; background: rgba(0,0,0,0.3); padding: 8px 20px; border-radius: 50px; border: 1px solid var(--border); }
+        .top-stats-bar {
+            display: flex; align-items: center; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem;
+            background: rgba(0,0,0,0.3); padding: 8px 25px; border-radius: 50px; border: 1px solid var(--border);
+            min-width: 850px; justify-content: space-between;
+        }
         .top-stats-bar span b { color: var(--accent); }
 
         .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -104,9 +109,11 @@
             display: flex; align-items: center; gap: 12px; font-size: 0.7rem;
             font-weight: 800; text-transform: uppercase; color: var(--text-muted);
             cursor: pointer; transition: 0.3s;
+            padding: 4px 8px;
+            border-radius: 8px;
         }
-        .legend-item:hover { color: #fff; }
-        .legend-item.highlight { color: var(--primary); transform: translateX(5px); }
+        .legend-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .legend-item.active-filter { color: var(--primary); background: rgba(99, 102, 241, 0.1); border: 1px solid var(--primary); }
         .l-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
 
         .sidebar {
@@ -219,14 +226,22 @@
 <header>
     <div class="logo-box">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-        <span>Research Economic Intelligence V70</span>
+        <span>Research Economic Intelligence V72</span>
     </div>
     <div class="top-stats-bar">
-        <span>AÑO: <b id="ui-top-year">0</b></span>
-        <span>GINI: <b id="ui-top-gini">0.000</b></span>
-        <span>PIB: $<b id="ui-top-pib">0</b></span>
-        <span>INFLACIÓN: <b id="ui-top-inf">0%</b></span>
-        <span>DEUDA AGREG.: $<b id="ui-top-debt">0</b></span>
+        <div style="display: flex; align-items: center; gap: 15px; border-right: 1px solid var(--border); padding-right: 15px; margin-right: 5px;">
+            <span>AÑO: <b id="ui-top-year">0</b></span>
+            <span id="ui-cycle-badge" style="background: var(--accent); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: 900; font-size: 0.6rem;">EXPANSIÓN</span>
+        </div>
+        <div id="ui-news-ticker" style="flex: 1; color: var(--text-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 300px;">
+            Sistema inicializado. Esperando evolución...
+        </div>
+        <div style="display: flex; gap: 1.5rem; border-left: 1px solid var(--border); padding-left: 15px;">
+            <span>GINI: <b id="ui-top-gini">0.000</b></span>
+            <span>PIB: $<b id="ui-top-pib">0</b></span>
+            <span>DEUDA: $<b id="ui-top-debt">0</b></span>
+            <span>INFLACIÓN: <b id="ui-top-inf">0%</b></span>
+        </div>
     </div>
     <div style="display:flex; gap:10px;">
         <button class="btn btn-accent" id="btn-didactic-open">Didáctica</button>
@@ -242,13 +257,13 @@
 
         <div class="tier-labels" id="tier-markers"></div>
 
-        <div class="simulation-legend">
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-poverty); color:var(--c-poverty);"></div> Pobreza Extrema</div>
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-low); color:var(--c-low);"></div> Bajos Ingresos</div>
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-middle); color:var(--c-middle);"></div> Clase Media</div>
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-high); color:var(--c-high);"></div> Riqueza Alta</div>
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-elite); color:var(--c-elite);"></div> Elites Financieras</div>
-            <div class="legend-item"><div class="l-dot" style="background:var(--c-billion); color:var(--c-billion);"></div> Billionaires</div>
+        <div class="simulation-legend" id="main-legend">
+            <div class="legend-item" data-tier="0"><div class="l-dot" style="background:var(--c-poverty); color:var(--c-poverty);"></div> Pobreza Extrema</div>
+            <div class="legend-item" data-tier="1"><div class="l-dot" style="background:var(--c-low); color:var(--c-low);"></div> Bajos Ingresos</div>
+            <div class="legend-item" data-tier="2"><div class="l-dot" style="background:var(--c-middle); color:var(--c-middle);"></div> Clase Media</div>
+            <div class="legend-item" data-tier="3"><div class="l-dot" style="background:var(--c-high); color:var(--c-high);"></div> Riqueza Alta</div>
+            <div class="legend-item" data-tier="4"><div class="l-dot" style="background:var(--c-elite); color:var(--c-elite);"></div> Elite Financiera</div>
+            <div class="legend-item" data-tier="5"><div class="l-dot" style="background:var(--c-billion); color:var(--c-billion);"></div> Multimillonarios</div>
         </div>
 
         <!-- Inspector -->
@@ -303,9 +318,9 @@
 
     <aside class="sidebar">
         <div class="sidebar-tabs">
-            <button class="tab-btn active" data-pane="tab-lab">Laboratorio</button>
-            <button class="tab-btn" data-pane="tab-stats">Analítica</button>
-            <button class="tab-btn" data-pane="tab-theory">Sociología</button>
+            <button class="tab-btn active" data-pane="tab-lab" title="Configuración de la simulación">Laboratorio</button>
+            <button class="tab-btn" data-pane="tab-stats" title="Estadísticas económicas">Analítica</button>
+            <button class="tab-btn" data-pane="tab-theory" title="Dinámicas sociales y movilidad">Sociología</button>
         </div>
 
         <div class="pane active" id="tab-lab">
@@ -361,6 +376,10 @@
             <div class="control-group">
                 <div class="control-label">Inflación Anual <span><b id="lbl-inflation">3%</b></span></div>
                 <input type="range" id="p-inflation" min="-5" max="50" value="3">
+            </div>
+            <div class="control-group">
+                <div class="control-label">Tasa Ahorro Base <span><b id="lbl-savings">30%</b></span></div>
+                <input type="range" id="p-savings" min="0" max="100" value="30">
             </div>
             <div class="control-group">
                 <div class="control-label">Efecto Mateo (Redistr. vs Concentr.) <span><b id="lbl-mateo">50%</b></span></div>
@@ -430,14 +449,24 @@
         </div>
 
         <div class="pane" id="tab-theory">
-            <div class="chart-box" style="height:320px;">
-                <span class="chart-label">Pirámide de Estratificación Social</span>
-                <canvas id="viz-pyramid" style="width:100%; height:260px;"></canvas>
+            <div class="chart-box" style="height:340px;">
+                <span class="chart-label">Pirámide de Estratificación Social (%)</span>
+                <canvas id="viz-pyramid" style="width:100%; height:280px;"></canvas>
             </div>
+
+            <div class="chart-box" style="height:300px;">
+                <span class="chart-label">Matriz de Movilidad Intergeneracional</span>
+                <div id="mobility-matrix-container" style="font-size: 0.6rem; color: var(--text-muted); margin-top: 10px;">
+                    <p style="margin-bottom: 8px;">Fila: Origen (Padre) | Columna: Destino (Hijo)</p>
+                    <div id="mobility-table" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;"></div>
+                </div>
+            </div>
+
             <div class="chart-box">
                 <span class="chart-label">Distribución de Riqueza (Escala Log)</span>
                 <canvas id="viz-hist-w" class="viz-canvas"></canvas>
             </div>
+
             <div class="stat-grid">
                 <div class="stat-card"><div class="stat-label">Millionaires</div><div class="stat-value" id="an-mill-count">0</div></div>
                 <div class="stat-card"><div class="stat-label">Billionaires</div><div class="stat-value" id="an-bill-count">0</div></div>
@@ -474,33 +503,57 @@
         <div style="font-size:1.1rem; line-height:1.8; color:var(--text-muted);">
             <p>En este laboratorio, la economía es un <b>sistema emergente</b>. No hay un gobierno central que decida quién es rico, sino reglas individuales que, multiplicadas por miles, generan estructuras sociales.</p>
 
-            <h3 style="color:var(--accent); margin-top:2rem;">1. La Trampa de la Deuda</h3>
-            <p>Los agentes que no cubren sus necesidades básicas con su salario recurren al crédito. Con tipos de interés altos, estos agentes dedican una parte creciente de su renta a pagar intereses, impidiendo el ahorro y la inversión (movilidad descendente).</p>
+            <h3 style="color:var(--primary); margin-top:2rem;">Guía de Inicio Rápido (Tutorial)</h3>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; font-size: 0.9rem;">
+                <ol style="margin-left: 20px;">
+                    <li><b>Paso 1:</b> Observe el equilibrio inicial. Con el modelo "Progresivo", el Gini suele estabilizarse.</li>
+                    <li><b>Paso 2:</b> Cambie a "Neoliberal" en Escenarios. Verá cómo los círculos azules (élites) crecen y los rojos (pobreza) se multiplican.</li>
+                    <li><b>Paso 3:</b> Active el "Modo Comparación" para ver dos mundos con la misma semilla pero políticas opuestas.</li>
+                    <li><b>Paso 4:</b> Haga clic en un agente para ver su "Biografía Económica" y entender su trayectoria vital.</li>
+                </ol>
+            </div>
 
-            <h3 style="color:var(--warning); margin-top:2rem;">2. El Emprendimiento</h3>
-            <p>Los agentes con capital y alta educación pueden "emprender". Esto implica una inversión de alto riesgo que puede multiplicar su riqueza o llevarlos a la quiebra. Observe cómo esto aumenta la volatilidad en la parte alta de la pirámide.</p>
+            <h3 style="color:var(--warning); margin-top:2rem;">0. Definiciones Clave</h3>
+            <p>
+                <b>Coeficiente de Gini:</b> Mide la desigualdad global (0 = igualdad total, 1 = una persona tiene todo).<br>
+                <b>Índice de Palma:</b> Ratio entre la riqueza del 10% más rico y el 40% más pobre. Refleja la brecha entre los extremos.<br>
+                <b>Curva de Lorenz:</b> Representación gráfica de la distribución acumulada; cuanto más se aleja de la diagonal, mayor es la desigualdad.
+            </p>
 
-            <h3 style="color:var(--primary); margin-top:2rem;">3. Inflación y Activos</h3>
-            <p>La inflación erosiona el poder adquisitivo del dinero en efectivo (Capital Financiero). Sin embargo, los Inmuebles y Empresas (Capital Real) suelen revalorizarse con la inflación. Esto penaliza a los ahorradores de clase baja y beneficia a los poseedores de activos de clase alta.</p>
+            <h3 style="color:var(--accent); margin-top:2rem;">1. La Trampa de la Deuda y Quiebra</h3>
+            <p>Los agentes que no cubren sus necesidades básicas recurren al crédito. Si la deuda supera su capacidad de pago, entran en <b>quiebra</b> (círculo rojo), perdiendo activos inmobiliarios para saldar deudas. Esto genera ciclos de pobreza difíciles de romper.</p>
 
-            <h3 style="color:var(--secondary); margin-top:2rem;">4. El Coeficiente de Gini y Curva de Lorenz</h3>
-            <p>La <b>Curva de Lorenz</b> representa qué porcentaje de la riqueza posee cada porcentaje de la población. El <b>Gini</b> mide el área entre esta curva y la línea de igualdad perfecta. 0 es igualdad total; 1 es una sola persona poseyendo todo.</p>
+            <h3 style="color:var(--warning); margin-top:2rem;">2. Homofilia y Capital Social</h3>
+            <p>Los individuos tienden a interactuar más con personas de su mismo nivel económico. Esto significa que las élites intercambian valor entre sí, mientras que las clases bajas quedan excluidas de las redes de alta productividad, acelerando la concentración de la riqueza.</p>
 
-            <h3 style="color:var(--info); margin-top:2rem;">5. El Efecto Mateo</h3>
-            <p><i>"Porque al que tiene, se le dará más..."</i>. En economía, esto describe cómo el capital genera más capital de forma exponencial. Los que ya tienen patrimonio acceden a mejores inversiones y protección contra la inflación, mientras que los que no tienen, pagan intereses por el consumo.</p>
+            <h3 style="color:var(--info); margin-top:2rem;">3. Ciclos Económicos</h3>
+            <p>La economía no es lineal; atraviesa fases de expansión y recesión (simuladas aquí como ondas de 5 años). Estas fases afectan desproporcionadamente a los agentes según su tipo de capital: los salarios son volátiles, mientras que ciertos activos reales actúan como refugio.</p>
 
-            <h3 style="color:var(--accent); margin-top:2rem;">6. Redistribución y Clase Media</h3>
-            <p>La <b>Clase Media</b> suele ser frágil en sistemas de libre mercado puro. La inversión en <b>Educación</b> aumenta la productividad a largo plazo, permitiendo que hijos de familias pobres asciendan. La <b>Redistribución</b> (impuestos progresivos + servicios públicos) actúa como un amortiguador que evita la ruptura social durante las crisis.</p>
+            <h3 style="color:var(--primary); margin-top:2rem;">4. Salud y Longevidad</h3>
+            <p>En este modelo, la riqueza no solo compra bienes, sino también <b>tiempo de vida</b>. Los agentes más ricos y las sociedades con mayor inversión pública en sanidad viven más, lo que les permite acumular capital durante más tiempo, reforzando la desigualdad intergeneracional.</p>
 
-            <h3 style="color:var(--warning); margin-top:2rem;">7. Herencia vs Mérito</h3>
-            <p>La herencia libre permite la acumulación de dinastías económicas. Limitar la herencia o gravarla fuertemente favorece una "igualdad de oportunidades" teórica, donde la posición económica depende más del talento y esfuerzo individual que del patrimonio familiar.</p>
+            <h3 style="color:var(--secondary); margin-top:2rem;">5. El Coeficiente de Gini e Índice de Palma</h3>
+            <p>El <b>Gini</b> mide la desigualdad global. El <b>Índice de Palma</b> es más específico: compara la riqueza del 10% más rico con el 40% más pobre. Es una medida clave para entender la brecha entre los extremos de la sociedad.</p>
+
+            <h3 style="color:var(--accent); margin-top:2rem;">6. Movilidad Intergeneracional</h3>
+            <p>La **Matriz de Movilidad** muestra qué probabilidad tiene un hijo de nacer en una clase y terminar en otra. Una sociedad meritocrática tendría una matriz dispersa; una sociedad estancada tiene una diagonal muy marcada.</p>
+
+            <h3 style="color:var(--secondary); margin-top:2rem;">Referencias Académicas</h3>
+            <div style="font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 15px;">
+                <ul>
+                    <li><b>Piketty, T. (2014):</b> "El Capital en el Siglo XXI". Explica el mecanismo r > g como motor de desigualdad.</li>
+                    <li><b>Stiglitz, J. E. (2012):</b> "El precio de la desigualdad". Analiza cómo la concentración de riqueza distorsiona la democracia.</li>
+                    <li><b>Milanovic, B. (2016):</b> "Global Inequality". La curva del elefante y las dinámicas de estratificación global.</li>
+                    <li><b>Atkinson, A. B. (2015):</b> "Inequality: What Can Be Done?". Propuestas de redistribución y política fiscal.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     /**
-     * MOTOR DE SIMULACIÓN V70 - SISTEMAS ADAPTATIVOS COMPLEJOS
+     * MOTOR DE SIMULACIÓN V72 - SISTEMAS ADAPTATIVOS COMPLEJOS
      */
 
     class PRNG {
@@ -513,9 +566,9 @@
         { name: "Pobreza Extrema", min: 0, max: 4000, color: [255, 75, 43], id: 'poverty' },
         { name: "Bajos Ingresos", min: 4000, max: 25000, color: [255, 179, 71], id: 'low' },
         { name: "Clase Media", min: 25000, max: 130000, color: [252, 234, 187], id: 'middle' },
-        { name: "Clase Alta", min: 130000, max: 3500000, color: [0, 210, 255], id: 'high' },
-        { name: "Elite Financiera", min: 3500000, max: 100000000, color: [58, 123, 213], id: 'elite' },
-        { name: "Billionaires", min: 100000000, max: Infinity, color: [157, 80, 187], id: 'billion' }
+        { name: "Riqueza Alta", min: 130000, max: 3500000, color: [16, 185, 129], id: 'high' },
+        { name: "Elite Financiera", min: 3500000, max: 100000000, color: [59, 130, 246], id: 'elite' },
+        { name: "Multimillonarios", min: 100000000, max: Infinity, color: [29, 78, 216], id: 'billion' }
     ];
 
     const PROFESSIONS = [
@@ -576,17 +629,25 @@
             this.profession = PROFESSIONS[0];
             this.history = [];
             this.story = this.generateBirthStory(parent);
+            this.events = [this.story];
+            this.status = "Estable";
 
             this.experience = 0; this.tierIdx = 0;
-            this.x = Math.random(); this.y = Math.random();
+            this.x = rng.random(); this.y = rng.random();
             this.vx = 0; this.vy = 0;
             this.size = 2; this.color = "#fff";
         }
 
         generateBirthStory(parent) {
-            if (!parent) return "Primer habitante de la simulación.";
+            if (!parent) return "Nacido/a en la fundación del sistema.";
             const parentTier = STRATA_DEFS[this.getTierIdx(parent.wealth)].name;
             return `Hijo/a de una familia de ${parentTier}. Recibió $${Math.floor(this.wealth).toLocaleString()} de herencia.`;
+        }
+
+        addEvent(msg, world) {
+            const year = Math.floor(world.month/12);
+            this.events.push(`AÑO ${year}: ${msg}`);
+            if(this.events.length > 6) this.events.shift();
         }
 
         getTierIdx(w) {
@@ -615,69 +676,114 @@
         }
 
         step(world, ubi, eduInvest) {
-            const healthcareSupport = (world.taxPool * 0.1) / world.agents.length;
-            const healthFactor = Math.min(1.2, 0.8 + (this.wealth / 1000000) + (healthcareSupport / 500));
+            // Bio-Economic Feedback: Health/Longevity linked to wealth & state investment
+            const healthcareSupport = (world.taxPool * 0.15) / world.agents.length;
+            const healthFactor = Math.min(1.5, 0.70 + (this.wealth / 1200000) + (healthcareSupport / 350));
             this.age += 1/12;
-            const deathProb = Math.pow(this.age / (105 * healthFactor), 12);
-            if (this.rng.random() < deathProb || this.age > 125) { this.die(world); return false; }
+            const deathProb = Math.pow(this.age / (115 * healthFactor), 14);
+            if (this.rng.random() < deathProb || this.age > 130) { this.die(world); return false; }
 
-            const unrestPenalty = world.lastGini > 0.6 ? (world.lastGini - 0.5) * 0.5 : 0;
-            const isUnemployed = this.rng.random() < (world.params.unemp / 100);
-            const spillover = 1 + (world.stats.avgEdu * 0.6);
+            // Social Unrest & Stability Feedback
+            const unrestLevel = world.stats.unrest / 100;
+            const unrestPenalty = unrestLevel * 0.8;
+            const isUnemployed = this.rng.random() < ((world.params.unemp / 100) + unrestLevel * 0.2);
+            const spillover = 1 + (world.stats.avgEdu * 1.2);
 
             if (this.age < 65) {
-                const baseSal = 1500 * world.conditions.salaryMult * spillover;
-                const prodEff = Math.max(0.1, this.productivity - unrestPenalty);
-                this.salary = isUnemployed ? (ubi * 0.4) : (baseSal * this.profession.power * prodEff * (1 + this.experience/35));
-                if(!isUnemployed) this.experience += 1/12;
-            } else { this.salary = 1250 * world.conditions.salaryMult * spillover; }
+                // Dynamic Wages: Salary mults based on labor supply (simulated via profession efficiency)
+                const baseSal = 1650 * world.conditions.salaryMult * spillover;
+                const prodEff = Math.max(0.02, this.productivity - unrestPenalty);
 
-            const mYield = world.conditions.marketYield * (this.wealth > 400000 ? (1 + world.params.mateo/800) : 1);
-            this.yield = (this.finCap * mYield) + (this.realCap * (0.0035 + world.conditions.realEstateBoost));
+                // Labor market scarcity adjustment
+                const pIdx = PROFESSIONS.indexOf(this.profession);
+                const saturation = (world.jobStats[pIdx] || 1) / (world.agents.length * (PROFESSIONS[pIdx].vacancies === Infinity ? 1 : PROFESSIONS[pIdx].vacancies));
+                const marketAdj = Math.max(0.5, Math.min(1.5, 1 / (saturation + 0.1)));
+
+                this.salary = isUnemployed ? (ubi * 0.6) : (baseSal * this.profession.power * prodEff * marketAdj * (1 + this.experience/25));
+                if(!isUnemployed) this.experience += 1/12;
+            } else {
+                // Enhanced Pension System
+                const lifetimeAvgTax = (this.totalTaxPaid / Math.max(1, this.age - 18)) / 12;
+                this.salary = (ubi * 1.5) + lifetimeAvgTax * 0.45;
+            }
+
+            // Capital Dynamics
+            const mYield = world.conditions.marketYield * (this.wealth > 500000 ? (1 + world.params.mateo/700) : 1);
+            this.yield = (this.finCap * mYield) + (this.realCap * (0.004 + world.conditions.realEstateBoost));
+
+            // Inflation impacts: Cash erodes, Assets hedge
             this.finCap *= (1 - world.params.inflation/1200);
-            this.realCap *= (1 + world.params.inflation/2400);
+            this.realCap *= (1 + world.params.inflation/3600);
             this.income = this.salary + this.yield + ubi;
 
+            // Fiscal Policy
             let taxRate = (world.params.tax / 100);
             if (world.params.taxSystem === 'progressive') {
-                const threshold = 2500;
-                taxRate = (this.income > threshold) ? taxRate * 1.6 : taxRate * 0.5;
+                const threshold = 3000;
+                taxRate = (this.income > threshold) ? taxRate * 1.8 : taxRate * 0.4;
             } else if (world.params.taxSystem === 'none') taxRate = 0;
             this.lastTax = (this.income * taxRate) + (this.wealth * (world.params.wtax / 1200));
             this.totalTaxPaid += this.lastTax;
 
             const net = this.income - this.lastTax;
-            const costOfLiving = 1350 * (1 + world.params.inflation/100);
+            const costOfLiving = 1400 * (1 + world.params.inflation/100);
             const essential = Math.min(Math.max(0, net), costOfLiving);
             const discretionary = Math.max(0, net - costOfLiving);
-            const mpc = this.wealth < 8000 ? 0.95 : (this.wealth > 2000000 ? 0.20 : 0.50);
+
+            // Marginal Propensity to Consume (MPC)
+            const baselineMPC = 1 - (world.params.savings / 100);
+            const mpcAdjustment = this.wealth < 10000 ? 1.2 : (this.wealth > 5000000 ? 0.4 : 0.85);
+            const mpc = Math.max(0.1, Math.min(0.99, baselineMPC * mpcAdjustment));
+
             this.consumption = essential + discretionary * mpc;
             let balance = net - this.consumption;
 
+            // Debt & Bankruptcy Logic
             if (this.debt > 0) {
                 const interest = this.debt * (world.params.int / 1200);
                 balance -= interest;
-                if (balance > 0) { const repay = Math.min(balance * 0.4, this.debt); this.debt -= repay; balance -= repay; }
+                if (balance > 0) {
+                    const repay = Math.min(balance * 0.5, this.debt);
+                    this.debt -= repay;
+                    balance -= repay;
+                }
             }
 
             if (balance < 0) {
-                if (this.finCap > Math.abs(balance)) { this.finCap += balance; }
-                else {
+                if (this.finCap > Math.abs(balance)) {
+                    this.finCap += balance;
+                } else {
                     const remaining = Math.abs(balance) - this.finCap;
                     this.finCap = 0;
-                    const maxDebt = (this.income * 12) * (this.creditScore / 800);
-                    if (this.debt < maxDebt) { this.debt += remaining; }
-                    else { this.realCap = Math.max(0, this.realCap - remaining * 1.5); }
+                    const maxDebt = (this.income * 18) * (this.creditScore / 800);
+                    if (this.debt < maxDebt) {
+                        this.debt += remaining;
+                        if (this.debt > maxDebt * 0.8 && this.rng.random() < 0.1) this.addEvent("Carga de deuda crítica.", world);
+                    } else {
+                        // Forced Asset Liquidation (Bankruptcy)
+                        const liquidation = Math.min(this.realCap, remaining * 1.8);
+                        if (liquidation > 1000) this.addEvent("Liquidación forzosa de activos por impago.", world);
+                        this.realCap -= liquidation;
+                        this.debt = Math.max(0, this.debt - liquidation * 0.8);
+                        this.status = "En Quiebra";
+                    }
                 }
             } else {
-                const investReal = balance * (1 - this.riskLevel * 0.8);
+                this.status = this.wealth > 1000000 ? "Inversionista" : (this.wealth > 50000 ? "Ahorrador" : "Estable");
+                const investReal = balance * (1 - this.riskLevel * 0.7);
                 this.realCap += investReal;
                 this.finCap += (balance - investReal);
             }
 
             if (this.wealth > 50000 && this.education > 0.7 && this.rng.random() < 0.005) {
                 const stake = this.wealth * 0.2; this.finCap -= stake;
-                if (this.rng.random() < 0.3) { this.finCap += stake * (3 + this.rng.random() * 10); }
+                if (this.rng.random() < 0.3) {
+                    const profit = stake * (3 + this.rng.random() * 10);
+                    this.finCap += profit;
+                    this.addEvent(`Éxito empresarial: +$${Math.floor(profit).toLocaleString()}`, world);
+                } else {
+                    this.addEvent("Fracaso en inversión de riesgo.", world);
+                }
             }
 
             this.wealth = this.finCap + this.realCap - this.debt;
@@ -706,9 +812,15 @@
         die(world) {
             let rate = 1 - (world.params.inh / 100);
             if (world.params.inhSystem === 'none') rate = 0;
-            if (world.params.inhSystem === 'limited') rate = Math.min(rate, 300000 / (Math.max(1, this.wealth)));
+            if (world.params.inhSystem === 'limited') rate = Math.min(rate, 350000 / (Math.max(1, this.wealth)));
+
             const legacy = Math.max(0, this.wealth * rate);
             const heir = new Agent(this.id, legacy, this, this.rng);
+
+            // Storytelling for the new generation
+            if (this.tierIdx >= 4 && heir.wealth < 10000) world.pushNews(`DINASTÍA ROTA: Descendiente de élite cae en pobreza.`);
+            if (this.tierIdx <= 1 && heir.wealth > 500000) world.pushNews(`ASCENSO METEÓRICO: Heredero de clase baja inicia con capital alto.`);
+
             const idx = world.agents.findIndex(a => a.id === this.id);
             if (idx !== -1) world.agents[idx] = heir;
         }
@@ -720,16 +832,20 @@
             this.ctx = this.canvas.getContext('2d');
             this.rng = new PRNG(seed);
             this.agents = []; this.month = 0; this.taxPool = 0; this.giniHistory = []; this.pibHistory = [];
-            this.params = { n: 1000, speed: 30, tax: 35, wtax: 1.5, inh: 25, reEdu: 40, reUBI: 30, int: 8, inflation: 3, mateo: 50, unemp: 5, taxSystem: 'progressive', inhSystem: 'free' };
+            this.params = { n: 1000, speed: 30, tax: 35, wtax: 1.5, inh: 25, reEdu: 40, reUBI: 30, int: 8, inflation: 3, mateo: 50, unemp: 5, savings: 30, taxSystem: 'progressive', inhSystem: 'free' };
             this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 };
             this.interactions = [];
             this.jobStats = Array(PROFESSIONS.length).fill(0);
-            this.stats = { avgEdu: 0.5, top1: 0, top5: 0, top10: 0, top20: 0, bottom50: 0, palma: 1.0 };
+            this.stats = { avgEdu: 0.5, top1: 0, top5: 0, top10: 0, top20: 0, bottom50: 0, palma: 1.0, unrest: 0 };
+            this.mobilityMatrix = Array(STRATA_DEFS.length).fill(0).map(() => Array(STRATA_DEFS.length).fill(0));
+            this.tierCache = Array(STRATA_DEFS.length).fill(0).map(() => []);
+            this.news = [];
             this.lastGini = 0; this.init();
         }
 
         init(predefinedWealths = null) {
             this.agents = []; this.month = 0; this.giniHistory = []; this.pibHistory = [];
+            this.tierCache = Array(STRATA_DEFS.length).fill(0).map(() => []);
             this.jobStats = Array(PROFESSIONS.length).fill(0);
             const count = predefinedWealths ? predefinedWealths.length : this.params.n;
             this.params.n = count;
@@ -741,28 +857,66 @@
 
         step() {
             this.month++;
+
+            // Economic Cycles: 5-year wave (60 months)
+            const cyclePhase = (this.month % 60) / 60;
+            const cycleMult = 1 + Math.sin(cyclePhase * Math.PI * 2) * 0.25;
+            // Unrest friction: high inequality slows the entire economy
+            const unrestFriction = 1 - (this.stats.unrest / 400);
+            this.conditions.salaryMult = (0.85 + cycleMult * 0.3) * unrestFriction;
+            this.conditions.marketYield = (0.004 + (cycleMult * 0.008)) * unrestFriction;
+
             if (this.month % 12 === 0) this.stats.avgEdu = this.agents.reduce((acc, a) => acc + a.education, 0) / this.agents.length;
+
             const ubi = (this.taxPool * (this.params.reUBI / 100)) / this.agents.length;
             const edu = (this.taxPool * (this.params.reEdu / 100)) / this.agents.length;
             let collected = 0;
+
             if (this.month % 12 === 0) this.jobStats = Array(PROFESSIONS.length).fill(0);
-            this.agents.forEach(a => { if (a.step(this, ubi, edu)) collected += a.lastTax; });
+
+            this.tierCache = Array(STRATA_DEFS.length).fill(0).map(() => []);
+            this.agents.forEach(a => {
+                if (a.step(this, ubi, edu)) {
+                    collected += a.lastTax;
+                    this.tierCache[a.tierIdx].push(a);
+                }
+            });
             this.taxPool = collected;
 
+            // Homophilic P2P Interaction Engine
             this.interactions = [];
-            for(let k=0; k < this.agents.length/4; k++){
+            for(let k=0; k < this.agents.length/3; k++){
                 const a1 = this.agents[Math.floor(this.rng.random()*this.agents.length)];
-                let a2 = (a1.wealth > 500000 && this.rng.random() < 0.7) ?
-                    (this.agents.filter(a => a.wealth > 200000)[Math.floor(this.rng.random()*this.agents.length/5)] || a1) :
-                    this.agents[Math.floor(this.rng.random()*this.agents.length)];
+
+                // Homophily: Agents prefer interacting with those in similar or higher wealth tiers
+                let a2;
+                if (this.rng.random() < 0.75) {
+                    const targetTier = a1.tierIdx;
+                    const minT = Math.max(0, targetTier - 1);
+                    const candidates = [];
+                    for(let t=minT; t<STRATA_DEFS.length; t++) candidates.push(...this.tierCache[t]);
+                    if (candidates.length > 1) {
+                        a2 = candidates[Math.floor(this.rng.random() * candidates.length)];
+                    }
+                }
+                if (!a2 || a1.id === a2.id) a2 = this.agents[Math.floor(this.rng.random()*this.agents.length)];
+
                 if(!a2 || a1.id === a2.id) continue;
-                const socialBoost = 1 + (a1.socialCapital + a2.socialCapital) / 200;
-                const stake = Math.min(Math.max(0, a1.wealth), Math.max(0, a2.wealth)) * 0.03 * socialBoost;
+
+                const socialBoost = 1 + (a1.socialCapital + a2.socialCapital) / 150;
+                const stake = Math.min(Math.max(0, a1.wealth), Math.max(0, a2.wealth)) * 0.04 * socialBoost;
                 if (stake <= 0) continue;
-                const p1 = a1.productivity * (1 + a1.education + a1.socialCapital/100);
-                const p2 = a2.productivity * (1 + a2.education + a2.socialCapital/100);
-                if(this.rng.random() < (p1 / (p1 + p2))) { a1.finCap += stake; a2.finCap -= stake; if(k < 15) this.interactions.push({from: a2, to: a1, color: a1.color}); }
-                else { a2.finCap += stake; a1.finCap -= stake; if(k < 15) this.interactions.push({from: a1, to: a2, color: a2.color}); }
+
+                const p1 = a1.productivity * (1 + a1.education + a1.socialCapital/80);
+                const p2 = a2.productivity * (1 + a2.education + a2.socialCapital/80);
+
+                if(this.rng.random() < (p1 / (p1 + p2))) {
+                    a1.finCap += stake; a2.finCap -= stake;
+                    if(k < 20) this.interactions.push({from: a2, to: a1, color: a1.color});
+                } else {
+                    a2.finCap += stake; a1.finCap -= stake;
+                    if(k < 20) this.interactions.push({from: a1, to: a2, color: a2.color});
+                }
             }
             if (this.month % 12 === 0) this.runMetrics();
         }
@@ -772,6 +926,10 @@
             let sw = 0, tw = 0;
             for(let i=0; i<w.length; i++) { sw += (i+1)*w[i]; tw += w[i]; }
             this.lastGini = tw > 0 ? (2*sw) / (w.length*tw) - (w.length+1)/w.length : 0;
+
+            this.stats.unrest = this.lastGini > 0.55 ? Math.min(100, (this.lastGini - 0.55) * 300) : 0;
+            if (this.stats.unrest > 40 && this.rng.random() < 0.08) this.pushNews("MALESTAR SOCIAL: La desigualdad impacta la productividad.");
+            if (this.stats.unrest > 75) this.pushNews("TENSIÓN CRÍTICA: Riesgo de ruptura en la cohesión social.");
 
             if (tw > 0) {
                 this.stats.top1 = (w.slice(-Math.max(1, Math.floor(w.length*0.01))).reduce((a,b)=>a+b, 0) / tw * 100).toFixed(1);
@@ -785,38 +943,84 @@
                 this.stats.palma = bottom40w > 0 ? (top10w / bottom40w).toFixed(2) : "10.00+";
             }
 
+            // Update Mobility Matrix
+            this.mobilityMatrix = Array(STRATA_DEFS.length).fill(0).map(() => Array(STRATA_DEFS.length).fill(0));
+            this.agents.forEach(a => {
+                this.mobilityMatrix[a.birthTier][a.tierIdx]++;
+            });
+
             this.giniHistory.push(this.lastGini); this.pibHistory.push(tw);
             if(this.giniHistory.length > 100) this.giniHistory.shift();
             if(this.pibHistory.length > 100) this.pibHistory.shift();
         }
 
+        pushNews(msg) {
+            const year = Math.floor(this.month / 12);
+            const fullMsg = `[AÑO ${year}] ${msg}`;
+            this.news.push(fullMsg);
+            if (this.news.length > 8) this.news.shift();
+            if (!isComparing || (isComparing && statWorld === (this === worldA ? 'A' : 'B'))) {
+                const ticker = document.getElementById('ui-news-ticker');
+                ticker.innerText = msg;
+                ticker.style.animation = 'none';
+                ticker.offsetHeight;
+                ticker.style.color = '#fff';
+                setTimeout(() => ticker.style.color = 'var(--text-muted)', 2000);
+            }
+        }
+
         shock(t) {
-            if(t==='crash') { this.conditions.marketYield = -0.06; this.conditions.salaryMult = 0.6; }
-            if(t==='bubble') { this.conditions.realEstateBoost = 0.02; }
-            if(t==='hyper') { this.params.inflation = 80; this.conditions.marketYield = -0.1; }
-            if(t==='growth') { this.conditions.marketYield = 0.015; this.conditions.salaryMult = 2.0; this.params.unemp = 1; }
-            if(t==='tech') { this.conditions.salaryMult = 2.5; this.params.reEdu = 80; }
-            setTimeout(() => { this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 }; syncSliders(); }, 6000);
+            if(t==='crash') { this.conditions.marketYield = -0.06; this.conditions.salaryMult = 0.6; this.pushNews("PÁNICO FINANCIERO: Los mercados se desploman."); }
+            if(t==='bubble') { this.conditions.realEstateBoost = 0.02; this.pushNews("BURBUJA INMOBILIARIA: Los activos reales se disparan."); }
+            if(t==='hyper') { this.params.inflation = 80; this.conditions.marketYield = -0.1; this.pushNews("HIPERINFLACIÓN: El efectivo pierde valor rápidamente."); }
+            if(t==='growth') { this.conditions.marketYield = 0.015; this.conditions.salaryMult = 2.0; this.params.unemp = 1; this.pushNews("MILAGRO ECONÓMICO: Crecimiento sin precedentes."); }
+            if(t==='tech') { this.conditions.salaryMult = 2.5; this.params.reEdu = 80; this.pushNews("REVOLUCIÓN TECNOLÓGICA: Salto masivo en productividad."); }
+            if(t==='pandemic') { this.params.unemp = 30; this.conditions.salaryMult = 0.5; this.pushNews("PANDEMIA GLOBAL: Parón económico y desempleo."); }
+            setTimeout(() => { this.conditions = { marketYield: 0.007, salaryMult: 1.0, realEstateBoost: 0 }; syncSliders(); }, 8000);
         }
 
         render() {
             this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+
+            // Visual Shake on High Unrest
+            if (this.stats.unrest > 60) {
+                const s = (this.stats.unrest - 60) / 40;
+                this.ctx.translate((this.rng.random()-0.5)*s*5, (this.rng.random()-0.5)*s*5);
+            }
+
             this.agents.forEach(a => {
-                const alpha = (highlightTier === null || a.tierIdx === highlightTier) ? 1 : 0.05;
+                const alpha = (highlightTier === null || a.tierIdx === highlightTier) ? 1 : 0.08;
                 this.ctx.globalAlpha = alpha;
-                this.ctx.fillStyle = a.color;
-                if (a.debt > 0 && a.debt > a.wealth * 0.8) {
-                    this.ctx.strokeStyle = "#ff0000"; this.ctx.lineWidth = 1;
-                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size + 1, 0, Math.PI*2); this.ctx.stroke();
+
+                // Bankruptcy Indicator
+                if (a.debt > 0 && a.debt > (a.finCap + a.realCap) * 0.7) {
+                    this.ctx.strokeStyle = "#f43f5e";
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size + 2, 0, Math.PI*2);
+                    this.ctx.stroke();
                 }
-                this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size, 0, Math.PI*2); this.ctx.fill();
+
+                this.ctx.fillStyle = a.color;
+                this.ctx.beginPath();
+                this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size, 0, Math.PI*2);
+                this.ctx.fill();
+
+                // Elite / Billionaire Glow
                 if (a.wealth > 10000000) {
-                    this.ctx.save(); this.ctx.globalAlpha = 0.2 * alpha; this.ctx.shadowBlur = 15; this.ctx.shadowColor = a.color;
-                    this.ctx.beginPath(); this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size * 1.5, 0, Math.PI*2); this.ctx.fill();
+                    this.ctx.save();
+                    const isBillion = a.wealth > 100000000;
+                    this.ctx.globalAlpha = (isBillion ? 0.7 : 0.35) * alpha;
+                    this.ctx.shadowBlur = isBillion ? 40 : 18;
+                    this.ctx.shadowColor = a.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(a.x*this.canvas.width, a.y*this.canvas.height, a.size * (isBillion ? 2.2 : 1.5), 0, Math.PI*2);
+                    this.ctx.fill();
                     this.ctx.restore();
                 }
             });
             this.ctx.globalAlpha = 1;
+            this.ctx.setTransform(1,0,0,1,0,0); // Reset shake
 
             if (isComparing) {
                 this.drawInteractions(this.ctx);
@@ -886,9 +1090,23 @@
     }
 
     let cachedMetrics = { totalW: 0, totalDebt: 0 };
+    let lastCycleState = null;
     function refreshDash() {
         const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
         document.getElementById('ui-top-year').innerText = Math.floor(w.month / 12);
+
+        const badge = document.getElementById('ui-cycle-badge');
+        const isGrowing = w.conditions.salaryMult > 1.0;
+        const cycleText = isGrowing ? 'EXPANSIÓN' : 'CONTRACCIÓN';
+        badge.innerText = cycleText;
+        badge.style.background = isGrowing ? 'var(--accent)' : 'var(--secondary)';
+        badge.style.color = isGrowing ? '#000' : '#fff';
+
+        if (cycleText !== lastCycleState) {
+            w.pushNews(`Nueva fase de ciclo: ${cycleText}`);
+            lastCycleState = cycleText;
+        }
+
         document.getElementById('ui-top-gini').innerText = w.lastGini.toFixed(3);
         cachedMetrics.totalW = w.agents.reduce((a, b) => a + Math.max(0, b.wealth), 0);
         cachedMetrics.totalDebt = w.agents.reduce((a, b) => a + b.debt, 0);
@@ -912,7 +1130,12 @@
 
             drawLorenz(sorted, cachedMetrics.totalW); drawGiniT(w); drawPibT(w);
             document.getElementById('st-avg').innerText = '$' + Math.floor(cachedMetrics.totalW / w.agents.length).toLocaleString();
-        } else if(active === 'tab-theory') { drawPyramid(w); drawLogH(w); }
+        } else if(active === 'tab-theory') {
+            drawPyramid(w); drawLogH(w); drawMobilityMatrix(w);
+            document.getElementById('an-mill-count').innerText = w.agents.filter(a => a.wealth >= 1000000).length;
+            document.getElementById('an-bill-count').innerText = w.agents.filter(a => a.wealth >= 1000000000).length;
+            document.getElementById('an-middle').innerText = (w.agents.filter(a => a.tierIdx === 2).length / w.agents.length * 100).toFixed(1) + "%";
+        }
         if(selAg) refreshIns(selAg);
     }
 
@@ -978,13 +1201,45 @@
     function drawPyramid(w) {
         const c = document.getElementById('viz-pyramid'), ctx = c.getContext('2d');
         c.width = c.clientWidth; c.height = c.clientHeight;
-        const counts = STRATA_DEFS.map(s => w.agents.filter(a => a.wealth >= s.min && a.wealth < s.max).length);
+        const counts = STRATA_DEFS.map(s => w.agents.filter(a => a.tierIdx === STRATA_DEFS.indexOf(s)).length);
+        const total = w.agents.length;
         const maxV = Math.max(...counts, 1), barH = Math.floor(c.height / STRATA_DEFS.length);
         STRATA_DEFS.slice().reverse().forEach((s, i) => {
-            const idx = STRATA_DEFS.length - 1 - i, v = counts[idx], bw = (v/maxV) * c.width * 0.8;
+            const idx = STRATA_DEFS.length - 1 - i, v = counts[idx], bw = (v/maxV) * c.width * 0.7;
+            const perc = (v/total*100).toFixed(1) + "%";
             ctx.fillStyle = `rgb(${s.color.join(',')})`; ctx.fillRect((c.width-bw)/2, i*barH + 4, bw, barH - 8);
-            ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.font = "9px Inter"; ctx.fillText(s.name, 5, i*barH + barH/2 + 3);
+            ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.font = "10px Inter";
+            ctx.textAlign = "left"; ctx.fillText(s.name, 10, i*barH + barH/2 + 4);
+            ctx.textAlign = "right"; ctx.fillText(perc, c.width - 10, i*barH + barH/2 + 4);
         });
+    }
+
+    function drawMobilityMatrix(w) {
+        const container = document.getElementById('mobility-table');
+        container.innerHTML = '';
+
+        // Header
+        const corner = document.createElement('div'); container.appendChild(corner);
+        for(let i=0; i<STRATA_DEFS.length; i++) {
+            const h = document.createElement('div'); h.style.fontWeight = '950'; h.style.textAlign = 'center'; h.innerText = 'T' + i; container.appendChild(h);
+        }
+
+        for(let i=0; i<STRATA_DEFS.length; i++) {
+            const rowLabel = document.createElement('div'); rowLabel.style.fontWeight = '950'; rowLabel.innerText = 'T' + i; container.appendChild(rowLabel);
+            const rowTotal = w.mobilityMatrix[i].reduce((a,b)=>a+b, 0) || 1;
+            for(let j=0; j<STRATA_DEFS.length; j++) {
+                const val = w.mobilityMatrix[i][j];
+                const cell = document.createElement('div');
+                const perc = (val/rowTotal*100).toFixed(0);
+                cell.innerText = perc + '%';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '4px 0';
+                cell.style.borderRadius = '4px';
+                cell.style.background = `rgba(99, 102, 241, ${Math.min(1, val/rowTotal*2)})`;
+                cell.style.color = (val/rowTotal > 0.4) ? '#000' : '#fff';
+                container.appendChild(cell);
+            }
+        }
     }
 
     function drawLogH(w) {
@@ -1006,6 +1261,26 @@
 
     document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => { document.querySelectorAll('.tab-btn, .pane').forEach(el => el.classList.remove('active')); b.classList.add('active'); document.getElementById(b.dataset.pane).classList.add('active'); });
 
+    // Interactive Legend Logic
+    document.querySelectorAll('#main-legend .legend-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            highlightTier = parseInt(item.dataset.tier);
+        });
+        item.addEventListener('mouseleave', () => {
+            if (!item.classList.contains('active-filter')) highlightTier = null;
+        });
+        item.addEventListener('click', () => {
+            const wasActive = item.classList.contains('active-filter');
+            document.querySelectorAll('#main-legend .legend-item').forEach(el => el.classList.remove('active-filter'));
+            if (!wasActive) {
+                item.classList.add('active-filter');
+                highlightTier = parseInt(item.dataset.tier);
+            } else {
+                highlightTier = null;
+            }
+        });
+    });
+
     function handleCanvasClick(e, wRef) {
         const r = wRef.canvas.getBoundingClientRect(), mx = (e.clientX - r.left)/wRef.canvas.width, my = (e.clientY - r.top)/wRef.canvas.height;
         let best = 0.05, found = null; wRef.agents.forEach(a => { const d = Math.sqrt((a.x-mx)**2+(a.y-my)**2); if(d<best){ best=d; found=a; } });
@@ -1022,7 +1297,9 @@
         document.getElementById('ins-cons').innerText = Math.floor(a.consumption).toLocaleString(); document.getElementById('ins-tax').innerText = Math.floor(a.lastTax).toLocaleString();
         document.getElementById('ins-edu').innerText = (a.education*100).toFixed(0) + "%"; document.getElementById('ins-prod').innerText = a.productivity.toFixed(1);
         document.getElementById('ins-save').innerText = Math.floor(a.income - a.consumption - a.lastTax).toLocaleString(); document.getElementById('ins-social').innerText = Math.floor(a.socialCapital);
-        document.getElementById('ins-story').innerText = a.story; document.getElementById('ins-fin-val').innerText = "$" + Math.floor(a.finCap).toLocaleString();
+        document.getElementById('ins-story').innerHTML = a.events.join('<br>');
+        document.getElementById('ins-id-display').innerText = `Agente #${a.id} [${a.status}]`;
+        document.getElementById('ins-fin-val').innerText = "$" + Math.floor(a.finCap).toLocaleString();
         document.getElementById('ins-real-val').innerText = "$" + Math.floor(a.realCap).toLocaleString();
         document.getElementById('ins-fin-bar').style.width = (a.finCap / Math.max(1, a.wealth) * 100) + "%"; document.getElementById('ins-real-bar').style.width = (a.realCap / Math.max(1, a.wealth) * 100) + "%";
         const c = document.getElementById('ins-chart'), ctx = c.getContext('2d');
@@ -1037,15 +1314,19 @@
         document.getElementById('interactionCanvas').style.display = isComparing ? 'none' : 'block';
         if(isComparing) {
             const sharedSeed = Math.floor(Math.random() * 999999);
-            const seedRNG = new PRNG(sharedSeed);
-            const initialWealths = Array.from({length: 1000}, () => Math.pow(seedRNG.random(), 3) * 120000 + 2000);
-
+            // World A and B must start from EXACTLY the same state for scientific comparison
             worldA = new World('canvasA', sharedSeed);
             worldB = new World('canvasB', sharedSeed);
+
+            // Re-seed to ensure wealth distribution generation is identical
+            const seedRNG = new PRNG(sharedSeed);
+            const popSize = world.params.n;
+            const initialWealths = Array.from({length: popSize}, () => Math.pow(seedRNG.random(), 3) * 120000 + 2000);
 
             worldA.init(initialWealths);
             worldB.init(initialWealths);
 
+            // Default policies for comparison
             worldA.params.tax = 50; worldA.params.reUBI = 60; worldA.params.taxSystem = 'progressive';
             worldB.params.tax = 10; worldB.params.reUBI = 0; worldB.params.taxSystem = 'flat';
 
@@ -1056,7 +1337,7 @@
         }
     };
 
-    const inputs = ['n', 'speed', 'tax', 'wtax', 'inh', 're-edu', 're-ubi', 'int', 'inflation', 'mateo', 'unemp'];
+    const inputs = ['n', 'speed', 'tax', 'wtax', 'inh', 're-edu', 're-ubi', 'int', 'inflation', 'mateo', 'unemp', 'savings'];
     inputs.forEach(id => {
         const el = document.getElementById('p-' + id);
         if(el) el.oninput = () => {
@@ -1071,6 +1352,28 @@
     document.getElementById('btn-didactic-open').onclick = () => document.getElementById('modal-didactic').style.display = 'flex';
     document.getElementById('edu-close-icon').onclick = () => document.getElementById('modal-didactic').style.display = 'none';
     document.getElementById('btn-reset-sim').onclick = () => { if(isComparing) { worldA.init(); worldB.init(); } else world.init(); };
+
+    document.getElementById('btn-load-config').onclick = () => document.getElementById('json-file-input').click();
+    document.getElementById('json-file-input').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
+                if (data.params) {
+                    Object.assign(w.params, data.params);
+                    syncSliders();
+                    w.pushNews("Configuración cargada con éxito.");
+                }
+            } catch (err) {
+                alert("Error al cargar el archivo JSON: " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    };
+
     function syncSliders() {
         const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
         inputs.forEach(id => {
@@ -1085,20 +1388,26 @@
         if(document.getElementById('sel-inh-system')) document.getElementById('sel-inh-system').value = w.params.inhSystem;
     }
     function ioExporter(fmt) {
+        const w = isComparing ? (statWorld === 'A' ? worldA : worldB) : world;
         if(fmt === 'json') {
             const data = {
-                params: world.params,
+                params: w.params,
                 history: {
-                    gini: world.giniHistory,
-                    pib: world.pibHistory,
-                    months: world.month
+                    gini: w.giniHistory,
+                    pib: w.pibHistory,
+                    months: w.month,
+                    news: w.news
                 }
             };
             const b = new Blob([JSON.stringify(data)]);
             const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'sim_evolution.json'; a.click();
         }
-        else if(fmt === 'csv') { const c = "ID,Wealth,Debt,Age\n" + world.agents.map(a => `${a.id},${a.wealth},${a.debt},${a.age}`).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([c])); a.download = 'data.csv'; a.click(); }
-        else { const a = document.createElement('a'); a.href = world.canvas.toDataURL(); a.download = 'capture.png'; a.click(); }
+        else if(fmt === 'csv') { const c = "ID,Wealth,Debt,Age\n" + w.agents.map(a => `${a.id},${a.wealth},${a.debt},${a.age}`).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([c])); a.download = 'data.csv'; a.click(); }
+        else {
+            // In comparison mode, capture the specific world canvas
+            const canvasToExport = isComparing ? (statWorld === 'A' ? worldA.canvas : worldB.canvas) : world.canvas;
+            const a = document.createElement('a'); a.href = canvasToExport.toDataURL(); a.download = 'capture.png'; a.click();
+        }
     }
     engineLoop();
 </script>
