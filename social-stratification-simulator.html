@@ -89,7 +89,7 @@
         .stat-label { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
         .stat-value { font-size: 1rem; font-weight: 800; font-family: 'Courier New', Courier, monospace; color: var(--oecd-blue); }
 
-        .control-panel { margin-bottom: 1rem; }
+        .control-panel { margin-bottom: 1rem; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
         .control-row { margin-bottom: 1.2rem; }
         .control-row label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.6rem; }
         .control-row input[type="range"] { width: 100%; height: 6px; border-radius: 3px; accent-color: var(--oecd-blue); cursor: pointer; }
@@ -121,11 +121,22 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,51,102,0.4);
             display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(5px);
         }
-        .modal { background: #fff; width: 85%; max-width: 1000px; max-height: 90vh; border-radius: 24px; padding: 4rem; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.2); position: relative; }
+.modal { background: #fff; width: 85%; max-width: 1000px; max-height: 90vh; border-radius: 24px; padding: 0; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; }
+        .modal-header { padding: 3rem 4rem 1rem; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .modal-body { padding: 2rem 4rem 4rem; overflow-y: auto; flex-grow: 1; }
+        .modal-tabs { display: flex; gap: 2rem; border-bottom: 1px solid var(--border); padding: 0 4rem; background: #f9f9f9; }
+        .modal-tab { padding: 1rem 0; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-tab.active { color: var(--oecd-blue); border-bottom-color: var(--oecd-blue); }
+        .theory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; line-height: 1.6; }
+        .theory-section h4 { color: var(--oecd-blue); margin-bottom: 1rem; border-left: 4px solid var(--oecd-accent); padding-left: 1rem; font-size: 1.1rem; }
+        .theory-section p { margin-bottom: 1.5rem; text-align: justify; }
+        .biblio-list { list-style: none; }
+        .biblio-list li { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         .close-btn { position: absolute; top: 2rem; right: 2rem; cursor: pointer; font-size: 1.5rem; font-weight: 300; }
 
         .mobility-matrix { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 10px; }
-        .matrix-cell { background: #fff; height: 15px; display: flex; align-items: center; justify-content: center; font-size: 0.4rem; font-weight: 600; }
+        .matrix-cell { background: #fff; height: 15px; display: flex; align-items: center; justify-content: center; font-size: 0.4rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .matrix-cell:hover { transform: scale(1.2); z-index: 10; border: 1px solid var(--oecd-accent); }
 
         .view-controls { display: flex; gap: 10px; margin-right: 20px; }
         .v-mode-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
@@ -144,6 +155,12 @@
         /* 3D Camera Controls Legend */
         .camera-legend { position: absolute; bottom: 20px; right: 20px; font-size: 0.65rem; color: var(--text-muted); background: rgba(255,255,255,0.7); padding: 8px 12px; border-radius: 8px; pointer-events: none; }
 
+        .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .tab { padding: 10px 15px; cursor: pointer; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .tab.active { color: var(--oecd-blue); border-bottom: 3px solid var(--oecd-blue); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
     </style>
 </head>
 <body data-theme="light">
@@ -157,22 +174,41 @@
         <div class="view-controls">
             <button class="v-mode-btn active" title="Vista de Clase" onclick="setViewMode('class', this)">C</button>
             <button class="v-mode-btn" title="Vista de Educación" onclick="setViewMode('edu', this)">E</button>
-            <button class="v-mode-btn" title="Vista de Capital Cultural" onclick="setViewMode('cult', this)">K</button>
+            <button class="v-mode-btn" title="Vista de Capital Cultural (Habitus)" onclick="setViewMode('cult', this)">K</button>
             <button class="v-mode-btn" title="Vista de Capital Social" onclick="setViewMode('soc', this)">S</button>
         </div>
         <div style="display: flex; gap: 8px;">
+            <button id="focusBtn" onclick="toggleFocus()" title="Seguir Linaje Seleccionado">FOCUS</button>
             <button onclick="startWalkthrough()" style="background: var(--oecd-accent); color: #fff; border: none;">Tutorial</button>
             <button onclick="openModal('theory')">Teoría</button>
             <button id="cmpBtn" onclick="toggleComparison()">Comparar</button>
-            <button onclick="toggleTheme()">🌓</button>
+            <button onclick="toggleTheme()">THEME</button>
             <button id="playBtn" class="active" onclick="togglePlay()">⏸</button>
         </div>
     </div>
 </header>
 
 <main id="viewport">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 30px; background: #000; color: #0f0; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; display: flex; align-items: center; padding: 0 20px; z-index: 1200; overflow: hidden;">
+        <div id="macro-ticker" style="white-space: nowrap; animation: ticker 30s linear infinite;">
+            SISTEMA OPERATIVO: NORMAL • CARGANDO DATOS OECD... • ESTABILIDAD: 100% • TENDENCIA GINI: ESTABLE •
+        </div>
+    </div>
+    <style> @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } } </style>
+
     <canvas id="simulationCanvas"></canvas>
-    <div class="hud-top">
+    <div id="advisor-panel" style="position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 8px; border-left: 4px solid var(--oecd-blue); box-shadow: 0 4px 15px rgba(0,0,0,0.1); pointer-events: auto; max-width: 300px; z-index: 100;">
+        <div style="font-size: 0.6rem; font-weight: 800; color: var(--oecd-blue); margin-bottom: 5px; text-transform: uppercase;">OECD Policy Advisor</div>
+        <div id="advisor-tip" style="font-size: 0.75rem; color: var(--text); font-weight: 600;">Analizando sociedad...</div>
+        <div style="margin-top:10px; display:flex; gap:5px;">
+            <button onclick="setCameraView('iso')" style="font-size:0.5rem; padding:2px 5px;">ISO</button>
+            <button onclick="setCameraView('top')" style="font-size:0.5rem; padding:2px 5px;">TOP</button>
+            <button onclick="setCameraView('side')" style="font-size:0.5rem; padding:2px 5px;">SIDE</button>
+            <button onclick="toggleFullscreen()" style="font-size:0.5rem; padding:2px 5px;">FULL</button>
+            <button onclick="resetSim()" style="font-size:0.5rem; padding:2px 5px;">RESET</button>
+        </div>
+    </div>
+    <div class="hud-top" style="top: 40px;">
         <div class="hud-card" id="hud-status">MODELO: MERITOCRACIA BALANCEADA</div>
         <div class="hud-card" id="hud-comp" style="display:none; background: var(--oecd-accent); color: #fff;">MODO COMPARATIVO ACTIVO</div>
     </div>
@@ -194,25 +230,41 @@
 </main>
 
 <aside>
-    <div class="comparison-ui" id="tabUI" style="display:none">
-        <button id="tA" class="sel" onclick="selectSim('A')">SOCIEDAD A (Control)</button>
-        <button id="tB" onclick="selectSim('B')">SOCIEDAD B (Test)</button>
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('policy', this)">Política</div>
+        <div class="tab" onclick="showTab('analytics', this)">Datos</div>
+        <div class="tab" onclick="showTab('events', this)">Eventos</div>
     </div>
 
-    <section class="control-panel">
-        <h3>Dinámica Poblacional</h3>
-        <div class="control-row">
-            <label>Población Activa <span><b id="v_pop">5000</b></span></label>
-            <input type="range" id="p_pop" min="1000" max="10000" step="500" value="5000">
+    <div id="tab-policy" class="tab-content active">
+        <div class="comparison-ui" id="tabUI" style="display:none">
+            <button id="tA" class="sel" onclick="selectSim('A')">SOCIEDAD A</button>
+            <button id="tB" onclick="selectSim('B')">SOCIEDAD B</button>
         </div>
-        <div class="control-row">
-            <label>Aceleración Temporal <span><b id="v_speed">2.0</b>x</span></label>
-            <input type="range" id="p_speed" min="0.5" max="10" step="0.5" value="2.0">
-        </div>
-    </section>
 
-    <section class="control-panel">
-        <h3>Estructura de Oportunidad</h3>
+        <section class="control-panel">
+            <h3>Presets de Modelo</h3>
+            <div class="btn-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <button onclick="applyPreset('nordic')" style="font-size:0.6rem">Nórdico</button>
+                <button onclick="applyPreset('liberal')" style="font-size:0.6rem">Liberal</button>
+                <button onclick="applyPreset('pluto')" style="font-size:0.6rem">Pluto</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Dinámica Poblacional</h3>
+            <div class="control-row">
+                <label>Población <span><b id="v_pop">5000</b></span></label>
+                <input type="range" id="p_pop" min="1000" max="10000" step="500" value="5000">
+            </div>
+            <div class="control-row">
+                <label>Velocidad <span><b id="v_speed">2.0</b>x</span></label>
+                <input type="range" id="p_speed" min="0.5" max="10" step="0.5" value="2.0">
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Estructura de Oportunidad</h3>
         <div class="control-row">
             <label>Inercia Intergeneracional <span><b id="v_inh">0.70</b></span></label>
             <input type="range" id="p_inh" min="0" max="1" step="0.05" value="0.7">
@@ -229,35 +281,53 @@
             <label>Homogamia Social (Parejas) <span><b id="v_mate">0.60</b></span></label>
             <input type="range" id="p_mate" min="0" max="1" step="0.05" value="0.6">
         </div>
-    </section>
-
-    <section class="control-panel">
-        <h3>Análisis Macroeconómico</h3>
-        <div class="chart-container">
-            <span class="stat-label">Pirámide de Estratos</span>
-            <svg id="svgP" width="100%" height="100px" style="margin-top:10px;"></svg>
+        <div class="control-row">
+            <label>Educación Pública <span><b id="v_publicEdu">0.30</b></span></label>
+            <input type="range" id="p_publicEdu" min="0" max="1" step="0.05" value="0.3">
         </div>
-        <div class="chart-container" style="margin-top:10px;">
-            <span class="stat-label">Lorenz & Gini Evolution</span>
-            <svg id="svgL" width="100%" height="100px" style="margin-top:10px;"></svg>
+        <div class="control-row">
+            <label>Segregación Urbana <span><b id="v_segregation">0.50</b></span></label>
+            <input type="range" id="p_segregation" min="0" max="1" step="0.05" value="0.5">
         </div>
-        <div class="chart-container" style="margin-top:10px;">
-            <span class="stat-label">Matriz de Movilidad (Destino)</span>
-            <div class="mobility-matrix" id="m_matrix"></div>
+        <div class="control-row" style="display: flex; align-items: center; justify-content: space-between;">
+            <label style="margin: 0;">Protección Social (UBI)</label>
+            <input type="checkbox" id="p_socialProt" style="width: 20px; height: 20px; cursor: pointer;">
         </div>
     </section>
 
-    <section class="control-panel">
-        <h3>Intervenciones Sociales</h3>
-        <div class="btn-grid">
-            <button onclick="triggerEvent('crisis')">Crisis Eco</button>
-            <button onclick="triggerEvent('boom')">Crecimiento</button>
-            <button onclick="triggerEvent('edu')">Reforma Edu</button>
-            <button onclick="triggerEvent('tech')">Automatización</button>
-            <button onclick="triggerEvent('pandemic')">Pandemia</button>
-            <button onclick="triggerEvent('tax')">Súper Ricos</button>
-        </div>
-    </section>
+    </div>
+
+    <div id="tab-analytics" class="tab-content">
+        <section class="control-panel">
+            <h3>Análisis Macroeconómico</h3>
+            <div class="chart-container">
+                <span class="stat-label">Pirámide de Estratos</span>
+                <svg id="svgP" width="100%" height="100px" style="margin-top:10px;"></svg>
+            </div>
+            <div class="chart-container" style="margin-top:10px;">
+                <span class="stat-label">Lorenz & Palma (Interactive)</span>
+                <svg id="svgL" width="100%" height="100px" style="margin-top:10px;"></svg>
+            </div>
+            <div class="chart-container" style="margin-top:10px;">
+                <span class="stat-label">Matriz de Movilidad (Destinos)</span>
+                <div class="mobility-matrix" id="m_matrix"></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="tab-events" class="tab-content">
+        <section class="control-panel">
+            <h3>Intervenciones Sociales</h3>
+            <div class="btn-grid">
+                <button onclick="triggerEvent('crisis')">Crisis Eco</button>
+                <button onclick="triggerEvent('boom')">Crecimiento</button>
+                <button onclick="triggerEvent('edu')">Reforma Edu</button>
+                <button onclick="triggerEvent('tech')">Automatización</button>
+                <button onclick="triggerEvent('pandemic')">Pandemia</button>
+                <button onclick="triggerEvent('tax')">Súper Ricos</button>
+            </div>
+        </section>
+    </div>
 
     <div class="btn-grid">
         <button onclick="exportData('csv')">Export CSV</button>
@@ -275,34 +345,79 @@
     <div class="stat-group"><span class="stat-label">Coeficiente Gini</span><span class="stat-value" id="s_gini">0.000</span></div>
     <div class="stat-group"><span class="stat-label">Ratio de Palma</span><span class="stat-value" id="s_palma">0.0</span></div>
     <div class="stat-group"><span class="stat-label">Movilidad Neta</span><span class="stat-value" id="s_mob">0%</span></div>
+    <div class="stat-group"><span class="stat-label">Estabilidad</span><span class="stat-value" id="s_stability">100%</span></div>
+    <div class="stat-group"><span class="stat-label">Riesgo Sistémico</span><span class="stat-value" id="s_risk">0%</span></div>
     <div class="stat-group"><span class="stat-label">Población Activa</span><span class="stat-value" id="s_pop_count">5000</span></div>
 </footer>
 
 <div id="m_theory" class="modal-overlay">
     <div class="modal">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 style="font-size: 2.5rem; color: var(--oecd-blue); margin-bottom: 2rem;">Manual de Estratificación y Movilidad</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; line-height: 1.8;">
-            <div>
-                <h4 style="color: var(--oecd-accent); margin-bottom: 1rem;">1. La Estructura Tripartita de Bourdieu</h4>
-                <p>Nuestra simulación no se limita al capital financiero. Siguiendo a Pierre Bourdieu, cada agente gestiona tres formas de capital que definen su posición en el "campo" social:</p>
-                <ul style="margin-left: 1.5rem; margin-top: 1rem;">
-                    <li><b>Capital Económico:</b> Patrimonio acumulado y capacidad de ingresos.</li>
-                    <li><b>Capital Cultural:</b> Conocimientos, títulos y competencias adquiridas (habitus).</li>
-                    <li><b>Capital Social:</b> Valor de la red de contactos e influencia.</li>
-                </ul>
-                <h4 style="color: var(--oecd-accent); margin-top: 2rem; margin-bottom: 1rem;">2. Movilidad Intergeneracional</h4>
-                <p>La matriz de transición visualiza el "ascensor social". En sociedades de baja movilidad, el destino está fuertemente correlacionado con el origen (reproducción social). Un índice de meritocracia alto permite que el esfuerzo individual rompa la inercia de la herencia.</p>
-            </div>
-            <div>
-                <h4 style="color: var(--oecd-accent); margin-bottom: 1rem;">3. Homogamia y Cierre Social</h4>
-                <p>La formación de parejas no es aleatoria. El parámetro de <i>Homogamia</i> simula cómo los individuos tienden a asociarse con pares de estatus similar, lo que acelera la concentración de capitales en la cima de la pirámide y dificulta la redistribución orgánica.</p>
-                <div style="background: var(--oecd-light); padding: 2rem; border-radius: 16px; margin-top: 2rem;">
-                    <h5 style="margin-bottom: 0.5rem; color: var(--oecd-blue);">Métricas OECD Clave:</h5>
-                    <p style="font-size: 0.8rem;"><b>Coeficiente Gini:</b> Mide la desigualdad total (0 = igualdad, 1 = desigualdad máxima).</p>
-                    <p style="font-size: 0.8rem;"><b>Ratio de Palma:</b> Relación entre la riqueza del 10% superior y el 40% inferior.</p>
-                    <p style="font-size: 0.8rem;"><b>Elasticidad Intergeneracional:</b> Capacidad de la herencia para predecir el futuro del descendiente.</p>
+        <div class="modal-header">
+            <h2 style="font-size: 2.2rem; color: var(--oecd-blue); margin:0;">OECD Academic Center: Estratificación Social</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Simulación de Dinámicas de Clase y Reproducción Estructural</p>
+        </div>
+        <div class="modal-tabs">
+            <div class="modal-tab active" onclick="showTheoryTab(event, 'tab-theories')">Grandes Teorías</div>
+            <div class="modal-tab" onclick="showTheoryTab(event, 'tab-capitals')">Capitales de Bourdieu</div>
+            <div class="modal-tab" onclick="showTheoryTab(event, 'tab-indicators')">Indicadores OECD</div>
+            <div class="modal-tab" onclick="showTheoryTab(event, 'tab-biblio')">Bibliografía</div>
+        </div>
+        <div class="modal-body">
+            <div id="tab-theories" class="theory-tab-content">
+                <div class="theory-grid">
+                    <div class="theory-section">
+                        <h4>Karl Marx: Relaciones de Producción</h4>
+                        <p>Para Marx, la clase se define por la relación con los medios de producción. El motor de la estratificación es el conflicto entre quienes poseen el capital (Burguesía) y quienes solo poseen su fuerza de trabajo (Proletariado). En este simulador, la acumulación de riqueza y la herencia de capital económico reflejan la reproducción de estas ventajas estructurales.</p>
+                        <h4>Max Weber: El Modelo Multidimensional</h4>
+                        <p>Weber amplió el análisis sugiriendo que la estratificación depende de tres ejes: Clase (Económico), Estatus (Prestigio Social) y Poder (Influencia Política). Observará que en la simulación, individuos con alta educación (Estatus) pueden no ser los más ricos, pero poseen una influencia que les permite navegar la estructura social de forma distinta.</p>
+                    </div>
+                    <div class="theory-section">
+                        <h4>La Similitud OECD/World Bank</h4>
+                        <p>Las instituciones modernas utilizan modelos de deciles para medir la movilidad. La Matriz de Transición que observa en el dashboard es la herramienta estándar para diagnosticar si el "ascensor social" funciona. Una diagonal marcada indica una sociedad estática donde el origen determina el destino.</p>
+                        <h4>Estratificación 3D Dinámica</h4>
+                        <p>A diferencia de las pirámides estáticas, nuestra visualización muestra la sociedad como un 'campo' dinámico donde los individuos se mueven continuamente. Las 'placas' de clase son permeables pero ejercen una resistencia basada en el capital acumulado.</p>
+                    </div>
                 </div>
+            </div>
+            <div id="tab-capitals" class="theory-tab-content" style="display:none;">
+                <div class="theory-grid">
+                    <div class="theory-section">
+                        <h4>Pierre Bourdieu y el Habitus</h4>
+                        <p>Bourdieu revolucionó la sociología al proponer que la clase no es solo dinero. El <b>Capital Cultural</b> (conocimientos, títulos, gustos) es la forma más sutil de exclusión. Los hijos de las élites heredan no solo dinero, sino una 'forma de ser' que el sistema educativo premia, validando así la desigualdad como si fuera 'mérito'.</p>
+                        <h4>Capital Social y Redes</h4>
+                        <p>"No es lo que sabes, sino a quién conoces". El Capital Social en el simulador genera 'sinapsis'. Estas conexiones permiten a los agentes acceder a mejores empleos y protegerse de las crisis económicas, creando un colchón invisible de seguridad.</p>
+                    </div>
+                    <div class="theory-section">
+                        <div style="background: #f0f4f8; padding: 2rem; border-radius: 12px;">
+                            <h5 style="color: var(--oecd-blue); margin-bottom: 1rem;">Conversión de Capitales</h5>
+                            <p style="font-size: 0.85rem;">En este modelo, los capitales son convertibles: un alto capital cultural (títulos) facilita la obtención de capital económico (salarios), el cual a su vez permite invertir en capital social (redes exclusivas). La simulación modela estas tasas de conversión basadas en la configuración del Panel de Control.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-indicators" class="theory-tab-content" style="display:none;">
+                <div class="theory-grid">
+                    <div class="theory-section">
+                        <h4>Coeficiente de Gini</h4>
+                        <p>Mide la desviación de la distribución de riqueza respecto a una igualdad perfecta (0 = igualdad total, 1 = desigualdad extrema). Es el estándar global de la OECD para medir la salud distributiva de una nación.</p>
+                        <h4>Índice de Palma</h4>
+                        <p>Propuesto por José Gabriel Palma, este índice divide la participación en el ingreso del 10% más rico entre el 40% más pobre. Es vital para entender la concentración de poder en las élites versus la base social.</p>
+                    </div>
+                    <div class="theory-section">
+                        <h4>Movilidad Social (Shorrocks)</h4>
+                        <p>Calculamos la movilidad basada en la probabilidad de que un individuo cambie de decil. Una movilidad de 1.0 significaría que el origen familiar es irrelevante para el futuro del hijo (Meritocracia Perfecta).</p>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-biblio" class="theory-tab-content" style="display:none;">
+                <ul class="biblio-list">
+                    <li><strong>Bourdieu, P. (1979).</strong> <i>La Distinción: Criterios y bases sociales del gusto.</i> Taurus.</li>
+                    <li><strong>Weber, M. (1922).</strong> <i>Economía y Sociedad.</i> Fondo de Cultura Económica.</li>
+                    <li><strong>Piketty, T. (2013).</strong> <i>El capital en el siglo XXI.</i> Fondo de Cultura Económica.</li>
+                    <li><strong>OECD (2018).</strong> <i>A Broken Social Elevator? How to Promote Social Mobility.</i> OECD Publishing.</li>
+                    <li><strong>Wright, E. O. (1997).</strong> <i>Class Counts: Comparative Studies in Class Analysis.</i> Cambridge University Press.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -325,16 +440,35 @@
     class Agent {
         constructor(id, sim, parent = null) {
             this.id = id; this.sim = sim; this.age = parent ? 0 : Math.random()*60 + 18;
+            this.generation = parent ? (parent.generation + 1) : 1;
             this.isAlive = true; this.parent = parent;
             this.sex = Math.random() > 0.5 ? 'M' : 'F';
 
             const h = parent ? sim.cfg.inh : 0;
-            // Capitals (0.0 to 1.0)
+            const eduInv = sim.cfg.publicEdu || 0.3; // Inversión pública en educación reduce herencia
+
+            // Triada de Bourdieu + Educación Institucional
             this.ec = parent ? parent.ec*h + Math.random()*(1-h) : Math.random();
             this.cu = parent ? parent.cu*h*0.8 + Math.random()*(1-h) : Math.random();
             this.so = parent ? parent.so*h*0.7 + Math.random()*(1-h) : Math.random();
-            this.edu = parent ? Math.min(1, parent.edu*h + sim.cfg.edu*Math.random()) : Math.random();
+
+            // Educación: Calidad degradada por segregación (distrito)
+            const districtQuality = this.district || 0.5;
+            const publicFactor = Math.random() * districtQuality;
+            const privateFactor = parent ? parent.edu * h : Math.random();
+            this.edu = (publicFactor * eduInv + privateFactor * (1-eduInv));
+
             this.wealth = parent ? parent.wealth*h*0.5 : Math.random()*10000;
+            this.log = [];
+            if(parent) {
+                const sName = STRATA.find(s=>parent.status>=s.min).name;
+                this.log.push(`Nacimiento: Gen ${this.generation} - Origen ${sName}`);
+            } else {
+                this.log.push(`Fundador: Gen 1`);
+            }
+
+            // Distrito (Segregación Geográfica): 0 (Periferia) a 1 (Centro/Elite)
+            this.district = parent ? Math.max(0, Math.min(1, parent.district + (Math.random()-0.5)*0.1)) : Math.random();
 
             this.prestige = 0;
             this.influence = 0;
@@ -359,19 +493,36 @@
             this.age += dt * speed;
             const cfg = this.sim.cfg;
 
-            // Social dynamics
             const networkEffect = this.contacts.reduce((acc, c) => acc + (c.status > this.status ? 0.08 : 0), 0);
+            const districtBonus = this.district * 5000;
 
-            // Merit vs Inheritance Weighting
             const meritFactor = (Math.random() * 0.5 + this.edu * 0.5) * cfg.merit * 60000;
             const heritageFactor = (this.ec * 0.4 + this.so * 0.3 + this.cu * 0.3) * (1 - cfg.merit) * 50000;
 
-            const income = (15000 + meritFactor + heritageFactor + networkEffect*30000) * (0.9 + Math.random()*0.2);
-            const taxes = income * cfg.tax;
-            const basicNeeds = 12000;
-            const luxuryExpense = Math.max(0, (income - taxes - basicNeeds) * 0.6);
+            let income = (12000 + meritFactor + heritageFactor + networkEffect*25000 + districtBonus) * (0.9 + Math.random()*0.2);
 
-            this.wealth += (income - taxes - basicNeeds - luxuryExpense) * dt * speed;
+            // Límite de Plazas Elite (Escasez Estructural)
+            if (this.status > 0.8 && this.sim.stats.eliteCount > this.sim.cfg.pop * 0.05) {
+                income *= 0.7; // Techo de cristal / Competencia feroz
+                if(Math.random() < 0.005) this.log.push(`Año ${Math.floor(this.sim.year)}: Barrera de Elite (Techo de Cristal)`);
+            }
+
+            if (this.edu > 0.9 && Math.random() < 0.002) this.log.push(`Año ${Math.floor(this.sim.year)}: Título de Postgrado de Excelencia`);
+            if (this.wealth > 200000 && Math.random() < 0.001) this.log.push(`Año ${Math.floor(this.sim.year)}: Consolidación de Patrimonio`);
+
+            // Impuestos Progresivos
+            let taxRate = cfg.tax;
+            if (this.wealth > 100000) taxRate *= 1.5;
+            if (this.wealth > 500000) taxRate *= 2.0;
+            const taxes = income * Math.min(0.9, taxRate);
+
+            // Protección Social (UBI)
+            const ubi = cfg.socialProt ? 8000 : 0;
+
+            const basicNeeds = 10000 * (1 + (1-this.district)*0.5);
+            const luxuryExpense = Math.max(0, (income + ubi - taxes - basicNeeds) * 0.5);
+
+            this.wealth += (income + ubi - taxes - basicNeeds - luxuryExpense) * dt * speed;
             this.wealth = Math.max(0, this.wealth);
 
             // Update composite status
@@ -393,7 +544,7 @@
 
             // Historial track
             if (Math.floor(this.sim.year) % 2 === 0 && (!this.history.length || this.history[this.history.length-1].y !== Math.floor(this.sim.year))) {
-                this.history.push({y: Math.floor(this.sim.year), s: this.status});
+                this.history.push({y: Math.floor(this.sim.year), s: this.status, ec: this.ec, cu: this.cu, so: this.so});
                 if (this.history.length > 20) this.history.shift();
             }
 
@@ -430,9 +581,12 @@
     class Simulation {
         constructor(id) {
             this.id = id; this.agents = []; this.year = 2024;
-            this.cfg = { pop: 5000, inh: 0.7, edu: 0.3, tax: 0.2, merit: 0.5, mate: 0.6, speed: 2.0 };
+            this.cfg = { pop: 5000, inh: 0.7, edu: 0.3, tax: 0.2, merit: 0.5, mate: 0.6, speed: 2.0, publicEdu: 0.3, segregation: 0.5, socialProt: false };
             this.timeline = [];
             this.transitionMatrix = Array.from({length: 10}, () => new Array(10).fill(0));
+            this.stability = 1.0;
+            this.risk = 0.0;
+            this.stats = { eliteCount: 0 };
             this.init();
         }
 
@@ -443,12 +597,22 @@
 
         rebuildNetworks() {
             const sorted = [...this.agents].sort((a,b) => a.status - b.status);
+            const seg = this.cfg.segregation;
             for(let i=0; i<sorted.length; i++) {
                 sorted[i].contacts = [];
                 const n = 6;
                 for(let j=1; j<=n; j++) {
+                    // Contactos por status (Homofilia)
                     if (i+j < sorted.length && Math.random() > 0.4) sorted[i].contacts.push(sorted[i+j]);
-                    if (Math.random() < 0.05) sorted[i].contacts.push(sorted[Math.floor(Math.random()*sorted.length)]);
+
+                    // Contactos por Distrito (Segregación)
+                    if (Math.random() < seg) {
+                        const neighbor = this.agents[Math.floor(Math.random()*this.agents.length)];
+                        if (Math.abs(neighbor.district - sorted[i].district) < 0.1) sorted[i].contacts.push(neighbor);
+                    }
+
+                    // Bridges (Capital Social)
+                    if (Math.random() < 0.02) sorted[i].contacts.push(sorted[Math.floor(Math.random()*sorted.length)]);
                 }
             }
             // Assortative Mating Logic (Simplificado: Parejas por status)
@@ -463,6 +627,7 @@
         step(dt) {
             const spd = this.cfg.speed;
             this.year += dt * spd;
+            this.stats.eliteCount = this.agents.filter(a => a.status > 0.8).length;
 
             // Adjust population
             if (this.agents.length < this.cfg.pop) {
@@ -502,7 +667,12 @@
 
             // Periodic stats recording
             if (Math.floor(this.year) !== Math.floor(this.year - dt*spd)) {
-                this.timeline.push({ y: Math.floor(this.year), g: this.getGini() });
+                const gini = this.getGini();
+                const mob = this.getMobility();
+                this.stability = Math.max(0, 1 - (gini * 0.8 + (1-mob) * 0.2));
+                this.risk = (gini > 0.5 && mob < 0.1) ? Math.min(1, this.risk + 0.05) : Math.max(0, this.risk - 0.02);
+
+                this.timeline.push({ y: Math.floor(this.year), g: gini, s: this.stability, r: this.risk });
                 if (this.timeline.length > 100) this.timeline.shift();
             }
         }
@@ -519,6 +689,11 @@
             const top10 = w.slice(-Math.floor(w.length * 0.1)).reduce((acc,v)=>acc+v,0);
             const bottom40 = w.slice(0, Math.floor(w.length * 0.4)).reduce((acc,v)=>acc+v,0);
             return bottom40 === 0 ? 99 : top10 / bottom40;
+        }
+
+        getMobility() {
+            const mobCount = this.agents.filter(a => a.parent && Math.abs(a.status - a.parent.status) > 0.15).length;
+            return mobCount / (this.agents.length || 1);
         }
     }
 
@@ -540,8 +715,11 @@
             sprites[idx] = [2, 4, 8, 16].map(size => {
                 const c = document.createElement('canvas'); c.width = size*4; c.height = size*4;
                 const x = c.getContext('2d');
-                const g = x.createRadialGradient(size*2, size*2, 0, size*2, size*2, size*2);
-                g.addColorStop(0, color); g.addColorStop(0.5, color); g.addColorStop(1, 'transparent');
+                // Sombreado Esférico Realista
+                const g = x.createRadialGradient(size*1.5, size*1.5, 0, size*2, size*2, size*2.5);
+                g.addColorStop(0, '#fff'); // Especular
+                g.addColorStop(0.2, color);
+                g.addColorStop(1, 'rgba(0,0,0,0.5)');
                 x.fillStyle = g; x.beginPath(); x.arc(size*2, size*2, size*2, 0, Math.PI*2); x.fill();
                 return c;
             });
@@ -589,8 +767,10 @@
     }
 
     function drawSociety(sim, cx, cy, w, h, label) {
+        if (visualShock > 0) { cx += (Math.random()-0.5)*20*visualShock; cy += (Math.random()-0.5)*20*visualShock; }
         // Draw Strata Plates
-        STRATA.forEach(s => {
+        STRATA.forEach((s, idx) => {
+            if (soloStrata !== -1 && soloStrata !== idx) return;
             const alpha = 0.05 + (1-s.min)*0.1;
             ctx.strokeStyle = `rgba(0,51,102,${alpha})`;
             ctx.lineWidth = 1;
@@ -612,6 +792,11 @@
         }).sort((a,b) => b.d - a.d); // Depth sorting
 
         dList.forEach(d => {
+            if (filterDecile !== -1 && Math.min(9, Math.floor(d.a.status * 10)) !== filterDecile) return;
+            if (soloStrata !== -1) {
+                const sIdx = STRATA.findIndex(s => d.a.status >= s.min && d.a.status < (STRATA[STRATA.indexOf(s)-1]?.min || 1.1));
+                if (sIdx !== soloStrata) return;
+            }
             let colorIdx = 0;
             if (viewMode === 'class') colorIdx = Math.min(4, Math.floor(d.a.status * 5));
             else if (viewMode === 'edu') colorIdx = Math.min(4, Math.floor(d.a.edu * 5));
@@ -631,12 +816,17 @@
                 ctx.beginPath(); ctx.arc(d.a.sx, d.a.sy, size/2 + 2, 0, Math.PI*2); ctx.stroke();
             }
 
-            if (d.a === hover) {
+            if (d.a === hover || (focusLineage && d.a.id === focusLineage)) {
                 ctx.strokeStyle = '#003366'; ctx.lineWidth = 2;
                 ctx.beginPath(); ctx.arc(d.a.sx, d.a.sy, size/2 + 4, 0, Math.PI*2); ctx.stroke();
-                // Network lines
-                ctx.setLineDash([2, 2]); ctx.strokeStyle = 'rgba(0,51,102,0.3)';
+
+                // Active Social Synapses
+                ctx.setLineDash([2, 2]);
                 d.a.contacts.forEach(c => {
+                    const grad = ctx.createLinearGradient(d.a.sx, d.a.sy, c.sx, c.sy);
+                    grad.addColorStop(0, 'var(--oecd-blue)');
+                    grad.addColorStop(1, 'transparent');
+                    ctx.strokeStyle = grad;
                     ctx.beginPath(); ctx.moveTo(d.a.sx, d.a.sy); ctx.lineTo(c.sx, c.sy); ctx.stroke();
                 });
                 ctx.setLineDash([]);
@@ -651,15 +841,33 @@
     }
 
     // --- UI & INTERACTION ---
-    let simA = new Simulation('A'), simB = new Simulation('B'), active = simA, isPlay = true, isComp = false, hover = null, viewMode = 'class';
+    let simA = new Simulation('A'), simB = new Simulation('B'), active = simA, isPlay = true, isComp = false, hover = null, viewMode = 'class', filterDecile = -1, soloStrata = -1, focusLineage = null, visualShock = 0;
 
     function updateUI() {
         document.getElementById('s_year').innerText = Math.floor(simA.year);
-        document.getElementById('s_gini').innerText = active.getGini().toFixed(3);
-        document.getElementById('s_palma').innerText = active.getPalma().toFixed(1);
+        const gini = active.getGini();
+        const palma = active.getPalma();
+        document.getElementById('s_gini').innerText = gini.toFixed(3);
+        document.getElementById('s_palma').innerText = palma.toFixed(1);
+
+        // Policy Advisor Logic
+        const advisor = document.getElementById('advisor-tip');
+        if (advisor) {
+            if (active.risk > 0.5) advisor.innerText = "RIESGO CRÍTICO: Alta desigualdad y baja movilidad detectada.";
+            else if (gini > 0.45) advisor.innerText = "ALERTA: Concentración de riqueza excesiva. Considere política fiscal.";
+            else if (active.getMobility() < 0.1) advisor.innerText = "ESTANCAMIENTO: El ascensor social no funciona. Mejore acceso educativo.";
+            else advisor.innerText = "SISTEMA ESTABLE: Los indicadores se encuentran en rangos de sostenibilidad.";
+        }
         const mobCount = active.agents.filter(a => a.parent && Math.abs(a.status - a.parent.status) > 0.15).length;
         document.getElementById('s_mob').innerText = ((mobCount/active.agents.length)*100).toFixed(1) + '%';
+        document.getElementById('s_stability').innerText = (active.stability * 100).toFixed(0) + '%';
+        document.getElementById('s_risk').innerText = (active.risk * 100).toFixed(0) + '%';
         document.getElementById('s_pop_count').innerText = active.agents.length;
+
+        // Update Macro Ticker
+        const ticker = document.getElementById('macro-ticker');
+        const gTrend = active.timeline.length > 2 ? (active.getGini() > active.timeline[active.timeline.length-2].g ? '↑ ALZA' : '↓ BAJA') : 'ESTABLE';
+        ticker.innerText = `SISTEMA OPERATIVO: NORMAL • ANALIZANDO AÑO ${Math.floor(active.year)} • ESTABILIDAD: ${(active.stability*100).toFixed(0)}% • TENDENCIA GINI: ${gTrend} • POBLACIÓN ACTIVA: ${active.agents.length} • `;
 
         if (isComp) {
             document.getElementById('delta-panel').style.display = 'block';
@@ -685,7 +893,7 @@
         const svgP = document.getElementById('svgP');
         const counts = STRATA.map(s => active.agents.filter(a => a.status >= s.min && a.status < (STRATA[STRATA.indexOf(s)-1]?.min || 1.1)).length);
         const max = Math.max(...counts, 1);
-        svgP.innerHTML = STRATA.map((s, i) => `<rect x="${50-(counts[i]/max)*45}%" y="${i*20}%" width="${(counts[i]/max)*90}%" height="15" fill="${s.color}" rx="3" fill-opacity="0.9"/>`).join('');
+        svgP.innerHTML = STRATA.map((s, i) => `<rect x="${50-(counts[i]/max)*45}%" y="${i*20}%" width="${(counts[i]/max)*90}%" height="15" fill="${s.color}" rx="3" fill-opacity="${soloStrata === i || soloStrata === -1 ? 0.9 : 0.2}" style="cursor:pointer; transition: 0.3s;" onclick="toggleSolo(${i})"/>`).join('');
 
         // Lorenz & Palma Composite
         const svgL = document.getElementById('svgL');
@@ -710,11 +918,15 @@
         // Mobility Matrix (Deciles)
         const matrix = document.getElementById('m_matrix');
         const total = active.transitionMatrix.flat().reduce((a,b)=>a+b, 0) || 1;
-        matrix.innerHTML = active.transitionMatrix.flat().map(v => {
+        matrix.innerHTML = active.transitionMatrix.flat().map((v, i) => {
             const intensity = Math.min(1, (v/(total/100))*2.0);
-            return `<div class="matrix-cell" style="background: rgba(0,51,102,${intensity}); color: ${intensity > 0.5 ? '#fff':'transparent'}">${((v/total)*100).toFixed(0)}</div>`;
+            const decile = Math.floor(i / 10);
+            const isSel = filterDecile === decile;
+            return `<div class="matrix-cell" onclick="setFilter(${decile})" style="background: rgba(0,51,102,${intensity}); color: ${intensity > 0.5 ? '#fff':'transparent'}; border: ${isSel?'2px solid var(--oecd-gold)':'none'}">${((v/total)*100).toFixed(0)}</div>`;
         }).join('');
     }
+
+    function setFilter(d) { filterDecile = (filterDecile === d) ? -1 : d; }
 
     function setViewMode(m, btn) {
         viewMode = m;
@@ -728,6 +940,7 @@
         toast.innerText = `EVENTO: ${type.toUpperCase()}`;
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 3000);
+        visualShock = 1.0;
 
         const target = isComp ? [simA, simB] : [active];
         target.forEach(s => {
@@ -771,14 +984,30 @@
                     <div>Social K: <b>${(best.so*100).toFixed(0)}%</b></div>
                 </div>
                 <canvas id="capitalRadar" width="100" height="100" class="radar-box"></canvas>
-                <div style="margin-top:10px; font-size:0.65rem; color:var(--text-muted);">
-                    Trajectoria: ${best.history.map(h=>Math.floor(h.s*100)).join('→')}%
+                <div style="margin-top:10px; font-size:0.65rem; color:var(--text-muted); border-top: 1px solid var(--border); padding-top: 5px;">
+                    <b>Trayectoria Vital de Capitales:</b>
+                    <canvas id="flowChart" width="280" height="50" style="margin-top:5px;"></canvas>
+                </div>
+                <div style="margin-top:8px; font-size:0.6rem; color:var(--oecd-blue); border-top: 1px dashed var(--border); padding-top: 5px;">
+                    <b>Eventos de Vida:</b><br>
+                    ${best.log.slice(-3).join('<br>')}
                 </div>
             `;
             drawRadar(best);
+            drawFlow(best);
         } else ins.style.display = 'none';
     });
     canvas.addEventListener('wheel', e => { cam.targetZoom = Math.max(0.5, Math.min(3, cam.targetZoom - e.deltaY * 0.001)); e.preventDefault(); }, { passive: false });
+
+    function toggleFocus() {
+        if (hover) {
+            focusLineage = hover.id;
+            document.getElementById('focusBtn').classList.add('active');
+        } else {
+            focusLineage = null;
+            document.getElementById('focusBtn').classList.remove('active');
+        }
+    }
 
     function togglePlay() { isPlay = !isPlay; document.getElementById('playBtn').innerText = isPlay ? '⏸' : '▶'; }
     function toggleComparison() {
@@ -788,54 +1017,109 @@
         document.getElementById('hud-comp').style.display = isComp ? 'block' : 'none';
         if (!isComp) selectSim('A');
     }
+
+    function toggleSolo(idx) { soloStrata = (soloStrata === idx) ? -1 : idx; }
     function selectSim(id) { active = (id === 'A') ? simA : simB; document.querySelectorAll('.comparison-ui button').forEach(b=>b.classList.remove('sel')); document.getElementById('t'+id).classList.add('sel'); syncInputs(); }
+    function resetSim() { active.init(); if(isComp) { simA.init(); simB.init(); } }
+    function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { if (document.exitFullscreen) { document.exitFullscreen(); } } }
     function syncInputs() {
         const c = active.cfg;
-        ['pop', 'speed', 'inh', 'merit', 'tax', 'mate'].forEach(k => {
+        ['pop', 'speed', 'inh', 'merit', 'tax', 'mate', 'publicEdu', 'segregation'].forEach(k => {
             document.getElementById('p_'+k).value = c[k];
-            document.getElementById('v_'+k).innerText = c[k].toFixed(2);
+            if (document.getElementById('v_'+k)) document.getElementById('v_'+k).innerText = c[k].toFixed(2);
         });
+        document.getElementById('p_socialProt').checked = c.socialProt;
         document.getElementById('hud-status').innerText = `MODELO: ${c.merit > 0.7 ? 'MERITOCRACIA PURA' : c.merit < 0.3 ? 'SISTEMA DE CASTAS' : 'ESTRUCTURA BALANCEADA'}`;
     }
-    ['pop', 'speed', 'inh', 'merit', 'tax', 'mate'].forEach(k => { document.getElementById('p_'+k).addEventListener('input', e => { const v = parseFloat(e.target.value); active.cfg[k] = v; document.getElementById('v_'+k).innerText = v.toFixed(2); if(k==='pop') active.init(); }); });
+    ['pop', 'speed', 'inh', 'merit', 'tax', 'mate', 'publicEdu', 'segregation'].forEach(k => {
+        if (document.getElementById('p_'+k)) {
+            document.getElementById('p_'+k).addEventListener('input', e => {
+                const v = parseFloat(e.target.value); active.cfg[k] = v;
+                if (document.getElementById('v_'+k)) document.getElementById('v_'+k).innerText = v.toFixed(2);
+                if(k==='pop') active.init();
+            });
+        }
+    });
+    document.getElementById('p_socialProt').addEventListener('change', e => { active.cfg.socialProt = e.target.checked; });
 
     function openModal(id) { document.getElementById('m_'+id).style.display = 'flex'; }
+    function setCameraView(v) {
+        if (v === 'top') { cam.targetPitch = Math.PI/2.1; cam.targetYaw = 0; cam.targetZoom = 1.2; }
+        if (v === 'side') { cam.targetPitch = 0; cam.targetYaw = Math.PI/2; cam.targetZoom = 1.0; }
+        if (v === 'iso') { cam.targetPitch = Math.PI/10; cam.targetYaw = Math.PI/4; cam.targetZoom = 1.0; }
+    }
+
+    function showTheoryTab(e, tabId) {
+        document.querySelectorAll('.theory-tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).style.display = 'block';
+        e.currentTarget.classList.add('active');
+    }
+
     function closeModal() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
     function toggleTheme() { const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); }
 
     function generateReport() {
-        const gini = active.getGini().toFixed(3);
-        const counts = STRATA.map(s => active.agents.filter(a => a.status >= s.min && a.status < (STRATA[STRATA.indexOf(s)-1]?.min || 1.1)).length);
+        const giniA = simA.getGini().toFixed(3);
+        const giniB = simB.getGini().toFixed(3);
+        const matrix = active.transitionMatrix;
+
         const report = `
             <!DOCTYPE html>
-            <html><head><title>Informe OECD: Estratificación Social</title>
+            <html><head><title>OECD Policy Comparison Report</title>
             <style>
-                body { font-family: sans-serif; padding: 50px; color: #333; line-height: 1.6; max-width: 800px; margin: auto; }
-                h1 { color: #002d62; border-bottom: 4px solid #002d62; padding-bottom: 10px; }
-                .kpi { display: flex; gap: 20px; margin: 30px 0; }
-                .card { background: #f0f4f8; padding: 20px; border-radius: 10px; flex: 1; text-align: center; border: 1px solid #ddd; }
-                .card big { display: block; font-size: 2.5rem; font-weight: 800; color: #002d62; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                body { font-family: 'Inter', sans-serif; padding: 60px; color: #222; max-width: 1000px; margin: auto; }
+                .header { border-bottom: 8px solid #002d62; margin-bottom: 40px; padding-bottom: 20px; }
+                .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+                .card { background: #f8f9fa; padding: 30px; border-radius: 15px; border-left: 5px solid #002d62; }
+                table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; }
+                th, td { border: 1px solid #dee2e6; padding: 12px; text-align: center; }
                 th { background: #002d62; color: white; }
+                .heat { background: #002d62; color: white; }
             </style></head>
             <body>
-                <h1>OECD Society Analytics Report</h1>
-                <p>Referencia Temporal: Año Fiscal ${Math.floor(active.year)}</p>
-                <div class="kpi">
-                    <div class="card"><small>GINI</small><big>${gini}</big></div>
-                    <div class="card"><small>POBLACIÓN</small><big>${active.agents.length}</big></div>
-                    <div class="card"><small>PALMA</small><big>${active.getPalma().toFixed(1)}</big></div>
+                <div class="header"><h1>OECD Social Dynamics: Comprehensive Report</h1><p>Fiscal Year ${Math.floor(active.year)}</p></div>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Sociedad A (Control)</h3>
+                        <p>Gini: <b>${giniA}</b></p>
+                        <p>Palma: <b>${simA.getPalma().toFixed(1)}</b></p>
+                        <p>Movilidad: <b>${(simA.getMobility()*100).toFixed(1)}%</b></p>
+                        <p>Riesgo: <b>${(simA.risk*100).toFixed(1)}%</b></p>
+                    </div>
+                    <div class="card">
+                        <h3>Sociedad B (Test)</h3>
+                        <p>Gini: <b>${giniB}</b></p>
+                        <p>Palma: <b>${simB.getPalma().toFixed(1)}</b></p>
+                        <p>Movilidad: <b>${(simB.getMobility()*100).toFixed(1)}%</b></p>
+                        <p>Riesgo: <b>${(simB.risk*100).toFixed(1)}%</b></p>
+                    </div>
                 </div>
-                <h3>Distribución de Clases</h3>
+                <h3>Transition Matrix (Active Society Deciles)</h3>
+                <p>Rows: Parent Decile | Columns: Offspring Decile</p>
                 <table>
-                    <tr><th>Estrato</th><th>Individuos</th><th>%</th></tr>
-                    ${STRATA.map((s, i) => `<tr><td>${s.name}</td><td>${counts[i]}</td><td>${((counts[i]/active.agents.length)*100).toFixed(1)}%</td></tr>`).join('')}
+                    ${matrix.map(row => `<tr>${row.map(v => `<td style="background:rgba(0,45,98,${Math.min(1, v/50)})">${v}</td>`).join('')}</tr>`).join('')}
                 </table>
-                <p style="margin-top:50px; font-size: 0.8rem; color: #777;">Generado por Dr. Juan Moisés de la Serna - Lab v11.0</p>
+                <footer style="margin-top:100px; border-top:1px solid #ddd; padding-top:20px; font-size:0.8rem; color:#666;">Generated by Dr. Juan Moisés de la Serna Research Lab. All data simulated for policy analysis.</footer>
             </body></html>
         `;
-        download(report, 'oecd_report.html', 'text/html');
+        download(report, 'oecd_policy_report.html', 'text/html');
+    }
+
+    function drawFlow(a) {
+        const fc = document.getElementById('flowChart').getContext('2d');
+        fc.clearRect(0,0,280,50);
+        if(a.history.length < 2) return;
+        const drawLine = (key, col) => {
+            fc.strokeStyle = col; fc.beginPath();
+            a.history.forEach((h, i) => {
+                const x = (i/(a.history.length-1)) * 280;
+                const y = 50 - h[key]*45 - 2;
+                if(i==0) fc.moveTo(x,y); else fc.lineTo(x,y);
+            });
+            fc.stroke();
+        };
+        drawLine('ec', '#2ea44f'); drawLine('cu', '#0366d6'); drawLine('so', '#f9c513');
     }
 
     function drawRadar(a) {
@@ -884,26 +1168,56 @@
     }
 
     let wtStep = 0;
-    const wtSteps = [
+        const wtSteps = [
         { t: 'Bienvenido al Lab OECD', c: 'Esta herramienta simula la estructura de clases de forma dinámica. Cada punto es un ciudadano con una historia única.' },
-        { t: 'Capitales de Bourdieu', c: 'Usa los botones de vista (C, E, K, S) para filtrar la sociedad por diferentes tipos de capital.' },
-        { t: 'El Ascensor Social', c: 'Observa la Matriz de Movilidad para ver cuántos hijos logran superar el estatus de sus padres.' },
-        { t: 'Intervención y Política', c: 'Trigger shocks económicos o reformas educativas para ver cómo impactan el Gini en tiempo real.' }
+        { t: '3D Social Tower', c: 'La torre representa la jerarquía. El eje vertical es el estatus. Puedes rotar y hacer zoom para explorar los estratos.' },
+        { t: 'Aislamiento de Clase', c: 'Haz clic en las barras de la pirámide (derecha) para aislar una clase social y estudiar su comportamiento interno.' },
+        { t: 'Ficha del Ciudadano', c: 'Haz clic en cualquier agente para ver su Capital Radar y su árbol genealógico. Verás cómo heredó su posición.' },
+        { t: 'Advisor OECD', c: 'Sigue el panel Advisor (arriba izquierda) para recibir recomendaciones de política basadas en el riesgo sistémico.' },
+        { t: 'Modo Comparación', c: 'Usa COMPARAR para testear dos sociedades con políticas opuestas (ej. Nórdico vs Liberal) simultáneamente.' }
     ];
     function startWalkthrough() { wtStep = 0; document.getElementById('walkthrough-box').style.display = 'block'; updateWT(); }
     function nextWT() { wtStep++; if (wtStep >= wtSteps.length) stopWalkthrough(); else updateWT(); }
     function updateWT() { document.getElementById('wt-title').innerText = wtSteps[wtStep].t; document.getElementById('wt-text').innerText = wtSteps[wtStep].c; }
     function stopWalkthrough() { document.getElementById('walkthrough-box').style.display = 'none'; }
 
+    function showTab(id, btn) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-'+id).classList.add('active');
+    }
+
+    function applyPreset(p) {
+        const c = active.cfg;
+        if (p === 'nordic') { c.merit = 0.8; c.tax = 0.4; c.publicEdu = 0.9; c.segregation = 0.1; c.inh = 0.3; }
+        if (p === 'liberal') { c.merit = 0.6; c.tax = 0.15; c.publicEdu = 0.2; c.segregation = 0.5; c.inh = 0.6; }
+        if (p === 'pluto') { c.merit = 0.1; c.tax = 0.05; c.publicEdu = 0.05; c.segregation = 0.9; c.inh = 0.9; }
+        syncInputs();
+    }
+
     function loop() {
         if (isPlay) { simA.step(0.016); if (isComp) simB.step(0.016); }
+        if (visualShock > 0) visualShock *= 0.95;
+        cam.update();
+
+        if (focusLineage) {
+            const agent = active.agents.find(a => a.id === focusLineage);
+            if (agent) {
+                cam.targetYaw = -Math.atan2(agent.z, agent.x);
+                cam.targetZoom = 1.8;
+            }
+        }
+
         cam.update();
         render([simA, simB], isComp);
         updateUI();
         requestAnimationFrame(loop);
     }
 
+    // Initialize
     createSprites(); loop(); syncInputs();
+    console.log('OECD Social Dynamics Lab v10.0 Initialized');
 
 </script>
 </body>
